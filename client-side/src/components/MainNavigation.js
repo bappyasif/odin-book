@@ -38,7 +38,7 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   let toggleDropdown = () => setShowDropdown(!showDropdown)
   let closeDropdown = () => setShowDropdown(false);
   return (
-    <Stack sx={{ flexDirection: "row", gap: 4, position: "relative" }}>
+    <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
       <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
       {showDropdown ? <ShowAuthUserDropdowns /> : null}
@@ -51,7 +51,7 @@ let ShowAuthUserDropdowns = () => {
   let renderOptions = () => options.map(item => <RenderDropDownOption key={item.name} item={item} />)
 
   return (
-    <Stack sx={{ position: "absolute", right: 0, top: "42px", gap: "9px" }}>
+    <Stack sx={{ position: "absolute", right: 0, top: "62px", gap: "9px", backgroundColor: "gainsboro", p: 2 }}>
       {renderOptions()}
     </Stack>
   )
@@ -82,8 +82,8 @@ const RenderDropDownOption = ({ item }) => {
   }
 
   return (
-    <Tooltip title={item.name}>
-      <Button onClick={handleClick} startIcon={item.icon}>
+    <Tooltip sx={{mb: .2}} title={item.name}>
+      <Button onClick={handleClick} startIcon={item.icon} sx={{outline: "solid 2px red"}}>
         <Typography variant='subtitle2'>{item.name}</Typography>
       </Button>
     </Tooltip>
