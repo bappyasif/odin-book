@@ -156,7 +156,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
   }, [])
 
   useEffect(() => {
-    if (postData && postData?.usersEngagged.length) {
+    if (postData && postData?.usersEngagged.length && appCtx?.user._id) {
       let findIdx = postData?.usersEngagged?.findIndex(item => Object.keys(item)[0] === appCtx.user._id.toString())
 
       // setCounts(prev => ({ ...prev, engaggedUser: postData?.usersEngagged[findIdx] ? Object.values(postData?.usersEngagged[findIdx])[0] : { Like: 0, Love: 0, Dislike: 0, Share: 0 } }))

@@ -75,6 +75,8 @@ function App() {
   let updateAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
   console.log(userAccessiblePostsDataset, "userPostsDataset!!")
 
+  const clearCurrentUserData = () => setUser({})
+
   const contexts = {
     baseUrl: "http://localhost:3000",
     user: user,
@@ -85,7 +87,8 @@ function App() {
     availablePostsFeeds: userAccessiblePostsDataset,
     updateAvailablePostsFeeds: updateAvailablePostsFeeds,
     removeIdFromCurrentUserFriendsList: removeUserIdFromCurrentUserFriendsList,
-    updateUserProfileDataInApp: updateUserProfileDataInApp
+    updateUserProfileDataInApp: updateUserProfileDataInApp,
+    clearCurrentUserData: clearCurrentUserData
   }
 
   let getUser = () => {

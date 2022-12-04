@@ -109,10 +109,25 @@ const getAuthenticatedUserDataFromServer = (endpoint, dataUpdater) => {
         .catch(err => dataUpdater({ errors: [err], data: [] }))
 }
 
+const logoutUserFromApp = (url, clearOutUserData) => {
+    fetch(url)
+        .then(res => res.json())
+        .catch(err => console.log("response error!!", err))
+        .then(data => {
+            console.log("logged out!!", data.success)
+            // localStorage.removeItem("uid")
+            // localStorage.removeItem("token")
+            // localStorage.removeItem("expires")
+            clearOutUserData && clearOutUserData()
+        })
+        .catch(err => console.error(err))
+}
+
 export {
     sendDataToServer,
     readDataFromServer,
     getAuthenticatedUserDataFromServer,
     updateUserInDatabase,
-    updateDataInDatabase
+    updateDataInDatabase,
+    logoutUserFromApp
 }
