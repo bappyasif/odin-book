@@ -140,18 +140,10 @@ const returnAuthenticatedUser = (req, res, next) => {
 }
 
 const logoutUser = (req, res, next) => {
-    // req.logOut(err => {
-    //     if(err) return next(err)
-    //     console.log("inside")
-    //     res.status(200).json({ success: true, msg: "user logged out successfully" })
-    // })
-
-    // req.session.destroy()
-    // res.session.destroy()
-    // req.logOut();
     req.logout();
-    res.status(200).json({ success: true, msg: "user logged out successfully" })
-    // console.log("outside")
+    res.clearCookie("session")
+    res.clearCookie("session.sig")
+    res.status(200).json({ success: true, msg: "user logged out successfully", user: req.user })
 }
 
 module.exports = {

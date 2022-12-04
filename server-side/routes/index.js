@@ -6,7 +6,7 @@ const authRoutes = require("./auth");
 const twitterRoutes = require("./twitter");
 const routes = express();
 
-routes.get("/", (req, res) => res.send("hoi hoi!! server leven!!"));
+routes.get("/", (req, res) => res.json({user: req.user, msg: "server alive!!"}));
 
 routes.use(authRoutes)
 routes.use("/users", userRoute)

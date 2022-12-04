@@ -54,6 +54,7 @@ authRoutes.get('/auth/twitter/redirect', passport.authenticate('twitter', {
 
 authRoutes.get("/login/success", isAuthenticated, returnAuthenticatedUser)
 
-authRoutes.get("/logout", logoutUser)
+// authRoutes.get("/logout", logoutUser)
+authRoutes.get("/logout", isAuthenticated, logoutUser)
 
 module.exports = authRoutes

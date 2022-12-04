@@ -17,7 +17,7 @@ function MainNavigation() {
       <H1Element value={"OdBo"} />
       {/* <NavigationLinks /> */}
       {
-        appCtx?.user._id
+        appCtx?.user?._id
           ?
           <>
             <NavsWhenUserAuthenticated appCtx={appCtx} />

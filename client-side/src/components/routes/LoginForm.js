@@ -78,6 +78,13 @@ let ThirdPartyLoginOutlets = () => {
 let RenderLoginOutlet = ({ item }) => {
     const navigate = useNavigate()
 
+    let appCtx = useContext(AppContexts);
+
+    let getAuthenticatedUserData = () => {
+        appCtx.getUser();
+        navigate("/")
+    }
+
     let handleClick = evt => {
         let url = ''
         if (item.name === "Google") {
@@ -89,7 +96,8 @@ let RenderLoginOutlet = ({ item }) => {
         } else if (item.name === "Twitter") {
             url = `http://localhost:3000/auth/twitter`
         }
-        loginPrompt(url, navigate)
+        // loginPrompt(url, navigate)
+        loginPrompt(url, getAuthenticatedUserData)
     }
 
     return (
@@ -140,7 +148,7 @@ let RenderGuestUser = ({ item, handleSubmit, setFormData }) => {
     )
 }
 
-let loginPrompt = (url, navigate) => {
+let loginPrompt = (url, getData) => {
     const newWindow = window.open(url, "_blank", "width=500, height=500")
 
     let timer = 0;
@@ -149,7 +157,8 @@ let loginPrompt = (url, navigate) => {
         timer = setInterval(() => {
             if (newWindow.closed) {
                 if (timer) clearInterval(timer)
-                navigate("/")
+                // navigate("/")
+                getData()
             }
         }, 1001)
     }

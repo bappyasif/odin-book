@@ -75,7 +75,17 @@ function App() {
   let updateAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
   console.log(userAccessiblePostsDataset, "userPostsDataset!!")
 
-  const clearCurrentUserData = () => setUser({})
+  const clearCurrentUserData = () => {
+    setUser({})
+    setJwtUser({})
+    setUserAccessiblePostsDataset({})
+  }
+
+  let getUser = () => {
+    let url = `http://localhost:3000/login/success`
+    getAuthenticatedUserDataFromServer(url, handleData)
+    console.log("running from app scope!!")
+  }
 
   const contexts = {
     baseUrl: "http://localhost:3000",
@@ -88,17 +98,13 @@ function App() {
     updateAvailablePostsFeeds: updateAvailablePostsFeeds,
     removeIdFromCurrentUserFriendsList: removeUserIdFromCurrentUserFriendsList,
     updateUserProfileDataInApp: updateUserProfileDataInApp,
-    clearCurrentUserData: clearCurrentUserData
-  }
-
-  let getUser = () => {
-    let url = `http://localhost:3000/login/success`
-    getAuthenticatedUserDataFromServer(url, handleData)
+    clearCurrentUserData: clearCurrentUserData,
+    getUser: getUser
   }
 
   useEffect(() => {
     // also making sure if oauth is not used and jwtToken is used then dont fetch data from server again on route changes
-    Object.keys(jwtUser).length === 0 && location.pathname === "/" && getUser()
+    // Object.keys(jwtUser).length === 0 && location.pathname === "/" && getUser()
   }, [location.pathname === "/"])
 
   useEffect(() => {
