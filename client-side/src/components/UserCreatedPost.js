@@ -1,12 +1,14 @@
 import { CommentTwoTone } from '@mui/icons-material'
-import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AppContexts } from '../App'
+import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
 import PostCommentModal from './PostCommentModal'
 import RenderPostComments from './RenderPostComments'
 import RenderPostDataEssentials from './RenderPostData'
+import LoginForm from './routes/LoginForm'
 import SharePostModal, { ShowPostUserEngagementsDetails } from './SharePostModal'
 import { readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
 
@@ -46,14 +48,14 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
   let [dataReady, setDataReady] = useState(false)
   let [showModal, setShowModal] = useState(false);
   let [shareFlag, setShareFlag] = useState(false);
-  let [showCommentModal, setShowCommentModal] =  useState(false);
+  let [showCommentModal, setShowCommentModal] = useState(false);
   let [commentText, setCommentText] = useState(null)
 
   let handleCommentText = evt => setCommentText(evt.target.value);
 
   let handleCommentCounts = () => {
-    setCounts(prev => ({...prev, "Comment": prev["Comment"] ? prev["Comment"] + 1 : 1}))
-    setOnlyUserCounts(prev => ({...prev, Comment: prev["Comment"] ? prev["Comment"] + 1 : 1}))
+    setCounts(prev => ({ ...prev, "Comment": prev["Comment"] ? prev["Comment"] + 1 : 1 }))
+    setOnlyUserCounts(prev => ({ ...prev, Comment: prev["Comment"] ? prev["Comment"] + 1 : 1 }))
     // clearing out previously existing session element
     session && setSession(null)
     // setting a new timer with 2000ms, so that timer can take effect after that time
@@ -113,7 +115,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
 
   let handleCreateNewComment = () => {
     let url = `${appCtx.baseUrl}/comments/create/new`
-    
+
     let data = {
       text: commentText,
       userId: appCtx.user._id,
@@ -128,7 +130,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
       setCommentText(null)
     }
 
-    sendDataToServer(url, data, ()=>null, handleSuccess)
+    sendDataToServer(url, data, () => null, handleSuccess)
   }
 
   useEffect(() => {
@@ -146,7 +148,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
       Dislike: postData?.dislikesCount || 0,
       Share: postData?.shareCount || 0,
       Comment: postData?.commentsCount || 0,
-      engaggedUser: {Like: 0, Love: 0, Dislike: 0, Share: 0}
+      engaggedUser: { Like: 0, Love: 0, Dislike: 0, Share: 0 }
       // engaggedUser: postData?.usersEngagged.length ? Object.values(postData?.usersEngagged[0])[0] : { Like: 0, Love: 0, Dislike: 0, Share: 0, Comment: 0 }
     })
 
@@ -180,7 +182,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
       sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "lightblue", gap: 2, position: "relative" }}
     >
       {counts?.engaggedUser && actions.map(item => (
-        <RenderActionableIcon key={item.name} handleShowCommentModal={handleShowCommentModal} setShowModal={setShowModal} item={item} counts={counts} handleCounts={handleCounts} setShowCreatePost={setShowCreatePost} />
+        <RenderActionableIcon key={item.name} appCtx={appCtx} handleShowCommentModal={handleShowCommentModal} setShowModal={setShowModal} item={item} counts={counts} handleCounts={handleCounts} setShowCreatePost={setShowCreatePost} />
       ))}
 
       {showModal ? <SharePostModal counts={counts} postData={postData} setShareFlag={setShareFlag} shareFlag={shareFlag} showModal={showModal} setShowModal={setShowModal} setShowCreatePost={setShowCreatePost} handleCounts={handleCounts} /> : null}
@@ -190,33 +192,34 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
   )
 }
 
-let RenderActionableIcon = ({ item, handleCounts, counts, setShowModal, setShowCreatePost, handleShowCommentModal }) => {
+let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, setShowCreatePost, handleShowCommentModal }) => {
   let [flag, setFlag] = useState(false);
+  let [promptLogin, setPromptLogin] = useState(false);
 
   let handleClick = () => {
-    setFlag(!flag);
-    // if (item.name === "Comment") return
-    // (item.name !== "Share") && handleCounts(item.name, !flag);
-    // item.name !== "Share" && handleCounts(item.name, !flag);
-    // if(item.name === "Share") setShowModal(!showModal);
-    if (item.name === "Share") {
-      setShowModal(true);
-      setShowCreatePost(false);
-    } else if(item.name === "Comment") {
-      handleShowCommentModal()
-    } else if(item.name !== "Share" || item.name !== "Comment") {
-      handleCounts(item.name, !flag);
+    if (appCtx.user._id) {
+      setFlag(!flag);
+      if (item.name === "Share") {
+        setShowModal(true);
+        setShowCreatePost(false);
+      } else if (item.name === "Comment") {
+        handleShowCommentModal()
+      } else if (item.name !== "Share" || item.name !== "Comment") {
+        handleCounts(item.name, !flag);
+      }
+    } else {
+      setPromptLogin(true);
     }
   }
 
   // if user already had interacted with this post then turning flag on for indication for those
   useEffect(() => {
-    // console.log(counts?.engaggedUser, "counts?.engaggedUser", counts)
     if (counts?.engaggedUser && counts?.engaggedUser[item.name]) {
       setFlag(true)
-      // console.log(counts, "flag", flag)
     }
   }, [])
+
+  // console.log(promptLogin, "promptLogin!!")
 
   // console.log(counts, "flag", flag)
   // item.name === "Comment" && console.log(counts[item.name], item.name, counts)
@@ -227,13 +230,59 @@ let RenderActionableIcon = ({ item, handleCounts, counts, setShowModal, setShowC
         onClick={handleClick}
         sx={{
           backgroundColor: flag ? "beige" : "lightgrey",
+          position: "relative"
         }}>
         <Button startIcon={counts[item.name] ? item.icon : null}>
           {counts[item.name] ? null : item.icon}
           <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
         </Button>
+        
+        {(promptLogin && !appCtx.user._id ) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
       </IconButton>
     </Tooltip>
+  )
+}
+
+export const ShowUserAuthenticationOptions = ({setPromptLogin, itemName, forComments}) => {
+  let ref = useRef();
+  
+  useToCloseModalOnClickedOutside(ref, () => itemName !== "Create Post" && setPromptLogin(false))
+
+  let leftPlacement = () => {
+    let measurement = "";
+
+    // console.log(itemName, "itemName")
+
+    if(forComments) {
+      measurement = "-146px";
+    } else {
+      if(itemName === "Share") {
+        measurement = "-696px";
+      } else if(itemName === "Comment") {
+        measurement = "-317px";
+      } else if(itemName === "Like") {
+        measurement = "-407px";
+      } else if(itemName === "Dislike") {
+        measurement = "-501px";
+      } else if(itemName === "Love") {
+        measurement = "-598px";
+      } else if(itemName === "Create Post") {
+        measurement = "-63px";
+      }
+    }
+    return measurement
+  }
+
+  return (
+    <Paper
+      // ref={ref}
+      sx={{
+        position: "absolute", bottom: "105px", left: leftPlacement(),
+        zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
+      }}
+    >
+      <LoginForm />
+    </Paper>
   )
 }
 

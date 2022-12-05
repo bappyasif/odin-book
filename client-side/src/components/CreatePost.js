@@ -12,13 +12,18 @@ import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
+import { ShowUserAuthenticationOptions } from './UserCreatedPost'
+import { useNavigate } from 'react-router-dom'
 
 function CreatePost({handleSuccessfullPostShared}) {
   let [addedOptions, setAddedOptions] = useState({})
   let [errors, setErrors] = useState([])
   let [postData, setPostData] = useState([])
+  // let [promptLogin, setPromptLogin] = useState(false);
 
   let ref = useRef();
+
+  const navigate = useNavigate()
 
   let appCtx = useContext(AppContexts)
 
@@ -44,12 +49,22 @@ function CreatePost({handleSuccessfullPostShared}) {
   }
 
   let createPost = () => {
-    if (addedOptions.body) {
-      console.log("create post")
-      let url = `${appCtx.baseUrl}/posts/post/create/${appCtx.user._id}`
-      sendDataToServer(url, addedOptions, handleErrors, handlePostData)
+    if(appCtx.user._id) {
+      if (addedOptions.body) {
+        console.log("create post")
+        let url = `${appCtx.baseUrl}/posts/post/create/${appCtx.user._id}`
+        sendDataToServer(url, addedOptions, handleErrors, handlePostData)
+      } else {
+        alert("at least post text needs to be there")
+      }
     } else {
-      alert("at least post text needs to be there")
+      // setPromptLogin(!promptLogin)
+      // re routing prompt for user consent to login page for authentication
+      let choose = prompt("you need to be registered or authenticated before creating any post, do you want to proceed to login Page? Y || N", "Y")
+      console.log(choose, "chose!!")
+      if(choose === "Y" || choose === "y") {
+        navigate("/login")
+      }
     }
   }
 
@@ -90,10 +105,17 @@ function CreatePost({handleSuccessfullPostShared}) {
 
           <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
 
-          <Stack onClick={createPost}>
+          <Stack 
+            sx={{position: "relative"}}
+            onClick={createPost}
+          >
             <Button variant='contained' endIcon={<PostAddTwoTone />}>
               <Typography variant={"h6"}>Create Post</Typography>
             </Button>
+
+            {/* for some reason there is a "ref" inteference with this and Authentication Prompt component "ref" */}
+            {/* thats rather making user re route to "login" page with user consent through a prompt dialog box */}
+            {/* {!appCtx.user._id && promptLogin ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName="Create Post" /> : null} */}
           </Stack>
 
         </CardElement>
@@ -106,7 +128,6 @@ let ShowRichTextEditor = ({ handleChange }) => {
   return (
     <>
       <Editor
-        // initialValue="!!REMOVE!! This is the initial content of the editor"
         initialValue=" "
         init={{
           selector: 'textarea',  // change this value according to your HTML
@@ -119,11 +140,6 @@ let ShowRichTextEditor = ({ handleChange }) => {
         }}
         id="body"
         onChange={(e) => handleChange(e, 'body')}
-      // onEditorChange={(e) => handleChange(e, 'body')}
-      // onEditorChange={(content) => handleChange(null, 'body', content)}
-      // onEditorChange={(e) => handleChange(e, 'body', e.target?.getContent())}
-      // onChange={(e) => handleChange(e, 'body', e.target.getContent())}
-      // onChange={(e) => console.log(e, 'body', e.target.getContent())}
       />
     </>
   )

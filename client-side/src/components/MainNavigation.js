@@ -124,6 +124,7 @@ export let NavigationLinks = () => {
 let NavsWhenUserIsNotAuthenticated = () => {
   return (
     <NavElement className="main-nav">
+      <TabElement className={"nav-item"} labelText={"Feeds"} path={"/"} icon={<DynamicFeedSharp />} />
       <TabElement className={"nav-item"} labelText={"Login"} path={"login"} icon={<LoginTwoTone />} />
       <TabElement className={"nav-item"} labelText={"Register"} path={"register"} icon={<AppRegistrationTwoTone />} />
     </NavElement>

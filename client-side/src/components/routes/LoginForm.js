@@ -15,13 +15,15 @@ function LoginForm({ handleData }) {
     const navigate = useNavigate()
     const enpoint = useContext(AppContexts)
 
+    const appCtx = useContext(AppContexts);
+
 
     let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
 
     let handleError = data => setErrors(data.errors);
 
     let updateData = result => {
-        handleData(result)
+        appCtx.handleData(result)
         // navigate("/");
         console.log(result, "result!!")
         result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");

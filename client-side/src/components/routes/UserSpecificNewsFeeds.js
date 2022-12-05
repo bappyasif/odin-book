@@ -10,9 +10,32 @@ import ShowUserCreatedPost from '../UserCreatedPost';
 import { readDataFromServer } from '../utils';
 import { ScrollToTop } from './PostCommentsThread';
 
+// const UserNewsFeedsContainer = () => {
+//     let [tweetPostsDataset, setTweetPostsDataset] = useState([]);
+//     let [showPostsUntilIndex, setShowPostsUntilIndex] = useState(11);
+
+//     let appCtx = useContext(AppContexts);
+
+//     let location = useLocation()
+
+//     let handleAllAccessiblePosts = result => appCtx.handleAvailablePostsFeeds(result.data.data)
+
+//     let getAllAccessiblePosts = () => {
+//         let url = `${appCtx.baseUrl}/posts/`
+//         readDataFromServer(url, handleAllAccessiblePosts)
+//     }
+
+//     useEffect(() => {
+//         location.pathname && appCtx?.user?._id && getAllAccessiblePosts()
+//         location.pathname && console.log(location.pathname === "/", location.pathname)
+//     }, [appCtx.user?._id, location.pathname])
+
+//     return 
+
+// }
+
 function UserSpecificNewsFeeds(props) {
     let [tweetPostsDataset, setTweetPostsDataset] = useState([]);
-    // let [userPostsDataset, setUserPostsDataset] = useState([])
     let [showCreatePost, setShowCreatePost] = useState(true);
     let [showPostsUntilIndex, setShowPostsUntilIndex] = useState(11);
 
@@ -45,20 +68,14 @@ function UserSpecificNewsFeeds(props) {
         }
     }, [topics])
 
-    // let getAllUserPosts = () => {
-    //     let url = `${appCtx.baseUrl}/posts/${appCtx.user._id}`
-    //     readDataFromServer(url, handleUserPostsDataset)
-    // }
-
     let getAllAccessiblePosts = () => {
         let url = `${appCtx.baseUrl}/posts/`
         readDataFromServer(url, handleAllAccessiblePosts)
     }
 
     useEffect(() => {
-        // appCtx.user._id && getAllUserPosts()
-        // appCtx.user._id && getAllAccessiblePosts()
-        location.pathname && appCtx?.user?._id && getAllAccessiblePosts()
+        // location.pathname && appCtx?.user?._id && getAllAccessiblePosts()
+        location.pathname && getAllAccessiblePosts()
         location.pathname && console.log(location.pathname === "/", location.pathname)
     }, [appCtx.user?._id, location.pathname])
 
@@ -70,11 +87,7 @@ function UserSpecificNewsFeeds(props) {
 
     let renderTweetPosts = () => tweetPostsDataset?.map(dataset => <RenderPost key={dataset?.postData._id} item={dataset} baseUrl={appCtx.baseUrl} />)
 
-    // let renderAllAccessiblePosts = () => appCtx.availablePostsFeeds?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={setShowCreatePost} />)
-
     let renderAllAccessiblePosts = () => appCtx.availablePostsFeeds?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < showPostsUntilIndex) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={setShowCreatePost} />)
-
-    // let renderUserPosts = () => userPostsDataset?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map(dataset => <ShowUserCreatedPost key={dataset._id} postData={dataset} />)
 
     let handleShowMore = () => {
         setShowPostsUntilIndex(prev => prev + 10 > appCtx.availablePostsFeeds.length ? appCtx.availablePostsFeeds.length : prev + 10)
@@ -87,9 +100,7 @@ function UserSpecificNewsFeeds(props) {
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
             {showCreatePost ? <CreatePost /> : null}
-            {/* <CreatePost setPostsDataset={setUserPostsDataset} /> */}
-            {/* {renderUserPosts()} */}
-            {/* {renderAllAccessiblePosts()} */}
+            
             {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />

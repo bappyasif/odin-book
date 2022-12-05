@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App'
 import { CardHeaderElement } from './MuiElements';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
+import { ShowUserAuthenticationOptions } from './UserCreatedPost';
 import { readDataFromServer, updateDataInDatabase } from './utils'
 
 function RenderPostComments({ postId, commentsData, setCommentsData }) {
@@ -24,7 +25,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData }) {
     }, [])
 
     // console.log(commentsData, "CommentsData!!", postId)
-    
+
     let handleShowThread = () => {
         navigate(`posts/${postId}/comments/`)
     }
@@ -51,6 +52,10 @@ export const RenderComment = ({ commentData }) => {
 
     let [userData, setUserData] = useState({})
 
+    let [promptLogin, setPromptLogin] = useState(false);
+
+    let [currentlyClickedElement, setCurrentlyClickedElement] = useState(false);
+
     const appCtx = useContext(AppContexts)
 
     let handleUserData = (result) => setUserData(result.data.data)
@@ -64,31 +69,36 @@ export const RenderComment = ({ commentData }) => {
         userId && getDataAboutThisPostUser()
     }, [])
 
-    let handleCounts = (elem, flag) => setCounts(prev => ({...prev, [elem]: (prev[elem] && !flag) ? prev[elem] + 1 : (prev[elem] && flag) ? prev[elem] - 1 : 1}))
-    
-    let handleCountsForCurrentUser = (elem, flag) => setCountsForCurrentUser(prev => ({ ...prev, [elem]: (prev[elem] && !flag) ? prev[elem] : (prev[elem] && flag) ? prev[elem] - 1: 1 }))
+    let handleCounts = (elem, flag) => setCounts(prev => ({ ...prev, [elem]: (prev[elem] && !flag) ? prev[elem] + 1 : (prev[elem] && flag) ? prev[elem] - 1 : 1 }))
+
+    let handleCountsForCurrentUser = (elem, flag) => setCountsForCurrentUser(prev => ({ ...prev, [elem]: (prev[elem] && !flag) ? prev[elem] : (prev[elem] && flag) ? prev[elem] - 1 : 1 }))
 
     let clickHandler = elem => {
-        setFetchReady(true);
-        !countsForCurrentUser[elem] && handleCounts(elem)
-        countsForCurrentUser[elem] && handleCounts(elem, "deduct")
-        !countsForCurrentUser[elem] && handleCountsForCurrentUser(elem)
-        countsForCurrentUser[elem] && handleCountsForCurrentUser(elem, "deduct")
+        if (appCtx.user._id) {
+            setFetchReady(true);
+            !countsForCurrentUser[elem] && handleCounts(elem)
+            countsForCurrentUser[elem] && handleCounts(elem, "deduct")
+            !countsForCurrentUser[elem] && handleCountsForCurrentUser(elem)
+            countsForCurrentUser[elem] && handleCountsForCurrentUser(elem, "deduct")
+        } else {
+            setPromptLogin(!promptLogin);
+            setCurrentlyClickedElement(elem);
+        }
     }
 
     let updateCommentCountsData = () => {
         let url = `${appCtx.baseUrl}/comments/${_id}`
-        let data = {...counts, userCounts: {...countsForCurrentUser}, userId: appCtx.user._id}
+        let data = { ...counts, userCounts: { ...countsForCurrentUser }, userId: appCtx.user._id }
         updateDataInDatabase(url, data)
     }
 
     useEffect(() => {
         let timer;
-        if(fetchReady) {
+        if (fetchReady) {
             timer = setTimeout(() => {
                 updateCommentCountsData()
 
-                if(timer >= 2000) {
+                if (timer >= 2000) {
                     clearTimeout(timer)
                     setFetchReady(false)
                 }
@@ -105,10 +115,10 @@ export const RenderComment = ({ commentData }) => {
             Dislike: dislikesCount || 0,
             Love: loveCount || 0
         })
-        
+
         let findIdx = commentData.engaggedUsers.findIndex(engaggedUser => engaggedUser && (appCtx.user._id === Object.keys(engaggedUser)[0]?.toString()))
-        
-        if(findIdx !== -1) {
+
+        if (findIdx !== -1 && appCtx.user._id) {
             // console.log(findIdx, "findIDx", commentData.engaggedUsers[findIdx])
             setCountsForCurrentUser({
                 Like: Object.values(commentData.engaggedUsers[findIdx])[0].Like,
@@ -144,6 +154,7 @@ export const RenderComment = ({ commentData }) => {
             <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
             <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             <ShowPostUserEngagementsDetails counts={counts} countsForCurrentUser={countsForCurrentUser} forComment={true} clickHandler={clickHandler} />
+            {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={currentlyClickedElement} forComments={true}  /> : null}
         </Box>
     )
 }
