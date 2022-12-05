@@ -10,30 +10,6 @@ import ShowUserCreatedPost from '../UserCreatedPost';
 import { readDataFromServer } from '../utils';
 import { ScrollToTop } from './PostCommentsThread';
 
-// const UserNewsFeedsContainer = () => {
-//     let [tweetPostsDataset, setTweetPostsDataset] = useState([]);
-//     let [showPostsUntilIndex, setShowPostsUntilIndex] = useState(11);
-
-//     let appCtx = useContext(AppContexts);
-
-//     let location = useLocation()
-
-//     let handleAllAccessiblePosts = result => appCtx.handleAvailablePostsFeeds(result.data.data)
-
-//     let getAllAccessiblePosts = () => {
-//         let url = `${appCtx.baseUrl}/posts/`
-//         readDataFromServer(url, handleAllAccessiblePosts)
-//     }
-
-//     useEffect(() => {
-//         location.pathname && appCtx?.user?._id && getAllAccessiblePosts()
-//         location.pathname && console.log(location.pathname === "/", location.pathname)
-//     }, [appCtx.user?._id, location.pathname])
-
-//     return 
-
-// }
-
 function UserSpecificNewsFeeds(props) {
     let [tweetPostsDataset, setTweetPostsDataset] = useState([]);
     let [showCreatePost, setShowCreatePost] = useState(true);

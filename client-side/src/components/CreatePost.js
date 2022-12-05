@@ -12,14 +12,12 @@ import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
-import { ShowUserAuthenticationOptions } from './UserCreatedPost'
 import { useNavigate } from 'react-router-dom'
 
 function CreatePost({handleSuccessfullPostShared}) {
   let [addedOptions, setAddedOptions] = useState({})
   let [errors, setErrors] = useState([])
   let [postData, setPostData] = useState([])
-  // let [promptLogin, setPromptLogin] = useState(false);
 
   let ref = useRef();
 
@@ -61,7 +59,6 @@ function CreatePost({handleSuccessfullPostShared}) {
       // setPromptLogin(!promptLogin)
       // re routing prompt for user consent to login page for authentication
       let choose = prompt("you need to be registered or authenticated before creating any post, do you want to proceed to login Page? Y || N", "Y")
-      console.log(choose, "chose!!")
       if(choose === "Y" || choose === "y") {
         navigate("/login")
       }
@@ -91,8 +88,6 @@ function CreatePost({handleSuccessfullPostShared}) {
 
           {/* showing user selected medias in post */}
           <ShowUserPostMedias mediaContents={addedOptions} />
-          {/* <ShowUserPostMedias mediaType={"picture"} mediaContent={addedOptions.Image} /> */}
-          {/* <ShowUserPostMedias mediaType={"picture"} mediaContent={"https://random.imagecdn.app/500/150"} /> */}
 
           <Stack
             flexDirection={"row"}

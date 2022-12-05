@@ -4,13 +4,14 @@ import { H1Element, WrapperDiv } from '../GeneralElements'
 import { sendDataToServer } from '../utils';
 import { AppContexts } from "../../App"
 import ShowErrors from '../ShowErrors';
-import { Box, Button, Icon, IconButton, Paper, Stack, Typography } from '@mui/material';
-import { AccountCircleTwoTone, Facebook, GitHub, Google, LinkedIn, Twitter } from '@mui/icons-material';
+import { Box, Button, Icon, IconButton, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm({ handleData }) {
     let [errors, setErrors] = useState([]);
     let [formData, setFormData] = useState({});
+    let [processingRequest, setProcessingRequest] = useState(null);
 
     const navigate = useNavigate()
     const enpoint = useContext(AppContexts)
@@ -20,9 +21,13 @@ function LoginForm({ handleData }) {
 
     let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
 
-    let handleError = data => setErrors(data.errors);
+    let handleError = data => {
+        setErrors(data.errors);
+        setProcessingRequest("error");
+    }
 
     let updateData = result => {
+        setProcessingRequest("success");
         appCtx.handleData(result)
         // navigate("/");
         console.log(result, "result!!")
@@ -31,6 +36,7 @@ function LoginForm({ handleData }) {
 
     let handleSubmit = evt => {
         evt.preventDefault();
+        setProcessingRequest("loading");
         sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
     }
     // console.log(formData, "formData!!");
@@ -38,8 +44,9 @@ function LoginForm({ handleData }) {
 
     return (
         <Box
-            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}
+            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative" }}
         >
+            <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
             <WrapperDiv className="login-form">
                 <H1Element value={"Login Form"} />
@@ -62,6 +69,32 @@ function LoginForm({ handleData }) {
 
             <ThirdPartyLoginOutlets />
 
+        </Box>
+    )
+}
+
+const ShowDataProcessingLoaders = ({ processingRequest }) => {
+    let decideLoader = () => {
+        let loader = null;
+        if (processingRequest === "loading") {
+            loader = <LinearProgress />
+        } else if (processingRequest === "success") {
+            loader = <Check />
+        } else if (processingRequest === "error") {
+            loader = <Error />
+        }
+
+        return loader;
+    }
+
+    return (
+        <Box
+            sx={{
+                position: "absolute",
+                top: 0
+            }}
+        >
+            {decideLoader()}
         </Box>
     )
 }
@@ -134,7 +167,7 @@ let RenderGuestUser = ({ item, handleSubmit, setFormData }) => {
         setFormData({ email: `guest@${item.name === "Guest Een" ? "een" : "twee"}.com`, password: `g${item.name === "Guest Een" ? "een" : "twee"}` })
         setDataReady(e);
     }
-    
+
     useEffect(() => {
         dataReady && handleSubmit(dataReady)
     }, [dataReady])

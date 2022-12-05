@@ -244,9 +244,9 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
 }
 
 export const ShowUserAuthenticationOptions = ({setPromptLogin, itemName, forComments}) => {
-  let ref = useRef();
+  let ref = useRef(null);
   
-  useToCloseModalOnClickedOutside(ref, () => itemName !== "Create Post" && setPromptLogin(false))
+  useToCloseModalOnClickedOutside(ref, () => setPromptLogin(false))
 
   let leftPlacement = () => {
     let measurement = "";
@@ -275,7 +275,7 @@ export const ShowUserAuthenticationOptions = ({setPromptLogin, itemName, forComm
 
   return (
     <Paper
-      // ref={ref}
+      ref={ref}
       sx={{
         position: "absolute", bottom: "105px", left: leftPlacement(),
         zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
