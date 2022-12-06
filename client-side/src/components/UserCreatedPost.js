@@ -2,6 +2,7 @@ import { CommentTwoTone, DangerousTwoTone, DehazeTwoTone, DeleteForever, DvrTwoT
 import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
@@ -17,7 +18,12 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
 
   const appCtx = useContext(AppContexts)
 
-  let handleCommentsDataUpdate = data => setCommentsData(prev => [...prev, data])
+  let handleCommentsDataUpdate = data => setCommentsData(prev => [...prev, data]) 
+
+  let deleteCommentFromDataset = commentId => {
+    let filteredComments = commentsData.filter(item => item._id !== commentId)
+    setCommentsData(filteredComments)
+  }
 
   // console.log(commentsData, "!!commentsData!!")
 
@@ -35,18 +41,18 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       <RenderPostDataEssentials postData={postData} />
       {postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={postData.includedSharedPostId} /> : null}
       <UserEngagementWithPost postData={postData} appCtx={appCtx} setShowCreatePost={setShowCreatePost} handleCommentsDataUpdate={handleCommentsDataUpdate} />
-      {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} /> : null}
+      {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} deleteCommentFromDataset={deleteCommentFromDataset} /> : null}
       {/* {postData?.commentsCount ? showComments() : null} */}
     </Box>
   )
 }
 
-export const PostOptions = ({postId}) => {
+export const PostOptions = ({ postId, commentId, deleteCommentFromDataset }) => {
   let [clickedOptions, setClickedOptions] = useState(false);
 
   let options = [{ text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
 
-  let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} />)
+  let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} />)
 
   let handleClick = () => setClickedOptions(!clickedOptions)
 
@@ -77,21 +83,42 @@ export const PostOptions = ({postId}) => {
   )
 }
 
-let RenderPostOption = ({ item, postId }) => {
+let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset }) => {
   let appCtx = useContext(AppContexts);
 
+  const navigate = useNavigate()
+
   let deleteThisPostFromAppData = () => {
-    appCtx.deletePostFromAvailablePostsFeeds(postId)
-  }
-  
-  const handleClick = () => {
-    if(item.text === "Delete") {
-      console.log("Delete", postId)
-      const url = `${appCtx.baseUrl}/posts/${postId}`
-      const data = {postId: postId}
-      deleteResourceFromServer(url, data, deleteThisPostFromAppData)
+    if(postId) {
+      appCtx.deletePostFromAvailablePostsFeeds(postId)
     } else {
-      console.log("thread", postId)
+      console.log("here here!!")
+      deleteCommentFromDataset(commentId)
+    }
+  }
+
+  const handleClick = () => {
+    if (commentId){
+      console.log("commentID", commentId)
+      if (item.text === "Delete") {
+        console.log("Delete", postId)
+        const url = `${appCtx.baseUrl}/comments/${commentId}`
+        const data = { commentId: commentId }
+        deleteResourceFromServer(url, data, deleteThisPostFromAppData)
+      } else {
+        console.log("thread", postId)
+        navigate(`posts/${postId}/comments/`)
+      }
+    } else {
+      if (item.text === "Delete") {
+        console.log("Delete", postId)
+        const url = `${appCtx.baseUrl}/posts/${postId}`
+        const data = { postId: postId }
+        deleteResourceFromServer(url, data, deleteThisPostFromAppData)
+      } else {
+        console.log("thread", postId)
+        navigate(`posts/${postId}/comments/`)
+      }
     }
   }
   return (

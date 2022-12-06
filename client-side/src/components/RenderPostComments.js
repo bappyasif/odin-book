@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App'
 import { CardHeaderElement } from './MuiElements';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
-import { ShowUserAuthenticationOptions } from './UserCreatedPost';
+import { PostOptions, ShowUserAuthenticationOptions } from './UserCreatedPost';
 import { readDataFromServer, updateDataInDatabase } from './utils'
 
-function RenderPostComments({ postId, commentsData, setCommentsData }) {
+function RenderPostComments({ postId, commentsData, setCommentsData, deleteCommentFromDataset }) {
     let navigate = useNavigate()
 
     let appCtx = useContext(AppContexts);
@@ -30,7 +30,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData }) {
         navigate(`posts/${postId}/comments/`)
     }
 
-    let renderComments = () => commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => (idx < 4) && <RenderComment key={commentData._id} commentData={commentData} />)
+    let renderComments = () => commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => (idx < 4) && <RenderComment key={commentData._id} commentData={commentData} deleteCommentFromDataset={deleteCommentFromDataset} />)
 
     return (
         <Stack sx={{ alignItems: "center", gap: .6 }}>
@@ -41,7 +41,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData }) {
     )
 }
 
-export const RenderComment = ({ commentData }) => {
+export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
     let { body, created, _id, likesCount, dislikesCount, loveCount, userId } = { ...commentData }
 
     let [counts, setCounts] = useState({})
@@ -142,6 +142,7 @@ export const RenderComment = ({ commentData }) => {
                 // m: 0
             }}
         >
+            <PostOptions commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} />
             <CardHeaderElement
                 avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
                 altText={"fullname"}
