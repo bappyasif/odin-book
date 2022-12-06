@@ -105,7 +105,7 @@ function CreatePost({handleSuccessfullPostShared}) {
             onClick={createPost}
           >
             <Button variant='contained' endIcon={<PostAddTwoTone />}>
-              <Typography variant={"h6"}>Create Post</Typography>
+              <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
             </Button>
 
             {/* for some reason there is a "ref" inteference with this and Authentication Prompt component "ref" */}

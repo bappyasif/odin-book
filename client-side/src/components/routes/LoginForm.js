@@ -4,11 +4,11 @@ import { H1Element, WrapperDiv } from '../GeneralElements'
 import { sendDataToServer } from '../utils';
 import { AppContexts } from "../../App"
 import ShowErrors from '../ShowErrors';
-import { Box, Button, Icon, IconButton, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Fab, Icon, IconButton, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-function LoginForm({ handleData }) {
+function LoginForm() {
     let [errors, setErrors] = useState([]);
     let [formData, setFormData] = useState({});
     let [processingRequest, setProcessingRequest] = useState(null);
@@ -31,13 +31,19 @@ function LoginForm({ handleData }) {
         appCtx.handleData(result)
         // navigate("/");
         console.log(result, "result!!")
-        result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+        // result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+        setTimeout(() => {
+            result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+        }, 1100)
     }
 
     let handleSubmit = evt => {
         evt.preventDefault();
         setProcessingRequest("loading");
-        sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
+        // sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
+        setTimeout(() => {
+            sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
+        }, 2000)
     }
     // console.log(formData, "formData!!");
     // console.log(errors, "errors!!")
@@ -77,11 +83,11 @@ const ShowDataProcessingLoaders = ({ processingRequest }) => {
     let decideLoader = () => {
         let loader = null;
         if (processingRequest === "loading") {
-            loader = <LinearProgress />
+            loader = <LinearProgress sx={{height: "20px"}} />
         } else if (processingRequest === "success") {
-            loader = <Check />
+            loader = <RenderLoader icon={<Check />} announcement="Login Successfull" />
         } else if (processingRequest === "error") {
-            loader = <Error />
+            loader = <RenderLoader icon={<Error />} announcement="Login Error" />
         }
 
         return loader;
@@ -91,11 +97,27 @@ const ShowDataProcessingLoaders = ({ processingRequest }) => {
         <Box
             sx={{
                 position: "absolute",
-                top: 0
+                top: "-18px",
+                width: "100%"
             }}
         >
             {decideLoader()}
         </Box>
+    )
+}
+
+let RenderLoader = ({ icon, announcement }) => {
+    return (
+        <Fab
+            variant='extended'
+            sx={{
+                cursor: "auto", width: "fit-content", p: 1.1
+            }}
+            aria-label="user log in successfull" color="primary"
+        >
+            {icon}
+            <Typography variant="h6" marginLeft={1.1}>{announcement}</Typography>
+        </Fab>
     )
 }
 

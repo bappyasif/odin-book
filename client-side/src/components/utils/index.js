@@ -13,7 +13,7 @@ const sendDataToServer = (endpoint, dataObj, errorHandler, handleData) => {
             let data = resp.json();
             data
                 .then(respData => {
-                    alert("login successfull")
+                    // alert("login successfull")
                     handleData(respData)
                 })
                 .catch(err => console.error('error occured', err))

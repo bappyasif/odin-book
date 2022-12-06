@@ -72,7 +72,7 @@ function SharePostModal({ counts, postData, showModal, setShowModal, setShowCrea
     )
 }
 
-export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler }) => {
+export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler, currentUser }) => {
     // console.log(counts, "!!from share")
     return (
         <Stack
@@ -80,7 +80,7 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler 
             sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "lightblue", gap: 2, position: "relative" }}
         >
             {actions.map(item => !((item.name === "Comment" || item.name === "Share") && forComment) && (
-                <Tooltip key={item.name} sx={{ cursor: "help" }} title={`${item.name}d by`}>
+                <Tooltip key={item.name} sx={{ cursor: "help" }} title={(!currentUser) ? `Login to ${item.name}` : `${item.name}d by`}>
                     <IconButton
                         onClick={() => forComment ? clickHandler(item.name) : null}
                         sx={{

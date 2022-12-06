@@ -225,7 +225,7 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
   // item.name === "Comment" && console.log(counts[item.name], item.name, counts)
 
   return (
-    <Tooltip title={(flag) ? `${item.name}d already` : item.name}>
+    <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id ) ? `Login to ${item.name}` : item.name}>
       <IconButton
         onClick={handleClick}
         sx={{
