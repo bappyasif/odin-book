@@ -197,10 +197,12 @@ const updateSoloPostWithUserEngagements = (req, res, next) => {
 }
 
 const deleteSoloPost = (req, res, next) => {
+    console.log(req.params.postId, req.body.postId)
+    // res.status(200).json({ success: true, data: "post is now deleted" })
     Post.findByIdAndDelete({ _id: req.params.postId })
         .then(() => {
-            console.log("post is now delted");
-            res.status(200).json({ success: true, msg: "post is now deleted" })
+            console.log("post is now deleted");
+            res.status(200).json({ success: true, data: "post is now deleted" })
         })
         .catch(err => next(err))
 }

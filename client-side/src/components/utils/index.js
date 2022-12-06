@@ -123,11 +123,34 @@ const logoutUserFromApp = (url, clearOutUserData) => {
         .catch(err => console.error(err))
 }
 
+const deleteResourceFromServer = (endpoint, dataObj, dataUpdater) => {
+    console.log(endpoint, "!!endpoint")
+    fetch(endpoint, {
+        method: "delete",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dataObj)
+    }).then(resp => {
+        if(resp.status === 200) {
+            return resp.json()
+        }
+    })
+    .catch(err => console.log(err, "response error!!"))
+    .then(result => {
+        console.log("data deleted", result);
+        dataUpdater && dataUpdater(result)
+    })
+    .catch(err => console.error(err))
+}
+
 export {
     sendDataToServer,
     readDataFromServer,
     getAuthenticatedUserDataFromServer,
     updateUserInDatabase,
     updateDataInDatabase,
-    logoutUserFromApp
+    logoutUserFromApp,
+    deleteResourceFromServer
 }

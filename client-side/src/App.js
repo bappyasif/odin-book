@@ -72,7 +72,15 @@ function App() {
 
   // let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
   let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(dataset)
-  let updateAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
+  
+  let updateAvailablePostsFeeds = data => setUserAccessiblePostsDataset(prev => [...prev, data])
+  
+  const deletePostFromAvailablePostsFeeds = (postId) => {
+    let filteredPosts = userAccessiblePostsDataset.filter(item => item._id !== postId)
+    // console.log(filteredPosts, "filteredPosts!!")
+    setUserAccessiblePostsDataset(filteredPosts)
+  }
+
   console.log(userAccessiblePostsDataset, "userPostsDataset!!")
 
   const clearCurrentUserData = () => {
@@ -99,7 +107,8 @@ function App() {
     removeIdFromCurrentUserFriendsList: removeUserIdFromCurrentUserFriendsList,
     updateUserProfileDataInApp: updateUserProfileDataInApp,
     clearCurrentUserData: clearCurrentUserData,
-    getUser: getUser
+    getUser: getUser,
+    deletePostFromAvailablePostsFeeds: deletePostFromAvailablePostsFeeds
   }
 
   useEffect(() => {

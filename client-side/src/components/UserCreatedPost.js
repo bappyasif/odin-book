@@ -1,4 +1,4 @@
-import { CommentTwoTone } from '@mui/icons-material'
+import { CommentTwoTone, DangerousTwoTone, DehazeTwoTone, DeleteForever, DvrTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material'
 import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -10,7 +10,7 @@ import RenderPostComments from './RenderPostComments'
 import RenderPostDataEssentials from './RenderPostData'
 import LoginForm from './routes/LoginForm'
 import SharePostModal, { ShowPostUserEngagementsDetails } from './SharePostModal'
-import { readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
+import { deleteResourceFromServer, readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
 
 function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   let [commentsData, setCommentsData] = useState([])
@@ -31,12 +31,86 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       borderRadius={1.1}
       position={"relative"}
     >
+      <PostOptions postId={postData._id} />
       <RenderPostDataEssentials postData={postData} />
       {postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={postData.includedSharedPostId} /> : null}
       <UserEngagementWithPost postData={postData} appCtx={appCtx} setShowCreatePost={setShowCreatePost} handleCommentsDataUpdate={handleCommentsDataUpdate} />
       {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} /> : null}
       {/* {postData?.commentsCount ? showComments() : null} */}
     </Box>
+  )
+}
+
+export const PostOptions = ({postId}) => {
+  let [clickedOptions, setClickedOptions] = useState(false);
+
+  let options = [{ text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
+
+  let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} />)
+
+  let handleClick = () => setClickedOptions(!clickedOptions)
+
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        right: 0,
+        top: 0,
+        pr: .9,
+      }}
+    >
+      <SettingsSuggestTwoTone onClick={handleClick} />
+      {
+        clickedOptions
+          ? <Stack sx={{
+            position: "absolute",
+            right: 0,
+            top: 22,
+            backgroundColor: "gainsboro",
+            p: 1.1,
+            zIndex: 9,
+            gap: 1.1
+          }}>{renderOptions()}</Stack>
+          : null
+      }
+    </Box>
+  )
+}
+
+let RenderPostOption = ({ item, postId }) => {
+  let appCtx = useContext(AppContexts);
+
+  let deleteThisPostFromAppData = () => {
+    appCtx.deletePostFromAvailablePostsFeeds(postId)
+  }
+  
+  const handleClick = () => {
+    if(item.text === "Delete") {
+      console.log("Delete", postId)
+      const url = `${appCtx.baseUrl}/posts/${postId}`
+      const data = {postId: postId}
+      deleteResourceFromServer(url, data, deleteThisPostFromAppData)
+    } else {
+      console.log("thread", postId)
+    }
+  }
+  return (
+    <Tooltip title={item.text}>
+      <Button
+        onClick={handleClick}
+        // startIcon={<DeleteForever />}
+        startIcon={item.icon}
+        // fullWidth={true}
+        sx={{
+          // width: "-webkit-fill-available",
+          outline: "solid 2px red",
+          // justifyContent: "space-between"
+        }}
+      >
+        {/* {item.icon} */}
+        <Typography>{item.text}</Typography>
+      </Button>
+    </Tooltip>
   )
 }
 
@@ -225,7 +299,7 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
   // item.name === "Comment" && console.log(counts[item.name], item.name, counts)
 
   return (
-    <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id ) ? `Login to ${item.name}` : item.name}>
+    <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id) ? `Login to ${item.name}` : item.name}>
       <IconButton
         onClick={handleClick}
         sx={{
@@ -236,16 +310,16 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
           {counts[item.name] ? null : item.icon}
           <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
         </Button>
-        
-        {(promptLogin && !appCtx.user._id ) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
+
+        {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
       </IconButton>
     </Tooltip>
   )
 }
 
-export const ShowUserAuthenticationOptions = ({setPromptLogin, itemName, forComments}) => {
+export const ShowUserAuthenticationOptions = ({ setPromptLogin, itemName, forComments }) => {
   let ref = useRef(null);
-  
+
   useToCloseModalOnClickedOutside(ref, () => setPromptLogin(false))
 
   let leftPlacement = () => {
@@ -253,20 +327,20 @@ export const ShowUserAuthenticationOptions = ({setPromptLogin, itemName, forComm
 
     // console.log(itemName, "itemName")
 
-    if(forComments) {
+    if (forComments) {
       measurement = "-146px";
     } else {
-      if(itemName === "Share") {
+      if (itemName === "Share") {
         measurement = "-696px";
-      } else if(itemName === "Comment") {
+      } else if (itemName === "Comment") {
         measurement = "-317px";
-      } else if(itemName === "Like") {
+      } else if (itemName === "Like") {
         measurement = "-407px";
-      } else if(itemName === "Dislike") {
+      } else if (itemName === "Dislike") {
         measurement = "-501px";
-      } else if(itemName === "Love") {
+      } else if (itemName === "Love") {
         measurement = "-598px";
-      } else if(itemName === "Create Post") {
+      } else if (itemName === "Create Post") {
         measurement = "-63px";
       }
     }

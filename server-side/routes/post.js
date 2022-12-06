@@ -14,7 +14,7 @@ postRoutes.post("/post/create/:userId", createNewPost);
 postRoutes.put("/:postId", updateSoloPost);
 postRoutes.put("/:postId/:interactingUserId", updateSoloPostWithUserEngagements);
 
-postRoutes.delete(":postId", deleteSoloPost);
+postRoutes.delete("/:postId", deleteSoloPost);
 
 postRoutes.put("/update/shared/:postId", updateSoloPostWithSpecificData);
 
