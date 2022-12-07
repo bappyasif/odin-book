@@ -55,8 +55,6 @@ export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDatas
 }
 
 let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, openDropdown, userId, showEditableText }) => {
-    // let [showEditableText, setShowEditableText] = useState(false);
-
     let appCtx = useContext(AppContexts);
 
     const navigate = useNavigate()
@@ -90,7 +88,6 @@ let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, ope
                     commenceDelete(url, data)
                 } else if(item.text === "Edit") {
                     console.log("Edit here!!")
-                    // setShowEditableText(true)
                     showEditableText(true)
                 }
             } else {
@@ -119,22 +116,7 @@ let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, ope
                 }}
             >
                 <Typography>{item.text}</Typography>
-                
-                {/* {showEditableText ? <RenderEditableText /> : null} */}
             </Button>
         </Tooltip>
-    )
-}
-
-const RenderEditableText = () => {
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: "-20px"
-            }}
-        >
-            !!!!Editable text!!!!
-        </Box>
     )
 }

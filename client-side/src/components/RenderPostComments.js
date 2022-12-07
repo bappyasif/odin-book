@@ -20,7 +20,6 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
     let updateCommentText = (commentId, value) => {
         console.log("update comment dataset here!!")
         
-        // setCommentsData(prev => ({...prev, prev.}))
         let newCommentsData = commentsData.map(item => {
             if(item._id === commentId) {
                 item.body = value
@@ -29,20 +28,12 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
         })
 
         console.log(newCommentsData, "newCOmmentsData")
+
         try {
             setCommentsData(newCommentsData);
         } catch(err) {
-            console.log("eror!! caught!!", err)
+            console.log("eror!! caught!!", err);
         }
-        // setCommentsData(newCommentsData);
-
-        // setCommentsData(prevData => {
-        //     console.log(prevData, "prevData!!")
-        //     // if(prevData._id === commentId) {
-        //     //     prevData.body = value
-        //     // }
-        //     return prevData
-        // })
     }
 
     let getCommentsFromServer = () => {
@@ -71,7 +62,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
     )
 }
 
-export const RenderComment = ({ commentData, deleteCommentFromDataset, updateCommentText }) => {
+export const RenderComment = ({ commentData, deleteCommentFromDataset, updateCommentText, updateCommentTextFromThread }) => {
     let { body, created, _id, likesCount, dislikesCount, loveCount, userId } = { ...commentData }
 
     let [counts, setCounts] = useState({})
@@ -188,7 +179,7 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset, updateCom
             {/* <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography> */}
             {
                 editCommentFlag
-                    ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} />
+                    ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />
                     : <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             }
             <ShowPostUserEngagementsDetails currentUser={appCtx.user._id} counts={counts} countsForCurrentUser={countsForCurrentUser} forComment={true} clickHandler={clickHandler} />
@@ -197,7 +188,7 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset, updateCom
     )
 }
 
-const EditComment = ({ commentId, doneEditing, body, updateCommentText }) => {
+const EditComment = ({ commentId, doneEditing, body, updateCommentText, updateCommentTextFromThread }) => {
     let [text, setText] = useState();
 
     let handleTextChange = (evt) => setText(evt.target.value)
@@ -211,7 +202,7 @@ const EditComment = ({ commentId, doneEditing, body, updateCommentText }) => {
                 // top: "-20px"
             }}
         >
-            <EditConfirmationActions commentText={text} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} />
+            <EditConfirmationActions commentText={text} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />
             {/* !!!!Editable text!!!!
             {text} */}
             {/* <Input defaultValue={text} onChange={handleTextChange} /> */}
@@ -221,9 +212,9 @@ const EditComment = ({ commentId, doneEditing, body, updateCommentText }) => {
     )
 }
 
-const EditConfirmationActions = ({commentText, commentId, doneEditing, updateCommentText}) => {
+const EditConfirmationActions = ({commentText, commentId, doneEditing, updateCommentText, updateCommentTextFromThread}) => {
     const options = [{ name: "Update", icon: <Update /> }, { name: "Cancel", icon: <Edit /> }]
-    let renderOptions = () => options.map(item => <RenderOption key={item.name} item={item} commentText={commentText} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} />)
+    let renderOptions = () => options.map(item => <RenderOption key={item.name} item={item} commentText={commentText} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />)
 
     return (
         <Stack
@@ -238,12 +229,17 @@ const EditConfirmationActions = ({commentText, commentId, doneEditing, updateCom
     )
 }
 
-const RenderOption = ({ item, commentId, commentText, doneEditing, updateCommentText }) => {
+const RenderOption = ({ item, commentId, commentText, doneEditing, updateCommentText, updateCommentTextFromThread }) => {
     let appCtx = useContext(AppContexts);
 
     const updateCommentTextInCurrentAppDataset = () => {
         console.log("update data in dataset!!")
-        updateCommentText(commentId, commentText)
+        if(updateCommentTextFromThread) {
+            updateCommentTextFromThread(commentId, commentText)
+        } else {
+            updateCommentText(commentId, commentText) 
+        }
+        // updateCommentText(commentId, commentText)
         doneEditing()
     }
     

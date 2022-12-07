@@ -23,6 +23,21 @@ function PostCommentsThread() {
         setData(prev => ({ ...prev, commentsData: [...prev.commentsData, data] }))
     }
 
+    const updateCommentTextFromThread = (commentId, commentText) => {
+        console.log("update comment dataset here!!", commentId, commentText, data.commentsData)
+        
+        let newCommentsData = data.commentsData.map(item => {
+            if(item._id === commentId) {
+                item.body = commentText;
+            }
+            return item;
+        })
+
+        console.log(newCommentsData, "newCommendtsData!!")
+
+        setData(prev => ({ ...prev, commentsData: newCommentsData }))
+    }
+
     let getPostData = () => {
         let url = `${appCtx.baseUrl}/posts/solo/${params.postId}`
         readDataFromServer(url, handlePostData)
@@ -55,7 +70,7 @@ function PostCommentsThread() {
                 <RenderPostDataEssentials postData={data.postData} />
                 {data?.postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={data.postData.includedSharedPostId} /> : null}
                 <UserEngagementWithPost postData={data.postData} appCtx={appCtx} setShowCreatePost={() => null} handleCommentsDataUpdate={updateCommentsData} />
-                <RenderThisPostComments commentsData={data.commentsData} />
+                <RenderThisPostComments commentsData={data.commentsData} updateCommentTextFromThread={updateCommentTextFromThread} />
             </Box>
             : null
     )
@@ -80,7 +95,7 @@ let RenderThisPostComments = (props) => {
     container?.addEventListener("scroll", handleScroll)
     // window.addEventListener("scroll", handleScroll)
 
-    let renderComments = () => props.commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => <RenderComment key={commentData._id} commentData={commentData} />)
+    let renderComments = () => props.commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => <RenderComment key={commentData._id} commentData={commentData} updateCommentTextFromThread={props.updateCommentTextFromThread} />)
 
     return (
         <Stack
