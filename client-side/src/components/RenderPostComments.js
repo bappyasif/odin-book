@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App'
 import { CardHeaderElement } from './MuiElements';
+import { PostOrCommentOptions } from './PostOrCommentOptions';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
 import { PostOptions, ShowUserAuthenticationOptions } from './UserCreatedPost';
 import { readDataFromServer, updateDataInDatabase } from './utils'
@@ -142,7 +143,7 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
                 // m: 0
             }}
         >
-            <PostOptions commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} />
+            <PostOrCommentOptions commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} />
             <CardHeaderElement
                 avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
                 altText={"fullname"}

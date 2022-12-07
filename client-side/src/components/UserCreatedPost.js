@@ -1,17 +1,16 @@
-import { CommentTwoTone, DangerousTwoTone, DehazeTwoTone, DeleteForever, DvrTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material'
+import { CommentTwoTone} from '@mui/icons-material'
 import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import moment from 'moment'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
 import PostCommentModal from './PostCommentModal'
+import { PostOrCommentOptions } from './PostOrCommentOptions'
 import RenderPostComments from './RenderPostComments'
 import RenderPostDataEssentials from './RenderPostData'
 import LoginForm from './routes/LoginForm'
 import SharePostModal, { ShowPostUserEngagementsDetails } from './SharePostModal'
-import { deleteResourceFromServer, readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
+import { readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
 
 function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   let [commentsData, setCommentsData] = useState([])
@@ -37,107 +36,13 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       borderRadius={1.1}
       position={"relative"}
     >
-      <PostOptions postId={postData._id} />
+      <PostOrCommentOptions postId={postData._id} />
       <RenderPostDataEssentials postData={postData} />
       {postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={postData.includedSharedPostId} /> : null}
       <UserEngagementWithPost postData={postData} appCtx={appCtx} setShowCreatePost={setShowCreatePost} handleCommentsDataUpdate={handleCommentsDataUpdate} />
       {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} deleteCommentFromDataset={deleteCommentFromDataset} /> : null}
       {/* {postData?.commentsCount ? showComments() : null} */}
     </Box>
-  )
-}
-
-export const PostOptions = ({ postId, commentId, deleteCommentFromDataset }) => {
-  let [clickedOptions, setClickedOptions] = useState(false);
-
-  let options = [{ text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
-
-  let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} />)
-
-  let handleClick = () => setClickedOptions(!clickedOptions)
-
-  return (
-    <Box
-      sx={{
-        position: "absolute",
-        right: 0,
-        top: 0,
-        pr: .9,
-      }}
-    >
-      <SettingsSuggestTwoTone onClick={handleClick} />
-      {
-        clickedOptions
-          ? <Stack sx={{
-            position: "absolute",
-            right: 0,
-            top: 22,
-            backgroundColor: "gainsboro",
-            p: 1.1,
-            zIndex: 9,
-            gap: 1.1
-          }}>{renderOptions()}</Stack>
-          : null
-      }
-    </Box>
-  )
-}
-
-let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset }) => {
-  let appCtx = useContext(AppContexts);
-
-  const navigate = useNavigate()
-
-  let deleteThisPostFromAppData = () => {
-    if(postId) {
-      appCtx.deletePostFromAvailablePostsFeeds(postId)
-    } else {
-      console.log("here here!!")
-      deleteCommentFromDataset(commentId)
-    }
-  }
-
-  const handleClick = () => {
-    if (commentId){
-      console.log("commentID", commentId)
-      if (item.text === "Delete") {
-        console.log("Delete", postId)
-        const url = `${appCtx.baseUrl}/comments/${commentId}`
-        const data = { commentId: commentId }
-        deleteResourceFromServer(url, data, deleteThisPostFromAppData)
-      } else {
-        console.log("thread", postId)
-        navigate(`posts/${postId}/comments/`)
-      }
-    } else {
-      if (item.text === "Delete") {
-        console.log("Delete", postId)
-        const url = `${appCtx.baseUrl}/posts/${postId}`
-        const data = { postId: postId }
-        deleteResourceFromServer(url, data, deleteThisPostFromAppData)
-      } else {
-        console.log("thread", postId)
-        navigate(`posts/${postId}/comments/`)
-      }
-    }
-  }
-  return (
-    <Tooltip title={item.text}>
-      <Button
-        onClick={handleClick}
-        // startIcon={<DeleteForever />}
-        startIcon={item.icon}
-        // fullWidth={true}
-        sx={{
-          // width: "-webkit-fill-available",
-          outline: "solid 2px red",
-          // justifyContent: "space-between"
-        }}
-      >
-        {/* {item.icon} */}
-        <Typography>{item.text}</Typography>
-      </Button>
-    </Tooltip>
   )
 }
 
