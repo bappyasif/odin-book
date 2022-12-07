@@ -30,7 +30,26 @@ const deleteSoloComment = (req, res, next) => {
         }).catch(err => next(err))
 }
 
-const updateSoloComment = (req, res, next) => {
+const updateSoloCommentText = (req, res, next) => {
+    data = req.body;
+    let commentId = req.params.commentId;
+    console.log(data, commentId, "check it!!")
+    
+    Comment.findOne({_id: commentId})
+        .then(currentComment => {
+            if(data.body) {
+                currentComment.body = data.body;
+            }
+
+            Comment.findByIdAndUpdate(currentComment._id, currentComment, {})
+                .then(() => console.log("comment updated...."))
+                .catch(err => next(err))
+
+        }).catch(err => next(err))
+    res.status(200).json({success: true, result: []})
+}
+
+const updateSoloCommentCounts = (req, res, next) => {
     let data = req.body;
     let commentId = req.params.commentId;
 
@@ -114,6 +133,7 @@ module.exports = {
     getAllCommentsFromSinglePost,
     getSoloComment,
     createNewComment,
-    updateSoloComment,
-    deleteSoloComment
+    updateSoloCommentCounts,
+    deleteSoloComment,
+    updateSoloCommentText
 }

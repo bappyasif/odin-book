@@ -1,4 +1,5 @@
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Edit, Update } from '@mui/icons-material';
+import { Box, Button, Fab, Input, Stack, TextField, Tooltip, Typography } from '@mui/material'
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,34 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
 
     let handleCommentsData = result => setCommentsData(result.data.data)
 
+    let updateCommentText = (commentId, value) => {
+        console.log("update comment dataset here!!")
+        
+        // setCommentsData(prev => ({...prev, prev.}))
+        let newCommentsData = commentsData.map(item => {
+            if(item._id === commentId) {
+                item.body = value
+            }
+            return item
+        })
+
+        console.log(newCommentsData, "newCOmmentsData")
+        try {
+            setCommentsData(newCommentsData);
+        } catch(err) {
+            console.log("eror!! caught!!", err)
+        }
+        // setCommentsData(newCommentsData);
+
+        // setCommentsData(prevData => {
+        //     console.log(prevData, "prevData!!")
+        //     // if(prevData._id === commentId) {
+        //     //     prevData.body = value
+        //     // }
+        //     return prevData
+        // })
+    }
+
     let getCommentsFromServer = () => {
         let url = `${appCtx.baseUrl}/comments/post/${postId}/`
         readDataFromServer(url, handleCommentsData)
@@ -31,7 +60,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
         navigate(`posts/${postId}/comments/`)
     }
 
-    let renderComments = () => commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => (idx < 4) && <RenderComment key={commentData._id} commentData={commentData} deleteCommentFromDataset={deleteCommentFromDataset} />)
+    let renderComments = () => commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => (idx < 4) && <RenderComment key={commentData._id} commentData={commentData} deleteCommentFromDataset={deleteCommentFromDataset} updateCommentText={updateCommentText} />)
 
     return (
         <Stack sx={{ alignItems: "center", gap: .6 }}>
@@ -42,7 +71,7 @@ function RenderPostComments({ postId, commentsData, setCommentsData, deleteComme
     )
 }
 
-export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
+export const RenderComment = ({ commentData, deleteCommentFromDataset, updateCommentText }) => {
     let { body, created, _id, likesCount, dislikesCount, loveCount, userId } = { ...commentData }
 
     let [counts, setCounts] = useState({})
@@ -56,6 +85,8 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
     let [promptLogin, setPromptLogin] = useState(false);
 
     let [currentlyClickedElement, setCurrentlyClickedElement] = useState(false);
+
+    let [editCommentFlag, setEditCommentFlag] = useState(false);
 
     const appCtx = useContext(AppContexts)
 
@@ -143,7 +174,7 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
                 // m: 0
             }}
         >
-            <PostOrCommentOptions commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} />
+            <PostOrCommentOptions commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} userId={commentData.userId} showEditableText={setEditCommentFlag} />
             <CardHeaderElement
                 avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
                 altText={"fullname"}
@@ -154,10 +185,88 @@ export const RenderComment = ({ commentData, deleteCommentFromDataset }) => {
                 forComment={true}
             />
             <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
-            <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+            {/* <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography> */}
+            {
+                editCommentFlag
+                    ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} />
+                    : <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+            }
             <ShowPostUserEngagementsDetails currentUser={appCtx.user._id} counts={counts} countsForCurrentUser={countsForCurrentUser} forComment={true} clickHandler={clickHandler} />
-            {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={currentlyClickedElement} forComments={true}  /> : null}
+            {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={currentlyClickedElement} forComments={true} /> : null}
         </Box>
+    )
+}
+
+const EditComment = ({ commentId, doneEditing, body, updateCommentText }) => {
+    let [text, setText] = useState();
+
+    let handleTextChange = (evt) => setText(evt.target.value)
+
+    useEffect(() => setText(body), [])
+
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                // top: "-20px"
+            }}
+        >
+            <EditConfirmationActions commentText={text} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} />
+            {/* !!!!Editable text!!!!
+            {text} */}
+            {/* <Input defaultValue={text} onChange={handleTextChange} /> */}
+            {/* <input type={'text'} defaultValue={text} onChange={handleTextChange} /> */}
+            <TextField value={text} onChange={handleTextChange} />
+        </Box>
+    )
+}
+
+const EditConfirmationActions = ({commentText, commentId, doneEditing, updateCommentText}) => {
+    const options = [{ name: "Update", icon: <Update /> }, { name: "Cancel", icon: <Edit /> }]
+    let renderOptions = () => options.map(item => <RenderOption key={item.name} item={item} commentText={commentText} commentId={commentId} doneEditing={doneEditing} updateCommentText={updateCommentText} />)
+
+    return (
+        <Stack
+            sx={{
+                position: "absolute",
+                right: 0,
+                flexDirection: "row"
+            }}
+        >
+            {renderOptions()}
+        </Stack>
+    )
+}
+
+const RenderOption = ({ item, commentId, commentText, doneEditing, updateCommentText }) => {
+    let appCtx = useContext(AppContexts);
+
+    const updateCommentTextInCurrentAppDataset = () => {
+        console.log("update data in dataset!!")
+        updateCommentText(commentId, commentText)
+        doneEditing()
+    }
+    
+    const updateCommentTextInDatabase = () => {
+        let url = `${appCtx.baseUrl}/comments/${commentId}/text`
+        updateDataInDatabase(url, {body: commentText}, updateCommentTextInCurrentAppDataset)
+    }
+
+    const handleClick = evt => {
+        if(item.name === "Update") {
+            console.log("Update here!!")
+            updateCommentTextInDatabase()
+        } else if(item.name === "Cancel") {
+            console.log("Cancel here!!")
+        }
+    }
+
+    return (
+        <Tooltip title={item.name}>
+            <Fab onClick={handleClick} color="secondary" aria-label="edit">
+                {item.icon}
+            </Fab>
+        </Tooltip>
     )
 }
 

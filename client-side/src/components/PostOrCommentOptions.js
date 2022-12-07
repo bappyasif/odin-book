@@ -1,4 +1,4 @@
-import { DangerousTwoTone, DvrTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material';
+import { DangerousTwoTone, DvrTwoTone, ModeEditTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material';
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -6,20 +6,22 @@ import { AppContexts } from '../App';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 import { deleteResourceFromServer } from './utils';
 
-export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDataset }) => {
+export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDataset, userId, showEditableText }) => {
     let [clickedOptions, setClickedOptions] = useState(false);
 
     let ref = useRef();
 
     useToCloseModalOnClickedOutside(ref, () => setClickedOptions(false))
 
-    let options = [{ text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
+    let options = [{ text: "Edit", icon: <ModeEditTwoTone /> }, { text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
 
     if (commentId) {
         options = options.filter(item => item.text !== "Thread");
+    } else if(postId) {
+        options = options.filter(item => item.text !== "Edit");
     }
-    // let renderOptions = () => options.map(item => !(commentId && item.text !== "Thread") && <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} />)
-    let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setClickedOptions} />)
+
+    let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setClickedOptions} userId={userId} showEditableText={showEditableText} />)
 
     let handleClick = () => setClickedOptions(!clickedOptions)
 
@@ -52,7 +54,9 @@ export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDatas
     )
 }
 
-let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, openDropdown }) => {
+let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, openDropdown, userId, showEditableText }) => {
+    // let [showEditableText, setShowEditableText] = useState(false);
+
     let appCtx = useContext(AppContexts);
 
     const navigate = useNavigate()
@@ -73,40 +77,64 @@ let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, ope
         } else {
             alert("you chose not to delete :)")
         }
-        
-        openDropdown(false)
     }
 
     const handleClick = () => {
-        if (commentId) {
-            if (item.text === "Delete") {
-                const url = `${appCtx.baseUrl}/comments/${commentId}`
-                const data = { commentId: commentId }
-                commenceDelete(url, data)
-            }
+        if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
+            alert("This is not an authorized action, probably you are not owner of this content....")
         } else {
-            if (item.text === "Delete") {
-                const url = `${appCtx.baseUrl}/posts/${postId}`
-                const data = { postId: postId }
-                commenceDelete(url, data)
+            if (commentId) {
+                if (item.text === "Delete") {
+                    const url = `${appCtx.baseUrl}/comments/${commentId}`
+                    const data = { commentId: commentId }
+                    commenceDelete(url, data)
+                } else if(item.text === "Edit") {
+                    console.log("Edit here!!")
+                    // setShowEditableText(true)
+                    showEditableText(true)
+                }
             } else {
-                console.log("thread", postId)
-                navigate(`posts/${postId}/comments/`)
+                if (item.text === "Delete") {
+                    const url = `${appCtx.baseUrl}/posts/${postId}`
+                    const data = { postId: postId }
+                    commenceDelete(url, data)
+                } else {
+                    console.log("thread", postId)
+                    navigate(`posts/${postId}/comments/`)
+                }
             }
         }
+
+        openDropdown(false)
     }
     
     return (
-        <Tooltip title={item.text}>
+        <Tooltip title={ (!appCtx.user._id && item.text !== "Thread") ? `Login to ${item.text}` : item.text}>
             <Button
-                onClick={handleClick}
+                onClick={ (!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
                 startIcon={item.icon}
                 sx={{
                     outline: "solid 2px red",
+                    position: "relative"
                 }}
             >
                 <Typography>{item.text}</Typography>
+                
+                {/* {showEditableText ? <RenderEditableText /> : null} */}
             </Button>
         </Tooltip>
+    )
+}
+
+const RenderEditableText = () => {
+    return (
+        <Box
+            sx={{
+                position: "absolute",
+                top: "-20px"
+            }}
+        >
+            !!!!Editable text!!!!
+        </Box>
     )
 }
