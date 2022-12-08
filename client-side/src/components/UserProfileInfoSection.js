@@ -1,24 +1,48 @@
 import { Edit, Navigation, WallpaperRounded } from '@mui/icons-material'
 import { Box, Button, Container, Divider, Fab, IconButton, ImageList, ImageListItem, ImageListItemBar, Paper, Stack, TextField, Typography } from '@mui/material'
 import moment from 'moment'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AppContexts } from "../App"
+import { MutualFriends } from './routes/ConnectUsers'
 import { checkIfItHasJpgExtension } from './routes/EditUserProfile'
-import { updateDataInDatabase } from './utils'
+import { readDataFromServer, updateDataInDatabase } from './utils'
 
-function UserProfileInfoSection({ appCtx }) {
+function UserProfileInfoSection({ appCtx, userId }) {
+    let [userProfileData, setUserProfileData] = useState({})
+
+    const userprofileDataHandler = result => setUserProfileData(result.data.data)
+
+    let getDataForUserProfile = () => {
+        let url = `${appCtx.baseUrl}/users/${userId}`
+        readDataFromServer(url, userprofileDataHandler)
+    }
+
+    useEffect(() => getDataForUserProfile(), [userId])
+
+    console.log(userProfileData, "userProfileData")
+
     return (
         <Box sx={{ mb: 2 }}>
             {/* <CoverPhoto userData={appCtx.user} /> */}
-            <RenderUserProfilePhoto userData={appCtx.user} fromPP={false} />
+            <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
+            {/* {
+                userProfileData?._id
+                    ?
+                    <RenderUserProfilePhoto userData={userProfileData} fromPP={false} />
+                    :
+                    <RenderUserProfilePhoto userData={appCtx.user} fromPP={false} />
+            } */}
             <Box
                 sx={{ minWidth: "920px", maxWidth: "fit-content", margin: "auto", bgcolor: "gainsboro", pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2 }}
             >
-                <UserNameAndInfo userData={appCtx.user} />
-                <Divider variant="fullWidth" sx={{mt: 1.1}} />
-                <SomeUserSpecificInfo userData={appCtx.user} />
-                <UserFriendsAndInfo userData={appCtx.user} />
+                {/* <UserNameAndInfo userData={appCtx.user} /> */}
+                <UserNameAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
+                <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
+                <SomeUserSpecificInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
+                <UserFriendsAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
+                {/* <SomeUserSpecificInfo userData={appCtx.user} />
+                <UserFriendsAndInfo userData={appCtx.user} /> */}
             </Box>
         </Box>
     )
@@ -26,6 +50,8 @@ function UserProfileInfoSection({ appCtx }) {
 
 let RenderUserProfilePhoto = ({ userData, fromPP }) => {
     let { ppUrl, cpUrl, fullName } = { ...userData }
+
+    let [photoUrl, setPhotoUrl] = useState(null)
 
     let [showModal, setShowModal] = useState(false);
 
@@ -49,6 +75,12 @@ let RenderUserProfilePhoto = ({ userData, fromPP }) => {
         return src;
     }
 
+    // useEffect(() => {
+    //     setPhotoUrl(decideImgResourceUrl())
+    // }, [userData])
+
+    console.log(ppUrl, "userProfileData ppUrl", photoUrl)
+
     return (
         <Stack
             sx={{
@@ -62,6 +94,8 @@ let RenderUserProfilePhoto = ({ userData, fromPP }) => {
                     // srcSet={`${ppUrl ? ppUrl : fakeDataModel[0].coverPhotoUrl}?w85&h95&fit=crop&auto=format&dpr= 2 2x`}
                     src={decideImgResourceUrl()}
                     srcSet={`${decideImgResourceUrl()}&dpr= 2 2x`}
+                    // src={photoUrl}
+                    // srcSet={`${photoUrl}&dpr= 2 2x`}
                     alt={`user ${fullName ? fullName : "X"} profile display`}
                     loading='lazy'
                 />
@@ -177,6 +211,8 @@ let SomeUserSpecificInfo = ({ userData }) => {
 
             <Stack sx={{ flexDirection: "row", justifyContent: "space-between", mt: 2 }}>
                 {renderOtherItems()}
+                <MutualFriends friends={userData.friends} variantType="h6" forProfile={true} />
+                {/* <MutualFriends friends={[]} variantType="h6" forProfile={true} /> */}
             </Stack>
         </Stack>
     )
@@ -199,7 +235,7 @@ let UserFriendsAndInfo = ({ userData }) => {
 }
 
 let UserNameAndInfo = ({ userData }) => {
-    let { ppUrl, fullName, email } = { ...userData }
+    let { fullName, email } = { ...userData }
 
     let navigate = useNavigate();
 
@@ -246,9 +282,9 @@ let UserNameAndInfo = ({ userData }) => {
 
 let RenderUserProfileData = ({ item, styles }) => {
     let assignNameVariant = () => (item.name === "Email" || item.name === "FullName") ? "h5" : "h6"
-    
+
     let assignValueVariant = () => (item.name === "Email" || item.name === "FullName") ? "h4" : "h6"
-    
+
     return (
         <Stack
             sx={styles}

@@ -123,33 +123,57 @@ let RenderUser = ({ userData }) => {
   )
 }
 
-export const MutualFriends = ({ friends, variantType }) => {
+export const MutualFriends = ({ friends, variantType, forProfile }) => {
   let [mutualFriends, setMutualFriends] = useState([])
 
   let appCtx = useContext(AppContexts);
 
   const lookForMutualFriends = () => {
-    if (friends?.length) {
-      friends.forEach(frId => {
-        let findIdx = appCtx.user.friends.findIndex(val => val === frId);
-        
-        if (findIdx !== -1) {  
-          setMutualFriends(prev => {
-            let checkDuplicate = prev.findIndex(val => val === frId)
+    if (forProfile) {
+      // appCtx.user.friends.forEach(frndId => {
+      //   let findIdx = friends.findIndex(val => val === frndId)
+      //   if (findIdx !== -1) {
+      //     // setMutualFriends(prev => prev.push(frndId))
+      //     setMutualFriends(prev => {
+      //       let checkDuplicate = prev.findIndex(val => val === frndId)
 
-            return checkDuplicate === -1 ? [...prev, frId] : prev
-          })
-        }
-      })
+      //       return checkDuplicate === -1 ? [...prev, frndId] : prev
+      //     })
+      //   }
+      // })
+    } else {
+      if (friends?.length) {
+        friends.forEach(frId => {
+          let findIdx = appCtx.user.friends.findIndex(val => val === frId);
+
+          if (findIdx !== -1) {
+            setMutualFriends(prev => {
+              let checkDuplicate = prev.findIndex(val => val === frId)
+
+              return checkDuplicate === -1 ? [...prev, frId] : prev
+            })
+          }
+        })
+      }
     }
   }
 
-  // mutualFriends.length && console.log("mutual",mutualFriends, "frnds",friends, "user friends",appCtx.user.friends)
+  mutualFriends.length && console.table("mutual", mutualFriends, "frnds", friends, "user friends", appCtx.user.friends)
 
-  useEffect(() => lookForMutualFriends(), [])
+  // useEffect(() => setMutualFriends([]), [])
+
+  useEffect(() => {
+    friends?.length && lookForMutualFriends()
+  }, [])
 
   return (
-    <Stack>
+    <Stack
+      sx={{
+        flexDirection: forProfile ? "row" : "auto",
+        alignItems: forProfile ? "baseline" : "auto",
+        gap: forProfile ? 3 : 0,
+      }}
+    >
       <Typography variant={variantType ? variantType : 'h5'}>Mutual Friends</Typography>
       <Typography>{mutualFriends.length ? mutualFriends.length : "None"}</Typography>
     </Stack>

@@ -1,6 +1,7 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { AppBar, Box, Container, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router';
 import { AppContexts } from '../../App';
 import useToFetchUserActionSpecificPostData from '../hooks/useToFetchData';
 import ShowUserCreatedPost from '../UserCreatedPost';
@@ -8,11 +9,13 @@ import UserProfileInfoSection from '../UserProfileInfoSection'
 import { readDataFromServer } from '../utils';
 
 function UserProfile() {
+    let params = useParams()
+    // console.log(params.userID, params, "paRAMS!!")
     let appCtx = useContext(AppContexts);
 
     return (
         <Paper>
-            <UserProfileInfoSection appCtx={appCtx} />
+            <UserProfileInfoSection userId={params.userID} appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
             <UserProfileTabs appCtx={appCtx} />
         </Paper>

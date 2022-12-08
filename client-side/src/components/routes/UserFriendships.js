@@ -103,16 +103,14 @@ let RenderFriend = ({ friendID, handleAllFriendsData, baseUrl }) => {
                         </IconButton>
                     </CardActions>
                 </Card>
-                {/* <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} /> */}
-                {/* <Divider orientation="vertical" /> */}
-                {/* <MutualFriends friends={data.friends} /> */}
-                {showActionOptions ? <ActionListOptions toggleShowActionOptions={toggleShowActionOptions} friendId={data._id} /> : null}
+
+                {showActionOptions ? <ActionListOptions friendId={data._id} toggleShowActionOptions={toggleShowActionOptions} /> : null}
             </Stack>
             : null
     )
 }
 
-let FriendCardHeader = ({ data, toggleShowActionOptions }) => {
+let FriendCardHeader = ({ data }) => {
 
     let imgUrl = data.ppUrl || "https://random.imagecdn.app/76/56"
 
@@ -125,19 +123,9 @@ let FriendCardHeader = ({ data, toggleShowActionOptions }) => {
                     sx={{ width: "92px", height: "62px" }}
                 />
             }
-            // action={
-            //     <IconButton
-            //         sx={{ position: "relative" }}
-            //         onClick={toggleShowActionOptions}
-            //     >
-            //         <MoreVertTwoTone />
-            //     </IconButton>
-            // }
             title={data.fullName}
             subheader={"Friend Since!!"}
-        // subheader={<MutualFriends friends={data.friends} variantType="subtitle2" />}
         >
-            {/* <Typography>MutualFriends</Typography> */}
         </CardHeader>
     )
 }
@@ -178,7 +166,8 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
 
     let visitUserProfile = () => {
         console.log("visit");
-        navigate(`/users/${appCtx.user._id}/profile`)
+        // navigate(`/users/${appCtx.user._id}/profile`)
+        navigate(`/users/${friendId}/profile`)
     }
 
     let handleClick = () => {
@@ -209,7 +198,6 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
                 </Avatar>
             </ListItemAvatar>
             <ListItemText
-                // primary={<Typography variant="h5">Friend</Typography>}
                 secondary={<Typography variant="h6">{item.name}</Typography>}
             />
         </ListItem>
