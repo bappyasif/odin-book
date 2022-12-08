@@ -1,9 +1,10 @@
 import { AccountCircleTwoTone, HowToRegRounded, MoreVertTwoTone, PersonOffRounded, PersonOffTwoTone } from '@mui/icons-material';
-import { Avatar, Box, CardHeader, Container, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardActions, CardContent, CardHeader, Container, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../../App'
 import { readDataFromServer, updateDataInDatabase, updateUserInDatabase } from '../utils';
+import { MutualFriends } from './ConnectUsers';
 
 let UserFriendships = () => {
     return (
@@ -34,7 +35,7 @@ let ExistingFriendList = () => {
     let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} handleAllFriendsData={handleAllFriendsData} baseUrl={appCtx.baseUrl} />)
 
     return (
-        <Paper sx={{backgroundColor: "lightsteelblue"}}>
+        <Paper sx={{ backgroundColor: "lightsteelblue" }}>
             <Typography variant="h4">Friend Listings:</Typography>
             {renderFriends()}
             {
@@ -42,7 +43,7 @@ let ExistingFriendList = () => {
                     ?
                     <Typography
                         variant="h6"
-                        sx={{outline: "solid .6px darkred", borderRadius: 2, mt: 4, p: 1.1}}
+                        sx={{ outline: "solid .6px darkred", borderRadius: 2, mt: 4, p: 1.1 }}
                     >
                         Friends list is empty, add some :)
                     </Typography>
@@ -75,9 +76,36 @@ let RenderFriend = ({ friendID, handleAllFriendsData, baseUrl }) => {
     return (
         data?.fullName
             ?
-            <Stack sx={{ outline: showActionOptions ? "none" : "solid .6px darkred", borderRadius: 2 }}>
-                <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} />
+            <Stack
+                sx={{
+                    outline: showActionOptions ? "none" : "solid .6px darkred",
+                    borderRadius: 2
+                }}
+            >
+                <Card
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: 2,
+                        alignItems: "flex-start"
+                    }}
+                >
+                    <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} />
+                    <CardContent sx={{alignSelf: "center"}}>
+                        <MutualFriends friends={data.friends} variantType="subtitle2" />
+                    </CardContent>
+                    <CardActions>
+                        <IconButton
+                            sx={{ position: "relative" }}
+                            onClick={toggleShowActionOptions}
+                        >
+                            <MoreVertTwoTone />
+                        </IconButton>
+                    </CardActions>
+                </Card>
+                {/* <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} /> */}
                 {/* <Divider orientation="vertical" /> */}
+                {/* <MutualFriends friends={data.friends} /> */}
                 {showActionOptions ? <ActionListOptions toggleShowActionOptions={toggleShowActionOptions} friendId={data._id} /> : null}
             </Stack>
             : null
@@ -90,24 +118,26 @@ let FriendCardHeader = ({ data, toggleShowActionOptions }) => {
 
     return (
         <CardHeader
-            sx={{ width: "31vw", position: "relative" }}
+            sx={{ width: "20vw", position: "relative" }}
             avatar={
                 <Avatar
                     src={imgUrl}
                     sx={{ width: "92px", height: "62px" }}
                 />
             }
-            action={
-                <IconButton
-                    sx={{ position: "relative" }}
-                    onClick={toggleShowActionOptions}
-                >
-                    <MoreVertTwoTone />
-                </IconButton>
-            }
+            // action={
+            //     <IconButton
+            //         sx={{ position: "relative" }}
+            //         onClick={toggleShowActionOptions}
+            //     >
+            //         <MoreVertTwoTone />
+            //     </IconButton>
+            // }
             title={data.fullName}
             subheader={"Friend Since!!"}
+        // subheader={<MutualFriends friends={data.friends} variantType="subtitle2" />}
         >
+            {/* <Typography>MutualFriends</Typography> */}
         </CardHeader>
     )
 }
@@ -124,7 +154,8 @@ let ActionListOptions = ({ toggleShowActionOptions, friendId }) => {
                 position: "absolute",
                 mt: 5.8,
                 outline: "solid .6px darkred",
-                borderRadius: 2
+                borderRadius: 2,
+                zIndex: 9
             }}
         >
             {renderOptions()}
@@ -136,9 +167,9 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
     let appCtx = useContext(AppContexts)
 
     let navigate = useNavigate()
-    
+
     let removeFromCurentUserStateVariable = () => appCtx.removeIdFromCurrentUserFriendsList(friendId)
-    
+
     let removeFromFriendList = () => {
         let url = `${appCtx.baseUrl}/users/${appCtx.user._id}/remove`
 
@@ -223,12 +254,13 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
                     sx={{ outline: "solid .6px red", borderRadius: 2, justifyContent: "space-around" }}
                 >
                     <Avatar
-                        alt='user pp'
-                        src={'https://random.imagecdn.app/76/56'}
+                        alt='user profile picture'
+                        src={data.ppUrl || 'https://random.imagecdn.app/76/56'}
                         sx={{ width: 76, height: 56 }}
                     />
 
                     <Typography sx={{ ml: 2, mr: 2 }} variant="h4">{data.fullName}</Typography>
+                    <MutualFriends friends={data.friends} variantType="p" />
                     {renderListAssets()}
                 </ListItem>
             </List>

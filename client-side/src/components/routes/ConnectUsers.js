@@ -123,7 +123,7 @@ let RenderUser = ({ userData }) => {
   )
 }
 
-const MutualFriends = ({ friends }) => {
+export const MutualFriends = ({ friends, variantType }) => {
   let [mutualFriends, setMutualFriends] = useState([])
 
   let appCtx = useContext(AppContexts);
@@ -132,8 +132,8 @@ const MutualFriends = ({ friends }) => {
     if (friends?.length) {
       friends.forEach(frId => {
         let findIdx = appCtx.user.friends.findIndex(val => val === frId);
-        if (findIdx !== -1) {
-          console.log(findIdx, frId)
+        
+        if (findIdx !== -1) {  
           setMutualFriends(prev => {
             let checkDuplicate = prev.findIndex(val => val === frId)
 
@@ -144,24 +144,13 @@ const MutualFriends = ({ friends }) => {
     }
   }
 
-  // const lookForMutualFriends = () => {
-  //   if (friends?.length) {
-  //     appCtx.user.friends.forEach(frId => {
-  //       let findIdx = friends.findIndex(val => val === frId);
-  //       if (findIdx !== -1) {
-  //         setMutualFriends(prev => [...prev, frId])
-  //       }
-  //     })
-  //   }
-  // }
-
-  mutualFriends.length && console.log("mutual",mutualFriends, "frnds",friends, "user friends",appCtx.user.friends)
+  // mutualFriends.length && console.log("mutual",mutualFriends, "frnds",friends, "user friends",appCtx.user.friends)
 
   useEffect(() => lookForMutualFriends(), [])
 
   return (
     <Stack>
-      <Typography variant='h5'>Mutual Friends</Typography>
+      <Typography variant={variantType ? variantType : 'h5'}>Mutual Friends</Typography>
       <Typography>{mutualFriends.length ? mutualFriends.length : "None"}</Typography>
     </Stack>
   )
