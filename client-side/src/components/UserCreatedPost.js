@@ -26,6 +26,8 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
 
   // console.log(commentsData, "!!commentsData!!")
 
+  // console.log(postData.userId === appCtx.user._id, postData.userId, appCtx.user._id, "vhk vhk")
+
   return (
     <Box
       width={990}
@@ -40,7 +42,7 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       <RenderPostDataEssentials postData={postData} />
       {postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={postData.includedSharedPostId} /> : null}
       <UserEngagementWithPost postData={postData} appCtx={appCtx} setShowCreatePost={setShowCreatePost} handleCommentsDataUpdate={handleCommentsDataUpdate} />
-      {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} deleteCommentFromDataset={deleteCommentFromDataset} /> : null}
+      {(postData?.commentsCount || commentsData.length) ? <RenderPostComments postOwner={postData.userId === appCtx.user._id} postId={postData._id} commentsData={commentsData} setCommentsData={setCommentsData} deleteCommentFromDataset={deleteCommentFromDataset} /> : null}
       {/* {postData?.commentsCount ? showComments() : null} */}
     </Box>
   )

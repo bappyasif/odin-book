@@ -6,7 +6,7 @@ import { AppContexts } from '../App';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 import { deleteResourceFromServer } from './utils';
 
-export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDataset, userId, showEditableText }) => {
+export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteCommentFromDataset, userId, showEditableText }) => {
     let [clickedOptions, setClickedOptions] = useState(false);
 
     let ref = useRef();
@@ -21,7 +21,7 @@ export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDatas
         options = options.filter(item => item.text !== "Edit");
     }
 
-    let renderOptions = () => options.map(item => <RenderPostOption key={item.text} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setClickedOptions} userId={userId} showEditableText={showEditableText} />)
+    let renderOptions = () => options.map(item => <RenderPostOption key={item.text} postOwner={postOwner} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setClickedOptions} userId={userId} showEditableText={showEditableText} />)
 
     let handleClick = () => setClickedOptions(!clickedOptions)
 
@@ -54,7 +54,7 @@ export const PostOrCommentOptions = ({ postId, commentId, deleteCommentFromDatas
     )
 }
 
-let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, openDropdown, userId, showEditableText }) => {
+let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromDataset, openDropdown, userId, showEditableText }) => {
     let appCtx = useContext(AppContexts);
 
     const navigate = useNavigate()
@@ -77,30 +77,62 @@ let RenderPostOption = ({ item, postId, commentId, deleteCommentFromDataset, ope
         }
     }
 
-    const handleClick = () => {
-        if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
-            alert("This is not an authorized action, probably you are not owner of this content....")
+    const optionsActions = () => {
+        if (commentId) {
+            if (item.text === "Delete") {
+                const url = `${appCtx.baseUrl}/comments/${commentId}`
+                const data = { commentId: commentId }
+                commenceDelete(url, data)
+            } else if(item.text === "Edit") {
+                console.log("Edit here!!")
+                showEditableText(true)
+            }
         } else {
-            if (commentId) {
-                if (item.text === "Delete") {
-                    const url = `${appCtx.baseUrl}/comments/${commentId}`
-                    const data = { commentId: commentId }
-                    commenceDelete(url, data)
-                } else if(item.text === "Edit") {
-                    console.log("Edit here!!")
-                    showEditableText(true)
-                }
+            if (item.text === "Delete") {
+                const url = `${appCtx.baseUrl}/posts/${postId}`
+                const data = { postId: postId }
+                commenceDelete(url, data)
             } else {
-                if (item.text === "Delete") {
-                    const url = `${appCtx.baseUrl}/posts/${postId}`
-                    const data = { postId: postId }
-                    commenceDelete(url, data)
-                } else {
-                    console.log("thread", postId)
-                    navigate(`posts/${postId}/comments/`)
-                }
+                console.log("thread", postId)
+                navigate(`posts/${postId}/comments/`)
             }
         }
+    }
+
+    // console.log((userId !== appCtx.user._id) && (commentId), postOwner, (commentId), postId)
+    console.log(postOwner, (commentId), postId)
+
+    const handleClick = () => {
+        if(postOwner && item.text === "Delete") {
+            optionsActions()
+        } else if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
+            alert("This is not an authorized action, probably you are not owner of this content....")
+        } else {
+          optionsActions()  
+        }
+        // if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
+        //     alert("This is not an authorized action, probably you are not owner of this content....")
+        // } else {
+        //     if (commentId) {
+        //         if (item.text === "Delete") {
+        //             const url = `${appCtx.baseUrl}/comments/${commentId}`
+        //             const data = { commentId: commentId }
+        //             commenceDelete(url, data)
+        //         } else if(item.text === "Edit") {
+        //             console.log("Edit here!!")
+        //             showEditableText(true)
+        //         }
+        //     } else {
+        //         if (item.text === "Delete") {
+        //             const url = `${appCtx.baseUrl}/posts/${postId}`
+        //             const data = { postId: postId }
+        //             commenceDelete(url, data)
+        //         } else {
+        //             console.log("thread", postId)
+        //             navigate(`posts/${postId}/comments/`)
+        //         }
+        //     }
+        // }
 
         openDropdown(false)
     }
