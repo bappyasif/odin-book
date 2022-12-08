@@ -41,7 +41,7 @@ const updateUserInDatabase = (endpoint, dataObj, dataUpdater, navigate, navigate
         if (resp.status >= 200 && resp.status <= 299) {
             data = resp.json();
             data.then(() => {
-                alert("user data is updated, will be redirected to home page")
+                // alert("user data is updated, will be redirected to home page")
                 let key = Object.keys(dataObj)[0]
                 let value = Object.values(dataObj)[0]
                 dataUpdater(key, value)

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
@@ -29,7 +29,6 @@ function ConnectUsers() {
     timers && setTimers(false);
   }, [])
 
-  // let renderUsers = () => data?.data?.data.map(user => <RenderUser key={user._id} userData={user} />)
   let renderUsers = () => data?.data?.data.map(user => appCtx.user._id.toString() !== user._id && <RenderUser key={user._id} userData={user} />)
 
   return (
@@ -53,7 +52,7 @@ function ConnectUsers() {
 }
 
 let RenderUser = ({ userData }) => {
-  let { fullName, email, friends, created, bio, _id } = { ...userData }
+  let { fullName, email, friends, created, bio, _id, ppUrl } = { ...userData }
   let test = "https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
 
   let appCtx = useContext(AppContexts);
@@ -62,7 +61,7 @@ let RenderUser = ({ userData }) => {
 
   let updatingUserDataInDatabase = (data, endpoint) => {
     let url = `${appCtx.baseUrl}/users/${endpoint}`
-    updateUserInDatabase(url, data, appCtx.updateData, navigate)
+    updateUserInDatabase(url, data, appCtx.updateData, navigate, "connect")
   }
 
   let handleSend = (evt) => {
@@ -79,33 +78,33 @@ let RenderUser = ({ userData }) => {
       className="card-wrapper"
       styles={{ backgroundColor: "text.secondary" }}
     >
-      <CardHeaderElement avatarUrl={test} altText={fullName} title={fullName} joined={created} forConnect={true} />
+      <CardHeaderElement avatarUrl={ppUrl || test} altText={fullName} title={fullName} joined={created} forConnect={true} />
       <CardContentElement>
         <TypographyElement
           text={appCtx.user.friends.includes(_id) ? email : "Email: be a friend to see that"}
           type={"p"}
           forConnect={true}
-          styles={{mb: 2}}
+          styles={{ mb: 2 }}
         />
-        <TypographyElement 
-          text={bio ? bio : "This user has yet to write a bio"} 
-          type={"h6"} 
-          forConnect={true} 
-          styles={{textAlign: "justify", backgroundColor: "lightyellow", p: 1.1, borderRadius: 1.1}} 
+        <TypographyElement
+          text={bio ? bio : "This user has yet to write a bio"}
+          type={"h6"}
+          forConnect={true}
+          styles={{ textAlign: "justify", backgroundColor: "lightyellow", p: 1.1, borderRadius: 1.1 }}
         />
         <StackElement className="af-wrapper">
+          <MutualFriends friends={friends} />
           <BoxElement className="fc">
             <TypographyElement text={"Friends: "} type={"h5"} />
             <TypographyElement text={friends.length} type={"h5"} />
           </BoxElement>
-          {/* <BoxElement className="fr"> */}
           <Box sx={{ display: "flex", justifyContent: "center", mt: 2, flexDirection: "column" }}>
-            <TypographyElement 
-              text={appCtx.user.friends.includes(_id) ? "Friend Already" : "Friend Request"} 
+            <TypographyElement
+              text={appCtx.user.friends.includes(_id) ? "Friend Already" : "Friend Request"}
               type={"h5"} />
             <BoxElement className="all-btns">
               <ButtonElement
-                text={"Send"}
+                text={appCtx.user.frSent.includes(_id) ? "Sent" : "Send"}
                 type="contained"
                 action={handleSend}
                 disable={appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id)}
@@ -118,15 +117,53 @@ let RenderUser = ({ userData }) => {
               />
             </BoxElement>
           </Box>
-          {/* <TypographyElement text={appCtx.user.friends.includes(_id) ? "Friend Already" : "Friend Request"} type={"h4"} />
-            <BoxElement className="all-btns">
-              <ButtonElement text={"Send"} type="contained" action={handleSend} disable={appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id)} />
-              <ButtonElement text={"Undo"} type="contained" action={handleSend} disable={!appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id)} />
-            </BoxElement> */}
-          {/* </BoxElement> */}
         </StackElement>
       </CardContentElement>
     </CardElement>
+  )
+}
+
+const MutualFriends = ({ friends }) => {
+  let [mutualFriends, setMutualFriends] = useState([])
+
+  let appCtx = useContext(AppContexts);
+
+  const lookForMutualFriends = () => {
+    if (friends?.length) {
+      friends.forEach(frId => {
+        let findIdx = appCtx.user.friends.findIndex(val => val === frId);
+        if (findIdx !== -1) {
+          console.log(findIdx, frId)
+          setMutualFriends(prev => {
+            let checkDuplicate = prev.findIndex(val => val === frId)
+
+            return checkDuplicate === -1 ? [...prev, frId] : prev
+          })
+        }
+      })
+    }
+  }
+
+  // const lookForMutualFriends = () => {
+  //   if (friends?.length) {
+  //     appCtx.user.friends.forEach(frId => {
+  //       let findIdx = friends.findIndex(val => val === frId);
+  //       if (findIdx !== -1) {
+  //         setMutualFriends(prev => [...prev, frId])
+  //       }
+  //     })
+  //   }
+  // }
+
+  mutualFriends.length && console.log("mutual",mutualFriends, "frnds",friends, "user friends",appCtx.user.friends)
+
+  useEffect(() => lookForMutualFriends(), [])
+
+  return (
+    <Stack>
+      <Typography variant='h5'>Mutual Friends</Typography>
+      <Typography>{mutualFriends.length ? mutualFriends.length : "None"}</Typography>
+    </Stack>
   )
 }
 

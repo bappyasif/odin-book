@@ -245,11 +245,11 @@ let RenderListIconElement = ({ elem, friendId }) => {
 
         if (elem.tooltip === "Accept") {
             let data = { accept: friendId }
-            updateUserInDatabase(`${url}/accept`, data, appCtx.acceptOrRejectFriendRequestUpdater, navigate)
+            updateUserInDatabase(`${url}/accept`, data, appCtx.acceptOrRejectFriendRequestUpdater, navigate, "user-friendships")
 
         } else if (elem.tooltip === "Reject") {
             let data = { reject: friendId }
-            updateUserInDatabase(`${url}/reject`, data, appCtx.acceptOrRejectFriendRequestUpdater, navigate)
+            updateUserInDatabase(`${url}/reject`, data, appCtx.acceptOrRejectFriendRequestUpdater, navigate, "user-friendships")
         }
     }
 

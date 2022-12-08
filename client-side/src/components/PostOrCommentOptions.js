@@ -17,7 +17,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
 
     if (commentId) {
         options = options.filter(item => item.text !== "Thread");
-    } else if(postId) {
+    } else if (postId) {
         options = options.filter(item => item.text !== "Edit");
     }
 
@@ -27,6 +27,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
 
     return (
         <Box
+            ref={ref}
             sx={{
                 position: "absolute",
                 right: 0,
@@ -38,7 +39,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
             {
                 clickedOptions
                     ? <Stack
-                        ref={ref}
+                        // ref={ref}
                         sx={{
                             position: "absolute",
                             right: 0,
@@ -69,7 +70,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
 
     const commenceDelete = (url, data) => {
         const userChoice = prompt("Are you sure you want to delete? Deleted data is not again retrieveable....Type in Y to delete", "N")
-        
+
         if (userChoice === "Y" || userChoice === "y") {
             deleteResourceFromServer(url, data, deleteThisPostFromAppData)
         } else {
@@ -83,7 +84,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 const url = `${appCtx.baseUrl}/comments/${commentId}`
                 const data = { commentId: commentId }
                 commenceDelete(url, data)
-            } else if(item.text === "Edit") {
+            } else if (item.text === "Edit") {
                 console.log("Edit here!!")
                 showEditableText(true)
             }
@@ -99,48 +100,26 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
         }
     }
 
-    // console.log((userId !== appCtx.user._id) && (commentId), postOwner, (commentId), postId)
-    console.log(postOwner, (commentId), postId)
-
     const handleClick = () => {
-        if(postOwner && item.text === "Delete") {
+        if (postOwner && item.text === "Delete") {
             optionsActions()
-        } else if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
+        } else if (
+            (userId !== appCtx.user._id) && (item.text !== "Thread")
+            ||
+            (!appCtx.user._id && item.text !== "Thread")
+        ) {
             alert("This is not an authorized action, probably you are not owner of this content....")
         } else {
-          optionsActions()  
+            optionsActions()
         }
-        // if((userId !== appCtx.user._id) && (item.text !== "Thread") || (!appCtx.user._id && item.text !== "Thread")) {
-        //     alert("This is not an authorized action, probably you are not owner of this content....")
-        // } else {
-        //     if (commentId) {
-        //         if (item.text === "Delete") {
-        //             const url = `${appCtx.baseUrl}/comments/${commentId}`
-        //             const data = { commentId: commentId }
-        //             commenceDelete(url, data)
-        //         } else if(item.text === "Edit") {
-        //             console.log("Edit here!!")
-        //             showEditableText(true)
-        //         }
-        //     } else {
-        //         if (item.text === "Delete") {
-        //             const url = `${appCtx.baseUrl}/posts/${postId}`
-        //             const data = { postId: postId }
-        //             commenceDelete(url, data)
-        //         } else {
-        //             console.log("thread", postId)
-        //             navigate(`posts/${postId}/comments/`)
-        //         }
-        //     }
-        // }
 
         openDropdown(false)
     }
-    
+
     return (
-        <Tooltip title={ (!appCtx.user._id && item.text !== "Thread") ? `Login to ${item.text}` : item.text}>
+        <Tooltip title={(!appCtx.user._id && item.text !== "Thread") ? `Login to ${item.text}` : item.text}>
             <Button
-                onClick={ (!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
+                onClick={(!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
                 startIcon={item.icon}
                 sx={{
                     outline: "solid 2px red",
