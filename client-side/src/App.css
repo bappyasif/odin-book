@@ -142,3 +142,26 @@ p {
   flex-direction: column;
   align-items: center;
 }
+
+/* for some explicit tooltips */
+.posted-by {
+  position: relative;
+}
+
+.posted-by-tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+.posted-by:hover .posted-by-tooltip-text {
+  visibility: visible;
+}
