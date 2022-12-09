@@ -36,17 +36,17 @@ function RenderPostDataEssentials({ postData, shareMode }) {
     return (
         <>
             <Card>
-                <RenderPostCardHeader userData={userData} />
+                <RenderCardHeader userData={userData} />
 
                 {shareMode ? null : <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
 
-                <RenderPostCardContent body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
+                <RenderCardContent body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
             </Card>
         </>
     )
 }
 
-const RenderPostCardContent = ({ body, preparingAdditionalsForRendering }) => {
+export const RenderCardContent = ({ body, preparingAdditionalsForRendering }) => {
     return (
         <CardContent>
             <Typography variant='h4' sx={{ backgroundColor: "honeydew", p: .2, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
@@ -55,7 +55,7 @@ const RenderPostCardContent = ({ body, preparingAdditionalsForRendering }) => {
     )
 }
 
-const RenderPostCardHeader = ({ userData }) => {
+export const RenderCardHeader = ({ userData, forComment }) => {
     let appCtx = useContext(AppContexts);
 
     return (
@@ -64,7 +64,7 @@ const RenderPostCardHeader = ({ userData }) => {
                 <Link className='posted-by' style={{ textDecoration: "none" }} to={appCtx.user._id ? `/users/${userData._id}/visit/profile` : '/'}>
                     <Avatar
                         src={userData?.ppUrl || "https://random.imagecdn.app/500/150"}
-                        sx={{ bgcolor: "red[500]", width: "74px", height: "74px" }}
+                        sx={{ bgcolor: "red[500]", width: forComment ? "42px" : "74px", height: forComment ? "42px" : "74px" }}
                         aria-label="recipe"
                         alt={`User ${userData.fullName || ''} profile display`}
                     />
@@ -78,12 +78,12 @@ const RenderPostCardHeader = ({ userData }) => {
             // }
             title={
                 <Link className='posted-by' style={{ textDecoration: "none" }} to={appCtx.user._id ? `/users/${userData._id}/visit/profile` : '/'}>
-                    <Typography variant="h4">{userData.fullName || "User Name"}</Typography>
+                    <Typography variant={forComment ? "h6" : "h4"}>{userData.fullName || "User Name"}</Typography>
                     <p className='posted-by-tooltip-text'>{appCtx.user._id ? "Visit Profile" : "Login To Visit Profile"}</p>
                 </Link>
             }
             subheader={
-                <Typography variant="subtitle2">{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
+                <Typography sx={{color: "text.secondary", fontSize: forComment ? "smaller" : "auto"}} variant={forComment ? "p" : "subtitle2"}>{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
             }
         />
     )

@@ -74,6 +74,12 @@ export let RenderAllPostsTab = () => {
         readDataFromServer(url, handlePostsData)
     }
 
+    // making sure every time when another user profile is getting visited from that same visiting user profile route, it refreshes already existing dataset before rendering
+    useEffect(() => {
+        setPostsData([])
+        getAllPostsForThisUser()
+    }, [params.userID])
+
     useEffect(() => {
         getAllPostsForThisUser()
     }, [])

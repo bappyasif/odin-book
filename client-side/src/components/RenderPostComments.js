@@ -1,14 +1,13 @@
-import { Edit, Update } from '@mui/icons-material';
-import { Box, Button, Fab, Input, Stack, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Stack, Typography } from '@mui/material'
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App'
 import { EditComment } from './EditComment';
-import { CardHeaderElement } from './MuiElements';
 import { PostOrCommentOptions } from './PostOrCommentOptions';
+import { RenderCardHeader } from './RenderPostData';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
-import { PostOptions, ShowUserAuthenticationOptions } from './UserCreatedPost';
+import { ShowUserAuthenticationOptions } from './UserCreatedPost';
 import { readDataFromServer, updateDataInDatabase } from './utils'
 
 function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, deleteCommentFromDataset }) {
@@ -161,13 +160,9 @@ export const RenderComment = ({ postOwner, commentData, deleteCommentFromDataset
             }}
         >
             <PostOrCommentOptions postOwner={postOwner} commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} userId={commentData.userId} showEditableText={setEditCommentFlag} />
-            <CardHeaderElement
-                avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
-                altText={"fullname"}
-                title={userData?.fullName || "User Name"}
-                joined={userData?.created || Date.now()}
-                forComment={true}
-            />
+            
+            <RenderCardHeader userData={userData} forComment={true} />
+            
             <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
             {
                 editCommentFlag

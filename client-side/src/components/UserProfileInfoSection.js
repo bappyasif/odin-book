@@ -25,12 +25,18 @@ function UserProfileInfoSection({ appCtx, userId }) {
         appCtx && !userId && setUserProfileData(appCtx.user)
     }, [])
 
-    // console.log(userProfileData, "userProfileData")
+    // making sure every time when another user profile is getting visited from that same visiting user profile route, it refreshes already existing dataset before rendering
+    useEffect(() => {
+        userId && setUserProfileData({})
+        userId && getDataForUserProfile()
+    }, [userId])
+
+    console.log(userProfileData, "userProfileData")
 
     return (
         <Box sx={{ mb: 2 }}>
             <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
-            
+
             <Box
                 sx={{ minWidth: "920px", maxWidth: "fit-content", margin: "auto", bgcolor: "gainsboro", pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2 }}
             >
@@ -38,9 +44,9 @@ function UserProfileInfoSection({ appCtx, userId }) {
                     userProfileData._id
                         ?
                         <>
-                            <UserNameAndInfo userData={userProfileData} />
+                            <UserNameAndInfo userData={userProfileData} userId={userId} />
                             <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
-                            <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={userId ? false : true} />
+                            <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={ userId === appCtx.user._id ? true : userId ? false : true } />
                             <UserFriendsAndInfo userData={userProfileData} />
                         </>
                         : null
@@ -205,8 +211,8 @@ let SomeUserSpecificInfo = ({ userData, forCurrentUserProfile }) => {
                 {renderOtherItems()}
                 {
                     forCurrentUserProfile
-                    ? null
-                    : <MutualFriends friends={userData.friends} variantType="h6" forProfile={!forCurrentUserProfile} />
+                        ? null
+                        : <MutualFriends friends={userData.friends} variantType="h6" forProfile={!forCurrentUserProfile} />
                 }
             </Stack>
         </Stack>
@@ -229,7 +235,7 @@ let UserFriendsAndInfo = ({ userData }) => {
     )
 }
 
-let UserNameAndInfo = ({ userData }) => {
+let UserNameAndInfo = ({ userData, userId }) => {
     let { fullName, email } = { ...userData }
 
     let navigate = useNavigate();
@@ -265,10 +271,15 @@ let UserNameAndInfo = ({ userData }) => {
                 }}
             >
                 {renderItems()}
-                <Fab onClick={handleClick} variant="extended" color="primary" aria-label="add">
-                    <Edit sx={{ mr: 1 }} />
-                    Edit Info
-                </Fab>
+                {
+                    !userId
+                        ?
+                        <Fab onClick={handleClick} variant="extended" color="primary" aria-label="add">
+                            <Edit sx={{ mr: 1 }} />
+                            Edit Info
+                        </Fab>
+                        : null
+                }
             </Stack>
         </Stack>
     )
