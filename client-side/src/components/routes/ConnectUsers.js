@@ -130,17 +130,23 @@ export const MutualFriends = ({ friends, variantType, forProfile }) => {
 
   const lookForMutualFriends = () => {
     if (forProfile) {
-      // appCtx.user.friends.forEach(frndId => {
-      //   let findIdx = friends.findIndex(val => val === frndId)
-      //   if (findIdx !== -1) {
-      //     // setMutualFriends(prev => prev.push(frndId))
-      //     setMutualFriends(prev => {
-      //       let checkDuplicate = prev.findIndex(val => val === frndId)
-
-      //       return checkDuplicate === -1 ? [...prev, frndId] : prev
-      //     })
-      //   }
-      // })
+      let mutuals = [];
+      friends.forEach(frndId => {
+        let findIdx = appCtx.user.friends.findIndex(val => val === frndId)
+        if (findIdx !== -1) {
+          // mutuals.push(frndId);
+          // setMutualFriends(prev => prev.push(frndId))
+          setMutualFriends(prev => {
+            let checkDuplicate = prev.findIndex(val => val === frndId)
+            // console.log(checkDuplicate, "checkduplicate", frndId)
+            // return checkDuplicate === -1 ? [...prev, frndId] : [prev]
+            return checkDuplicate === -1 ? [...prev, frndId] : prev
+            // return prev
+          })
+        }
+      })
+      // console.log(mutuals, "mutuals")
+      console.table("mutual", mutualFriends, "frnds", friends, "user friends", appCtx.user.friends)
     } else {
       if (friends?.length) {
         friends.forEach(frId => {
@@ -158,7 +164,7 @@ export const MutualFriends = ({ friends, variantType, forProfile }) => {
     }
   }
 
-  mutualFriends.length && console.table("mutual", mutualFriends, "frnds", friends, "user friends", appCtx.user.friends)
+  // mutualFriends.length && console.table("mutual", mutualFriends, "frnds", friends, "user friends", appCtx.user.friends)
 
   // useEffect(() => setMutualFriends([]), [])
 

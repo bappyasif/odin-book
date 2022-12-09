@@ -18,7 +18,11 @@ function UserProfileInfoSection({ appCtx, userId }) {
         readDataFromServer(url, userprofileDataHandler)
     }
 
-    useEffect(() => getDataForUserProfile(), [userId])
+    // useEffect(() => userId && getDataForUserProfile(), [userId])
+    useEffect(() => {
+        userId && getDataForUserProfile()
+        appCtx && !userId && setUserProfileData(appCtx.user)
+    }, [])
 
     console.log(userProfileData, "userProfileData")
 
@@ -37,10 +41,21 @@ function UserProfileInfoSection({ appCtx, userId }) {
                 sx={{ minWidth: "920px", maxWidth: "fit-content", margin: "auto", bgcolor: "gainsboro", pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2 }}
             >
                 {/* <UserNameAndInfo userData={appCtx.user} /> */}
-                <UserNameAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
+                {
+                    userProfileData._id
+                        ?
+                        <>
+                            <UserNameAndInfo userData={userProfileData} />
+                            <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
+                            <SomeUserSpecificInfo userData={userProfileData} />
+                            <UserFriendsAndInfo userData={userProfileData} />
+                        </>
+                        : null
+                }
+                {/* <UserNameAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
                 <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
                 <SomeUserSpecificInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
-                <UserFriendsAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
+                <UserFriendsAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} /> */}
                 {/* <SomeUserSpecificInfo userData={appCtx.user} />
                 <UserFriendsAndInfo userData={appCtx.user} /> */}
             </Box>
