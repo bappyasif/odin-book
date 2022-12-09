@@ -144,13 +144,6 @@ export const MutualFriends = ({ friends, variantType, forProfile }) => {
     if (friends?.length) {
       updateMutualFriendsCounts()
     }
-    // if (forProfile) {
-    //   updateMutualFriendsCounts()
-    // } else {
-    //   if (friends?.length) {
-    //     updateMutualFriendsCounts()
-    //   }
-    // }
   }
 
   // mutualFriends.length && console.table("mutual", mutualFriends, "frnds", friends, "user friends", appCtx.user.friends)

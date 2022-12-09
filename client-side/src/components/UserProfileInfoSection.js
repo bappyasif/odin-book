@@ -40,7 +40,7 @@ function UserProfileInfoSection({ appCtx, userId }) {
                         <>
                             <UserNameAndInfo userData={userProfileData} />
                             <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
-                            <SomeUserSpecificInfo userData={userProfileData} />
+                            <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={userId ? false : true} />
                             <UserFriendsAndInfo userData={userProfileData} />
                         </>
                         : null
@@ -184,7 +184,7 @@ let ShowUrlGrabbingModal = ({ closeModal, fromPP }) => {
     )
 }
 
-let SomeUserSpecificInfo = ({ userData }) => {
+let SomeUserSpecificInfo = ({ userData, forCurrentUserProfile }) => {
     let { bio, created, webLink } = { ...userData }
 
     let innerStackStyles = { flexDirection: "row", gap: "35px", alignItems: "baseline" }
@@ -203,7 +203,11 @@ let SomeUserSpecificInfo = ({ userData }) => {
 
             <Stack sx={{ flexDirection: "row", justifyContent: "space-between", mt: 2 }}>
                 {renderOtherItems()}
-                <MutualFriends friends={userData.friends} variantType="h6" forProfile={true} />
+                {
+                    forCurrentUserProfile
+                    ? null
+                    : <MutualFriends friends={userData.friends} variantType="h6" forProfile={!forCurrentUserProfile} />
+                }
             </Stack>
         </Stack>
     )

@@ -167,7 +167,8 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
     let visitUserProfile = () => {
         console.log("visit");
         // navigate(`/users/${appCtx.user._id}/profile`)
-        navigate(`/users/${friendId}/profile`)
+        // navigate(`/users/${friendId}/profile`)
+        navigate(`/users/${friendId}/visit/profile`)
     }
 
     let handleClick = () => {

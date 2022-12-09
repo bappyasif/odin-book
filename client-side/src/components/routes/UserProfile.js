@@ -9,15 +9,17 @@ import UserProfileInfoSection from '../UserProfileInfoSection'
 import { readDataFromServer } from '../utils';
 
 function UserProfile() {
-    let params = useParams()
+    // let params = useParams()
     // console.log(params.userID, params, "paRAMS!!")
     let appCtx = useContext(AppContexts);
 
     return (
         <Paper>
-            <UserProfileInfoSection userId={params.userID} appCtx={appCtx} />
+            {/* <UserProfileInfoSection userId={params.userID} appCtx={appCtx} /> */}
+            <UserProfileInfoSection appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
-            <UserProfileTabs appCtx={appCtx} />
+            <UserProfileTabs />
+            {/* seems like visting another user profile could use a different route to differentiate between current visiting user profiles */}
             {/* {
                 params.userID
                 ? <RenderAllPostsTab appCtx={appCtx} />
@@ -64,7 +66,7 @@ let UserProfileTabs = () => {
     )
 }
 
-let RenderAllPostsTab = () => {
+export let RenderAllPostsTab = () => {
     let [postsData, setPostsData] = useState([]);
 
     let appCtx = useContext(AppContexts);

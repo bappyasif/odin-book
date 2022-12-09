@@ -21,6 +21,7 @@ import UserProfile from './components/routes/UserProfile';
 import Hoc from './misc/hoc';
 import LoggedIn from './misc/loggedIn';
 import { AbbreviateNumbers } from './misc';
+import VisitAnotherUserProfile from './components/routes/VisitAnotherUserProfile';
 
 export const AppContexts = createContext()
 
@@ -147,6 +148,7 @@ function App() {
           <Route path='posts/:postId/comments' element={<PostCommentsThread />} />
           <Route path='/edit-user-profile' element={<EditUserProfile />} />
           <Route path='/users/:userID/profile' element={<UserProfile />} />
+          <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />
           <Route path='*' element={<ErrorPage />} />
         </Routes>
       </div>
