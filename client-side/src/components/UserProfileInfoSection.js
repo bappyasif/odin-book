@@ -18,29 +18,22 @@ function UserProfileInfoSection({ appCtx, userId }) {
         readDataFromServer(url, userprofileDataHandler)
     }
 
-    // useEffect(() => userId && getDataForUserProfile(), [userId])
     useEffect(() => {
+        // if there is a user id passed on from a route, that means a "user profile id" which data needs to be gathered from server
         userId && getDataForUserProfile()
+        // if its not coming from route params, that means user is visiting its own profile, thus updating with its value instead
         appCtx && !userId && setUserProfileData(appCtx.user)
     }, [])
 
-    console.log(userProfileData, "userProfileData")
+    // console.log(userProfileData, "userProfileData")
 
     return (
         <Box sx={{ mb: 2 }}>
-            {/* <CoverPhoto userData={appCtx.user} /> */}
             <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
-            {/* {
-                userProfileData?._id
-                    ?
-                    <RenderUserProfilePhoto userData={userProfileData} fromPP={false} />
-                    :
-                    <RenderUserProfilePhoto userData={appCtx.user} fromPP={false} />
-            } */}
+            
             <Box
                 sx={{ minWidth: "920px", maxWidth: "fit-content", margin: "auto", bgcolor: "gainsboro", pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2 }}
             >
-                {/* <UserNameAndInfo userData={appCtx.user} /> */}
                 {
                     userProfileData._id
                         ?
@@ -52,12 +45,6 @@ function UserProfileInfoSection({ appCtx, userId }) {
                         </>
                         : null
                 }
-                {/* <UserNameAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
-                <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
-                <SomeUserSpecificInfo userData={userProfileData._id ? userProfileData : appCtx.user} />
-                <UserFriendsAndInfo userData={userProfileData._id ? userProfileData : appCtx.user} /> */}
-                {/* <SomeUserSpecificInfo userData={appCtx.user} />
-                <UserFriendsAndInfo userData={appCtx.user} /> */}
             </Box>
         </Box>
     )
@@ -65,8 +52,6 @@ function UserProfileInfoSection({ appCtx, userId }) {
 
 let RenderUserProfilePhoto = ({ userData, fromPP }) => {
     let { ppUrl, cpUrl, fullName } = { ...userData }
-
-    let [photoUrl, setPhotoUrl] = useState(null)
 
     let [showModal, setShowModal] = useState(false);
 
@@ -90,11 +75,7 @@ let RenderUserProfilePhoto = ({ userData, fromPP }) => {
         return src;
     }
 
-    // useEffect(() => {
-    //     setPhotoUrl(decideImgResourceUrl())
-    // }, [userData])
-
-    console.log(ppUrl, "userProfileData ppUrl", photoUrl)
+    // console.log(ppUrl, "userProfileData ppUrl")
 
     return (
         <Stack
@@ -153,14 +134,10 @@ let ShowUrlGrabbingModal = ({ closeModal, fromPP }) => {
 
     let handlPhotoUrlUpload = () => {
         let data = { [fromPP ? "ppUrl" : "cpUrl"]: urlText }
-        console.log(data, "data!!", url)
+        // console.log(data, "data!!", url)
         updateDataInDatabase(url, data, afterUpdateIsSuccessfull)
-        // updateDataInDatabase(url, data, closeModal)
-        // closeModal();
     }
     let handleClick = () => {
-        console.log("Clicked!!")
-        // closeModal();
         if (urlText) {
             handlPhotoUrlUpload();
         } else {
@@ -227,7 +204,6 @@ let SomeUserSpecificInfo = ({ userData }) => {
             <Stack sx={{ flexDirection: "row", justifyContent: "space-between", mt: 2 }}>
                 {renderOtherItems()}
                 <MutualFriends friends={userData.friends} variantType="h6" forProfile={true} />
-                {/* <MutualFriends friends={[]} variantType="h6" forProfile={true} /> */}
             </Stack>
         </Stack>
     )
@@ -274,7 +250,6 @@ let UserNameAndInfo = ({ userData }) => {
         <Stack
             sx={{ flexDirection: "column", gap: .6, mt: .6 }}
         >
-            {/* <ProfilePhoto ppUrl={ppUrl} fullName={fullName} /> */}
             <RenderUserProfilePhoto userData={userData} fromPP={true} />
             <Stack
                 sx={{

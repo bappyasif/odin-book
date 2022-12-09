@@ -18,11 +18,16 @@ function UserProfile() {
             <UserProfileInfoSection userId={params.userID} appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
             <UserProfileTabs appCtx={appCtx} />
+            {/* {
+                params.userID
+                ? <RenderAllPostsTab appCtx={appCtx} />
+                : <UserProfileTabs appCtx={appCtx} />
+            } */}
         </Paper>
     )
 }
 
-let UserProfileTabs = ({ appCtx }) => {
+let UserProfileTabs = () => {
     let [tabValue, setTabValue] = useState("1");
 
     let handleTabValueChange = (event, current) => {
@@ -48,19 +53,24 @@ let UserProfileTabs = ({ appCtx }) => {
                         <Tab label="Disliked Posts" value="6" />
                     </TabList>
                 </Box>
-                <TabPanel value="1"><RenderAllPostsTab appCtx={appCtx} /></TabPanel>
-                <TabPanel value="2"><RenderActionSpecificPosts appCtx={appCtx} actionType={"Like"} /></TabPanel>
-                <TabPanel value="3"><RenderActionSpecificPosts appCtx={appCtx} actionType={"Love"} /></TabPanel>
-                <TabPanel value="4"><RenderActionSpecificPosts appCtx={appCtx} actionType={"Share"} /></TabPanel>
-                <TabPanel value="5"><RenderActionSpecificPosts appCtx={appCtx} actionType={"Comment"} /></TabPanel>
-                <TabPanel value="6"><RenderActionSpecificPosts appCtx={appCtx} actionType={"Dislike"} /></TabPanel>
+                <TabPanel value="1"><RenderAllPostsTab /></TabPanel>
+                <TabPanel value="2"><RenderActionSpecificPosts actionType={"Like"} /></TabPanel>
+                <TabPanel value="3"><RenderActionSpecificPosts actionType={"Love"} /></TabPanel>
+                <TabPanel value="4"><RenderActionSpecificPosts actionType={"Share"} /></TabPanel>
+                <TabPanel value="5"><RenderActionSpecificPosts actionType={"Comment"} /></TabPanel>
+                <TabPanel value="6"><RenderActionSpecificPosts actionType={"Dislike"} /></TabPanel>
             </TabContext>
         </Box>
     )
 }
 
-let RenderAllPostsTab = ({ appCtx }) => {
+let RenderAllPostsTab = () => {
     let [postsData, setPostsData] = useState([]);
+
+    let appCtx = useContext(AppContexts);
+
+    let params = useParams()
+    // console.log(params.userID, params, "paRAMS!!")
 
     let handlePostsData = (result) => {
         // console.log(result.data.data, result, "!!")
@@ -68,7 +78,8 @@ let RenderAllPostsTab = ({ appCtx }) => {
     }
 
     let getAllPostsForThisUser = () => {
-        let url = `${appCtx.baseUrl}/posts/${appCtx.user._id}`
+        // let url = `${appCtx.baseUrl}/posts/${appCtx.user._id}`
+        let url = `${appCtx.baseUrl}/posts/${params.userID ? params.userID : appCtx.user._id}`
         readDataFromServer(url, handlePostsData)
     }
 
@@ -89,7 +100,9 @@ let RenderAllPostsTab = ({ appCtx }) => {
     )
 }
 
-let RenderActionSpecificPosts = ({actionType, appCtx}) => {
+let RenderActionSpecificPosts = ({actionType}) => {
+    let appCtx = useContext(AppContexts);
+
     let { postsData } = useToFetchUserActionSpecificPostData(appCtx, actionType)
 
     console.log(postsData, "data!!")
