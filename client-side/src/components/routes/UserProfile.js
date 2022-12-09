@@ -9,22 +9,13 @@ import UserProfileInfoSection from '../UserProfileInfoSection'
 import { readDataFromServer } from '../utils';
 
 function UserProfile() {
-    // let params = useParams()
-    // console.log(params.userID, params, "paRAMS!!")
     let appCtx = useContext(AppContexts);
 
     return (
         <Paper>
-            {/* <UserProfileInfoSection userId={params.userID} appCtx={appCtx} /> */}
             <UserProfileInfoSection appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
             <UserProfileTabs />
-            {/* seems like visting another user profile could use a different route to differentiate between current visiting user profiles */}
-            {/* {
-                params.userID
-                ? <RenderAllPostsTab appCtx={appCtx} />
-                : <UserProfileTabs appCtx={appCtx} />
-            } */}
         </Paper>
     )
 }
@@ -72,7 +63,6 @@ export let RenderAllPostsTab = () => {
     let appCtx = useContext(AppContexts);
 
     let params = useParams()
-    // console.log(params.userID, params, "paRAMS!!")
 
     let handlePostsData = (result) => {
         // console.log(result.data.data, result, "!!")
@@ -80,8 +70,7 @@ export let RenderAllPostsTab = () => {
     }
 
     let getAllPostsForThisUser = () => {
-        // let url = `${appCtx.baseUrl}/posts/${appCtx.user._id}`
-        let url = `${appCtx.baseUrl}/posts/${params.userID ? params.userID : appCtx.user._id}`
+        let url = `${appCtx.baseUrl}/posts/${params.userID}`
         readDataFromServer(url, handlePostsData)
     }
 
@@ -89,7 +78,6 @@ export let RenderAllPostsTab = () => {
         getAllPostsForThisUser()
     }, [])
 
-    // let renderAllAccessiblePosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < showPostsUntilIndex) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={setShowCreatePost} />)
     let renderAllPosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={() => null} />)
 
     return (

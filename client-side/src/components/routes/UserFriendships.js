@@ -1,8 +1,9 @@
 import { AccountCircleTwoTone, HowToRegRounded, MoreVertTwoTone, PersonOffRounded, PersonOffTwoTone } from '@mui/icons-material';
-import { Avatar, Box, Card, CardActions, CardContent, CardHeader, Container, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import { Avatar, Box, Card, CardActions, CardContent, CardHeader, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Stack, Tooltip, Typography } from '@mui/material'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../../App'
+import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside';
 import { readDataFromServer, updateDataInDatabase, updateUserInDatabase } from '../utils';
 import { MutualFriends } from './ConnectUsers';
 
@@ -26,13 +27,9 @@ let UserFriendships = () => {
 }
 
 let ExistingFriendList = () => {
-    let [friends, setFriends] = useState([])
-
     let appCtx = useContext(AppContexts);
 
-    let handleAllFriendsData = (value) => setFriends(prev => [...prev, value])
-
-    let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} handleAllFriendsData={handleAllFriendsData} baseUrl={appCtx.baseUrl} />)
+    let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} baseUrl={appCtx.baseUrl} />)
 
     return (
         <Paper sx={{ backgroundColor: "lightsteelblue" }}>
@@ -53,15 +50,18 @@ let ExistingFriendList = () => {
     )
 }
 
-let RenderFriend = ({ friendID, handleAllFriendsData, baseUrl }) => {
+let RenderFriend = ({ friendID, baseUrl }) => {
     let [data, setData] = useState();
     let [showActionOptions, setShowActionOptions] = useState(false);
+
+    let ref = useRef()
+
+    useToCloseModalOnClickedOutside(ref, () => setShowActionOptions(false))
 
     let toggleShowActionOptions = () => setShowActionOptions(!showActionOptions);
 
     let dataHandler = dataset => {
         setData(dataset.data.data)
-        dataset.data.data && handleAllFriendsData(dataset.data.data)
     }
 
     let getFriendData = () => {
@@ -77,6 +77,7 @@ let RenderFriend = ({ friendID, handleAllFriendsData, baseUrl }) => {
         data?.fullName
             ?
             <Stack
+                ref={ref}
                 sx={{
                     outline: showActionOptions ? "none" : "solid .6px darkred",
                     borderRadius: 2
@@ -165,9 +166,6 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
     }
 
     let visitUserProfile = () => {
-        console.log("visit");
-        // navigate(`/users/${appCtx.user._id}/profile`)
-        // navigate(`/users/${friendId}/profile`)
         navigate(`/users/${friendId}/visit/profile`)
     }
 
@@ -176,7 +174,12 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
         if (item.name === "View Profile") {
             visitUserProfile()
         } else if (item.name.includes("Remove")) {
-            removeFromFriendList()
+            let userChose = prompt("Are you sure you want to REMOVE this user as a FRIEND? Type Y to continue", "N")
+            if(userChose === "Y" || userChose === "y") {
+                removeFromFriendList()
+            } else {
+                alert("You chose NOT TO REMOVE this user as a FRIEND")
+            }
         }
     }
 

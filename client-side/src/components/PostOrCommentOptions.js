@@ -1,4 +1,4 @@
-import { DangerousTwoTone, DvrTwoTone, ModeEditTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material';
+import { DangerousTwoTone, DvrTwoTone, ModeEditTwoTone, MoreVertTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material';
 import { Box, Button, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +35,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
                 pr: .9,
             }}
         >
-            <SettingsSuggestTwoTone onClick={handleClick} />
+            {postId ? <MoreVertTwoTone sx={{backgroundColor: "darkred", borderRadius: "50%", p: .4, "&:hover": {backgroundColor: "red"}}} onClick={handleClick} />  : <SettingsSuggestTwoTone onClick={handleClick} />}
             {
                 clickedOptions
                     ? <Stack
@@ -43,7 +43,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
                         sx={{
                             position: "absolute",
                             right: 0,
-                            top: 22,
+                            top: 31,
                             backgroundColor: "gainsboro",
                             p: 1.1,
                             zIndex: 9,
