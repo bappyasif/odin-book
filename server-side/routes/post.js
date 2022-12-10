@@ -1,8 +1,9 @@
 const express = require("express");
-const { getAllPosts, getSoloPost, createNewPost, updateSoloPost, deleteSoloPost, updateSoloPostWithUserEngagements, getAllPostsWithPublicPrivacy, updateSoloPostWithSpecificData, getAllSpecificActionTypesPosts } = require("../controllers/post");
+const { getAllPosts, getSoloPost, createNewPost, updateSoloPost, deleteSoloPost, updateSoloPostWithUserEngagements, getAllPostsWithPublicPrivacy, updateSoloPostWithSpecificData, getAllSpecificActionTypesPosts, getAllPrivatePostsFromFriends } = require("../controllers/post");
 const postRoutes = express();
 
 postRoutes.get("/", getAllPostsWithPublicPrivacy)
+postRoutes.get("/:userId/friends/posts/private", getAllPrivatePostsFromFriends)
 
 postRoutes.get("/:userId", getAllPosts)
 postRoutes.get("/:userId/specific/:type", getAllSpecificActionTypesPosts)

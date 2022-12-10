@@ -14,6 +14,7 @@ function UserSpecificNewsFeeds(props) {
     let [tweetPostsDataset, setTweetPostsDataset] = useState([]);
     let [showCreatePost, setShowCreatePost] = useState(true);
     let [showPostsUntilIndex, setShowPostsUntilIndex] = useState(11);
+    let [fetchPrivatePosts, setFetchPrivatePosts] = useState(false)
 
     let appCtx = useContext(AppContexts);
 
@@ -30,7 +31,11 @@ function UserSpecificNewsFeeds(props) {
         })
     }
 
-    let handleAllAccessiblePosts = result => appCtx.handleAvailablePostsFeeds(result.data.data)
+    // let handleAllAccessiblePosts = result => appCtx.handleAvailablePostsFeeds(result.data.data)
+    let handleAllAccessiblePosts = result => {
+        appCtx.handleAvailablePostsFeeds(result.data.data)
+        appCtx.user.friends?.length && setFetchPrivatePosts(true);
+    }
 
     let topics = appCtx?.user?.topics;
 
@@ -47,12 +52,34 @@ function UserSpecificNewsFeeds(props) {
     let getAllAccessiblePosts = () => {
         let url = `${appCtx.baseUrl}/posts/`
         readDataFromServer(url, handleAllAccessiblePosts)
+        // appCtx.user.friends?.length && setFetchPrivatePosts(true);
     }
+
+    let handleAllPrivatePosts = (result) => {
+        // console.log(result, "private posts");
+        let newPosts = [...appCtx.availablePostsFeeds, ...result.data.data]
+        // console.log(result, "private posts", newPosts);
+        appCtx.handleAvailablePostsFeeds(newPosts)
+        setFetchPrivatePosts(false);
+    }
+
+    let getFriendsPrivatePosts = () => {
+        let url = `${appCtx.baseUrl}/posts/${appCtx.user._id}/friends/posts/private`
+        readDataFromServer(url, handleAllPrivatePosts)
+    }
+
+    useEffect(() => {
+        fetchPrivatePosts && getFriendsPrivatePosts()
+    }, [fetchPrivatePosts])
 
     useEffect(() => {
         // location.pathname && appCtx?.user?._id && getAllAccessiblePosts()
         location.pathname && getAllAccessiblePosts()
-        location.pathname && console.log(location.pathname === "/", location.pathname)
+
+        // location.pathname && appCtx.user.friends?.length && setFetchPrivatePosts(true);
+
+        // location.pathname && appCtx.user.friends?.length && getFriendsPrivatePosts()
+        // location.pathname && console.log(location.pathname === "/", location.pathname)
     }, [appCtx.user?._id, location.pathname])
 
     // making sure each time route changes existing posts gets removed so that state variable changes dont become unstable
