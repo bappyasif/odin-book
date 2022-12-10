@@ -69,7 +69,8 @@ let RenderUserProfilePhoto = ({ userData, fromPP }) => {
         let src = "";
 
         if (fromPP && ppUrl) {
-            src = checkIfItHasJpgExtension(ppUrl) ? ppUrl : `${ppUrl}?w85&h95&fit=crop&auto=format`
+            // src = checkIfItHasJpgExtension(ppUrl) ? ppUrl : `${ppUrl}?w85&h95&fit=crop&auto=format`
+            src = checkIfItHasJpgExtension(ppUrl) ? ppUrl : `${ppUrl}`
         } else if (fromPP && !ppUrl) {
             src = `${fakeDataModel[0].coverPhotoUrl}?w85&h95&fit=crop&auto=format`
         } else if (!fromPP && cpUrl) {

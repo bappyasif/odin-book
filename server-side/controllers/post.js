@@ -16,7 +16,7 @@ const getAllPosts = (req, res, next) => {
 
 const getAllPrivatePostsFromFriends = (req, res, next) => {
     let userId = req.params.userId;
-    console.log(userId, "allprivates")
+
     let foundPosts = [];
 
     User.findOne({_id: userId})
@@ -26,148 +26,16 @@ const getAllPrivatePostsFromFriends = (req, res, next) => {
                 let allPromises = dataset.friends.map(val => {
                     return Post.find({userId: val, privacy: "Friends"})
                 })
+
                 Promise.all(allPromises).then(results => {
-                    // console.log(results, "results")
-                    // results.forEach(item => foundPosts.push(item))
                     results.forEach(item => item.length && foundPosts.push(...item))
-                    // res.status(200).json({status: "success", data: foundPosts})
                 }).catch(err => next(err))
                 .then(() => {
-                    // console.log(foundPosts, "foundPosts!!")
                     res.status(200).json({status: "success", data: foundPosts})
                 })
-                // console.log(foundPosts, "foundPosts!!")
             }
         }).catch(err => next(err))
 }
-
-// const getAllPrivatePostsFromFriends = (req, res, next) => {
-//     let userId = req.params.userId;
-//     console.log(userId, "allprivates")
-//     let foundPosts = [];
-
-//     User.findOne({ _id: userId })
-//         .then((dataset) => {
-//             if (dataset.friends.length) {
-//                 dataset.friends.forEach(val => {
-//                     Post.find({ userId: val, privacy: "Friends" })
-//                         .then(result => {
-//                             result.forEach(postItem => {
-//                                 foundPosts.push(postItem)
-//                             })
-//                             // console.log(result, "friends post")
-//                         }).catch(err => next(err))
-//                 })
-//             }
-//         }).catch(err => next(err))
-//         .then(() => {
-//             res.status(200).json({status: "success", data: foundPosts})
-//         })
-// }
-
-// const getAllPrivatePostsFromFriends = (req, res, next) => {
-//     let userId = req.params.userId;
-//     console.log(userId, "allprivates")
-//     let foundPosts = [];
-
-//     let postsPromises = User.findOne({_id: userId})
-//         .then((dataset) => {
-
-//             if(dataset.friends.length) {
-
-//                 let friendPostsPomises = dataset.friends.map(val => {
-//                     Post.find({userId: val, privacy: "Friends"})
-//                 })
-
-//                 return Promise.all(friendPostsPomises)
-//                 // console.log(foundPosts, "foundPosts!!")
-//             }
-//         }).catch(err => next(err))
-
-//         postsPromises.then(results => {
-//             console.log(results, "results!!")
-
-//             res.status(200).json({status: "success", data: foundPosts})
-//         })
-// }
-
-// const getAllPrivatePostsFromFriends = (req, res, next) => {
-//     let userId = req.params.userId;
-
-//     console.log(userId, "allprivates")
-
-//     let foundPosts = [];
-
-//     User.findOne({_id: userId})
-//         .then((dataset) => {
-//             if(dataset.friends.length) {
-
-//                 dataset.friends.forEach(val => {
-//                     async.parallel(
-//                         {
-//                             friendPosts(cb) {
-//                                 Post.find({userId: val, privacy: "Friends"}).exec(cb)
-//                             }
-//                         },
-
-//                         (err, results) => {
-//                             if(err) return next(err)
-
-//                             if(results.friendPosts.length) {
-//                                 foundPosts.push(...results.friendPosts)
-//                             }
-
-//                             console.log(foundPosts, "!!33foundPosts!!")
-
-//                             // console.log(results, "Friends!!")
-//                             // res.status(200).json({status: "success", data: foundPosts})
-//                         }
-//                     )
-//                     // Post.find({userId: val})
-//                     //     .then(result => {
-//                     //         result.forEach(postItem =>  {
-//                     //             if(postItem.privacy === "Friends") {
-//                     //                 console.log(postItem, "PostItem")
-//                     //                 foundPosts.push(postItem)
-//                     //             }
-//                     //         })
-//                     //     }).catch(err => next(err))
-//                 })
-//             }
-//             console.log(foundPosts, "foundPosts!!")
-//             res.status(200).json({status: "success", data: foundPosts})
-//         }).catch(err => next(err))
-//         console.log(foundPosts, "!!22foundPosts!!")
-// }
-
-// const getAllPrivatePostsFromFriends = (req, res, next) => {
-//     let userId = req.params.userId;
-//     console.log(userId, "allprivates")
-//     let foundPosts = [];
-
-//     User.findOne({_id: userId})
-//         .then((dataset) => {
-//             if(dataset.friends.length) {
-//                 dataset.friends.forEach(val => {
-//                     Post.find({userId: val})
-//                         .then(result => {
-//                             result.forEach(postItem =>  {
-//                                 if(postItem.privacy === "Friends") {
-//                                     console.log(postItem, "PostItem")
-//                                     foundPosts.push(postItem)
-//                                 }
-//                             })
-//                             // console.log(result, "friends post")
-//                         }).catch(err => next(err))
-//                         // .finally(() => res.status(200).json({status: "success", data: foundPosts}))
-//                 })
-//                 // res.status(200).json({status: "success", data: foundPosts})
-//             }
-//             res.status(200).json({status: "success", data: foundPosts})
-//         }).catch(err => next(err))
-//         // .finally(() => res.status(200).json({status: "success", data: foundPosts}))
-//     // res.status(200).json({status: "success", data: foundPosts})
-// }
 
 getAllSpecificActionTypesPosts = (req, res, next) => {
     let userId = req.params.userId;
