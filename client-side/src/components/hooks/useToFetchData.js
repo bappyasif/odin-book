@@ -17,15 +17,11 @@ function useToFetchUserActionSpecificPostData(appCtx, type) {
         getAllPostsForThisUser()
     }, [])
 
-    console.log(postsData, "!!")
-    // return postsData.length ? postsData : [];
-    // return postsData.length && postsData;
     return {postsData}
 }
 
 export let useToFetchPostsFromNyTimes = (url) => {
     let [data, setData] = useState([])
-    // const appCtx = useContext(AppContexts);
     
     let [randomPosts, setRandomPosts] = useState([]);
 
@@ -41,17 +37,14 @@ export let useToFetchPostsFromNyTimes = (url) => {
             let genRnd = Math.floor(Math.random() * data.length)
             setRandomPosts(prev => [...prev, data[genRnd]])
             removeItemFromDataset(data[genRnd]?.asset_id)
-            // console.log(popularPosts, "popularPosts!!", genRnd, randomPosts)
         }
     }, [data, randomPosts])
 
     const fetchData = () => {
-        // let url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
         fetch(url)
         .then(resp => resp.json())
         .catch(err => console.log("response error", err))
         .then(dataset => {
-            // console.log(dataset, "nytimes");
             setData(dataset.results)
         })
         .catch(err => console.log("somethings wrong!!", err))
@@ -61,7 +54,6 @@ export let useToFetchPostsFromNyTimes = (url) => {
         fetchData()
     }, [])
 
-    // return {data}
     return {data: randomPosts}
 }
 

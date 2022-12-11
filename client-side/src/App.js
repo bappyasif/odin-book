@@ -135,7 +135,9 @@ function App() {
         {/* <LoggedIn loggedIn={true} /> */}
         {/* <LoggedIn loggedIn={false} /> */}
         {/* <AbbreviateNumbers /> */}
-        <ContentsFromNyTimes />
+        
+        {/* <ContentsFromNyTimes /> */}
+        
         <Routes>
           <Route path='/' element={<UserSpecificNewsFeeds />} />
           <Route path='/login' element={<LoginForm handleData={handleData} />} />
