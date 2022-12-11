@@ -22,6 +22,7 @@ import Hoc from './misc/hoc';
 import LoggedIn from './misc/loggedIn';
 import { AbbreviateNumbers } from './misc';
 import VisitAnotherUserProfile from './components/routes/VisitAnotherUserProfile';
+import ContentsFromNyTimes from './components/ContentsFromNyTimes';
 
 export const AppContexts = createContext()
 
@@ -122,7 +123,7 @@ function App() {
     if (Object.keys(jwtUser).length !== 0) { setUser(jwtUser) }
   }, [jwtUser])
 
-  user && console.log(user, "user!!", jwtUser)
+  user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 
   return (
     <AppContexts.Provider value={contexts}>
@@ -133,7 +134,8 @@ function App() {
         {/* <Hoc name="wat" /> */}
         {/* <LoggedIn loggedIn={true} /> */}
         {/* <LoggedIn loggedIn={false} /> */}
-        <AbbreviateNumbers />
+        {/* <AbbreviateNumbers /> */}
+        <ContentsFromNyTimes />
         <Routes>
           <Route path='/' element={<UserSpecificNewsFeeds />} />
           <Route path='/login' element={<LoginForm handleData={handleData} />} />
