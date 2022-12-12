@@ -1,7 +1,7 @@
 import { Avatar, Card, CardContent, CardHeader, Typography } from '@mui/material'
 import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AppContexts } from '../App'
 import ShowUserPostMedias from './ShowUserPostMedias'
 import { readDataFromServer } from './utils'
@@ -40,15 +40,29 @@ function RenderPostDataEssentials({ postData, shareMode }) {
 
                 {shareMode ? null : <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
 
-                <RenderCardContent body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
+                <RenderCardContent postId={postData._id} body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
             </Card>
         </>
     )
 }
 
-export const RenderCardContent = ({ body, preparingAdditionalsForRendering }) => {
+export const RenderCardContent = ({ postId, body, preparingAdditionalsForRendering }) => {
+    const params = useParams();
+
+    const navigate = useNavigate()
+
+    let handleShowThread = () => {
+        navigate(`posts/${postId}/comments/`)
+    }
+
     return (
-        <CardContent>
+        <CardContent
+            sx={{
+                cursor: params.postId ? "auto" : "pointer",
+                pointerEvents: params.postId ? "none" : "auto"
+            }}
+            onClick={handleShowThread}
+        >
             <Typography variant='h4' sx={{ backgroundColor: "honeydew", p: .2, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             <ShowUserPostMedias mediaContents={preparingAdditionalsForRendering} />
         </CardContent>
@@ -83,7 +97,7 @@ export const RenderCardHeader = ({ userData, forComment }) => {
                 </Link>
             }
             subheader={
-                <Typography sx={{color: "text.secondary", fontSize: forComment ? "smaller" : "auto"}} variant={forComment ? "p" : "subtitle2"}>{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
+                <Typography sx={{ color: "text.secondary", fontSize: forComment ? "smaller" : "auto" }} variant={forComment ? "p" : "subtitle2"}>{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
             }
         />
     )
