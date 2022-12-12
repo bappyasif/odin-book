@@ -4,8 +4,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 import { AppContexts } from '../../App'
+import { RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
 import CreatePost from '../CreatePost';
-import { RenderPost } from '../ShowPostsFromTwitter';
+import ShowPostsFromTwitter, { RenderPost } from '../ShowPostsFromTwitter';
 import ShowUserCreatedPost from '../UserCreatedPost';
 import { readDataFromServer } from '../utils';
 import { ScrollToTop } from './PostCommentsThread';
@@ -96,13 +97,21 @@ function UserSpecificNewsFeeds(props) {
 
     return (
         <Paper>
+            {/* <ContentsFromNyTimes /> */}
+
+            <ShowPostsFromTwitter />
+            
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
-            {showCreatePost ? <CreatePost /> : null}
+            {/* {showCreatePost ? <CreatePost /> : null} */}
+
+            <RenderPopularPostsFromNyTimes />
             
-            {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
+            {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
+
+            <RenderMostSharedPostsFromNyTimes />
 
             <Typography
                 onClick={handleShowMore}

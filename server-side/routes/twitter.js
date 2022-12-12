@@ -11,7 +11,8 @@ twitterRoutes.get("/topics/multiple/:names", getTweetsAboutMultipleTopics)
 twitterRoutes.get("/top-news", getTopTwitterNews);
 twitterRoutes.get("/trends", getCurrentTrendingTweets);
 
-twitterRoutes.get("/search/:topic/:term", searchRecentTweetsAboutTopic);
+// twitterRoutes.get("/search/:topic/:term", searchRecentTweetsAboutTopic);
+twitterRoutes.get("/search/:term", searchRecentTweetsAboutTopic);
 
 twitterRoutes.get("/users/:id", getUserAccountInfo);
 

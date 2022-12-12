@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContexts } from '../../App';
 import { readDataFromServer } from '../utils';
 
 function useToFetchUserActionSpecificPostData(appCtx, type) {
@@ -55,6 +56,24 @@ export let useToFetchPostsFromNyTimes = (url) => {
     }, [])
 
     return {data: randomPosts}
+}
+
+export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
+    let [dataset, setDataset] = useState({});
+
+  let appCtx = useContext(AppContexts);
+
+  let handleDataset = result => setDataset(result)
+
+  let url = `${appCtx.baseUrl}/twitter/search/${searchKeyword}`
+
+  useEffect(() => {
+    readDataFromServer(url, handleDataset)
+  }, [url])
+
+  console.log(searchKeyword, dataset, "twitter....")
+
+  return {dataset}
 }
 
 export default useToFetchUserActionSpecificPostData

@@ -7,12 +7,12 @@ function ContentsFromNyTimes() {
     return (
         <Container>
             <RenderPopularPostsFromNyTimes />
-            <RenderMostSharedPosts />
+            <RenderMostSharedPostsFromNyTimes />
         </Container>
     )
 }
 
-const RenderMostSharedPosts = () => {
+export const RenderMostSharedPostsFromNyTimes = () => {
     let [mostSharedPosts, setMostSharedPosts] = useState([]);
 
     let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
@@ -26,13 +26,13 @@ const RenderMostSharedPosts = () => {
     console.log(mostSharedPosts, "mostSharedPosts")
 
     return (
-        <>
+        <Stack sx={{mt: "11px", gap: 1.5}}>
             {mostSharedPosts.length ? renderTwoPosts() : null}
-        </>
+        </Stack>
     )
 }
 
-const RenderPopularPostsFromNyTimes = () => {
+export const RenderPopularPostsFromNyTimes = () => {
     let [popularPosts, setPopularPosts] = useState([]);
 
     const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
@@ -46,27 +46,30 @@ const RenderPopularPostsFromNyTimes = () => {
     console.log(popularPosts, "popularPosts")
 
     return (
-        <>
+        <Stack sx={{mt: "11px", gap: 1.5}}>
             {popularPosts.length ? renderTwoPosts() : null}
-        </>
+        </Stack>
     )
 }
 
 const RenderData = ({ data }) => {
     return (
-        <Card sx={{mb: 1.1, mt: 1.1, outline: "solid 1.1px red"}}>
+        data.asset_id
+        ?
+        <Card sx={{mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto"}}>
             <RenderPostHeaderView data={data} />
             <RenderPostMediaView data={data} />
             <RenderPostContentView data={data} />
         </Card>
+        : null
     )
 }
 
 const RenderPostMediaView = ({ data }) => {
     let getUrl = () => {
         let url = ""
-        let metadataArr = data.media[0]["media-metadata"]
-        url = metadataArr[metadataArr.length - 1].url
+        let metadataArr = data.media[0] ? data.media[0]["media-metadata"] : []
+        url = metadataArr[metadataArr.length - 1]?.url
         return url;
     }
     return (

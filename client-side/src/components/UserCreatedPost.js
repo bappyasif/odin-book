@@ -1,7 +1,6 @@
 import { CommentTwoTone } from '@mui/icons-material'
 import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
@@ -29,12 +28,6 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
 
   // console.log(postData.userId === appCtx.user._id, postData.userId, appCtx.user._id, "vhk vhk")
 
-  // const navigate = useNavigate()
-
-  // let handleShowThread = () => {
-  //   navigate(`posts/${postData._id}/comments/`)
-  // }
-
   return (
     <Box
       width={990}
@@ -44,7 +37,6 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       marginTop={1.3}
       borderRadius={1.1}
       position={"relative"}
-      // onClick={handleShowThread}
     >
       <PostOrCommentOptions postId={postData._id} userId={postData.userId} />
       <RenderPostDataEssentials postData={postData} />
