@@ -1,4 +1,5 @@
-import { Box, ImageList, ImageListItem, Link, Paper, Stack, Typography } from '@mui/material'
+import { Twitter } from '@mui/icons-material';
+import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, IconButton, ImageList, ImageListItem, Link, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { display } from '@mui/system';
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
@@ -6,43 +7,14 @@ import { AppContexts } from '../App';
 import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
-// function ShowPostsFromTwitter() {
-//   let [dataset, setDataset] = useState({});
-
-//   let appCtx = useContext(AppContexts);
-
-//   let topic = "Sport"
-
-//   let searchTerm = "Adult"
-
-//   let handleDataset = result => setDataset(result)
-
-//   let url = `${appCtx.baseUrl}/twitter/search/${topic}/${searchTerm}`
-
-//   useEffect(() => {
-//     readDataFromServer(url, handleDataset)
-//   }, [url])
-
-//   let renderPosts = () => dataset?.data?.data?.map((item) => <RenderPost key={item.id} item={item} baseUrl={appCtx.baseUrl} />)
-
-//   console.log(dataset, "twitterdataset!!")
-//   return (
-// <Box>
-//   <Typography>Showing Post from Twitter</Typography>
-//   {/* {renderPosts()} */}
-// </Box>
-//   )
-// }
-
 function ShowPostsFromTwitter() {
-  const fakeTopics = ["babes", "models"]
+  const fakeTopics = ["astronomy", "animal planet"]
 
   let renderDataset = () => fakeTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
   return (
     <Box>
       <Typography>Showing Post from Twitter</Typography>
-      {/* {renderPosts()} */}
       {renderDataset()}
     </Box>
   )
@@ -72,7 +44,7 @@ const ShowSearchTermData = ({ searchTerm }) => {
     }
   }, [dataset])
 
-  console.log(dataset?.data?.data, "tweetsdata!!", tweetsData, tweetsAttachments)
+  // console.log(dataset?.data?.data, "tweetsdata!!", tweetsData, tweetsAttachments)
 
   let renderPosts = () => tweetsData.map(item => <RenderPost key={item.id} item={item} baseUrl={appCtx.baseUrl} attachments={tweetsAttachments} />)
 
@@ -85,71 +57,95 @@ const ShowSearchTermData = ({ searchTerm }) => {
 }
 
 export let RenderPost = ({ item, baseUrl, attachments }) => {
-  let [imgUrl, setImgUrl] = useState(null)
   let [userData, setUserData] = useState({})
 
   // manually creating a twitter link so that upon click user is redirected to actual post
-  // let tweetUrl = `https://twitter.com/twitter/status/${item.postData.id}`
   let tweetUrl = `https://twitter.com/twitter/status/${item.id}`
-
-  let handleImgUrl = () => {
-    if (item?.medias) {
-      setImgUrl(item.medias[0].url)
-    }
-  }
 
   let handleData = result => setUserData(result)
 
   let extractAccountNameAndUserName = () => {
-    // let url = `${baseUrl}/twitter/users/${item.postData.author_id}`
     let url = `${baseUrl}/twitter/users/${item.author_id}`
     readDataFromServer(url, handleData)
   }
 
   useEffect(() => {
-    handleImgUrl()
     extractAccountNameAndUserName()
   }, [item])
 
   userData && console.log(userData, "userData!!")
 
   return (
-    <Paper
-      sx={{ m: 1.5, p: 1.5, outline: "dashed", bgcolor: "secondary.text", width: "940px", margin: "auto" }}
+    userData?.data?.data.name
+      ?
+      <Card
+        sx={{
+          m: 1.5, p: 1.5, outline: "dashed", bgcolor: "secondary.text",
+          maxWidth: "940px",
+          margin: "auto"
+        }}
+      >
+        <TweetCardHeader userData={userData} tweetUrl={tweetUrl} />
+        <TweetCardContent item={item} />
+        <TweetCardMedia item={item} attachments={attachments} />
+      </Card>
+      : null
+  )
+}
+
+const TweetCardMedia = ({ item, attachments }) => {
+  return (
+    <CardMedia>
+      <ShowTweetMediaResources item={item} attachments={attachments} />
+    </CardMedia>
+  )
+}
+
+const TweetCardContent = ({ item }) => {
+  return (
+    <CardContent>
+      <Typography variant='h4'>{item.text}</Typography>
+    </CardContent>
+  )
+}
+
+const TweetCardHeader = ({ userData, tweetUrl }) => {
+  return (
+    <CardHeader
+      // sx={{justifyContent: "start"}}
+      avatar={
+        <Avatar sx={{ width: "110px", height: "110px", objectFit: "contain" }}>
+          <img width={110} height={110} src={userData?.data?.data.profile_image_url} />
+        </Avatar>
+      }
+
+      title={
+        <Stack sx={{ flexDirection: "row", gap: 1.1, alignItems: "baseline" }}>
+          <Typography variant='h6' sx={{ textTransform: "capitalize" }}>{userData?.data?.data.name}</Typography>
+          <Typography variant='body1'>@{userData?.data?.data.username}</Typography>
+        </Stack>
+      }
+
+      subheader={
+        <Stack sx={{ flexDirection: "row", gap: 1.1, alignItems: "baseline" }}>
+          <Typography variant='body1'>Joined Since: {moment(userData?.data?.data.created_at).format("MM-DD-YYYY")}</Typography>
+          <Typography variant='body1' sx={{ p: 2 }}>Followers: {userData?.data?.data.public_metrics.followers_count}</Typography>
+          <Typography variant='body1' sx={{ p: 2 }}>Following: {userData?.data?.data.public_metrics.following_count}</Typography>
+        </Stack>
+      }
+
+      action={
+        <Tooltip title="see this post in twitter">
+          <IconButton>
+            <Link href={tweetUrl} target={"_blank"}>
+              <Twitter />
+            </Link>
+          </IconButton>
+        </Tooltip>
+      }
     >
-      <Stack
-        sx={{ flexDirection: "row" }}
-      >
-        <img width={69} height={62} src={userData?.data?.data.profile_image_url} />
-        <Stack sx={{ ml: 4 }}>
-          <Typography sx={{ textTransform: "capitalize" }}>{userData?.data?.data.name}</Typography>
-          <Typography>@{userData?.data?.data.username}</Typography>
-        </Stack>
-      </Stack>
-      <Stack
-        sx={{ flexDirection: "row", ml: 11, alignItems: "center" }}
-      >
-        <Typography>Joined Since: {moment(userData?.data?.data.created_at).format("MM-DD-YYYY")}</Typography>
-        <Stack
-          sx={{ flexDirection: "row" }}
-        >
-          <Typography sx={{ p: 2 }}>Followers: {userData?.data?.data.public_metrics.followers_count}</Typography>
-          <Typography sx={{ p: 2 }}>Following: {userData?.data?.data.public_metrics.following_count}</Typography>
-        </Stack>
-      </Stack>
-      <Link href={tweetUrl} target={"_blank"}>
-        <Box
-          sx={{ m: 1, p: 1, outline: "solid", bgcolor: "secondary.text" }}
-        >
-          <Stack>
-            {/* <Typography variant='h4'>{item.postData.text}</Typography> */}
-            <Typography variant='h4'>{item.text}</Typography>
-            {imgUrl ? <img src={imgUrl} height={'290px'} style={{ objectFit: "cover" }} /> : null}
-            <ShowTweetMediaResources item={item} attachments={attachments} />
-          </Stack>
-        </Box>
-      </Link>
-    </Paper>
+
+    </CardHeader>
   )
 }
 
@@ -184,30 +180,32 @@ const ShowTweetMediaResources = ({ item, attachments }) => {
   }, [mediaIds])
 
   useEffect(() => {
+    // setMediaIds([])
     handleMediaResourceIds()
   }, [item])
 
   useEffect(() => setMediaIds([]), [])
 
-  console.log(mediaUrls, "mediaUrls");
+  console.log(mediaUrls, "mediaUrls", mediaIds);
 
   let renderUrlResources = () => mediaUrls.map(url => <RenderMediaResource key={url} url={url} checkArrLength={mediaUrls.length} />)
 
   return (
-    <ImageList 
+    <ImageList
       sx={{
         maxHeight: "330px"
         // width: mediaUrls.length === 1 ? "max-content" : "auto",
         // display: mediaUrls.length !== 1 ? "flex" : "inline-block"
       }}
-      variant={mediaUrls.length >= 2 ? 'masonry' : "standard"}
+      // variant={mediaUrls.length >= 2 ? 'masonry' : "standard"}
+      variant={"masonry"}
     >
       {mediaUrls.length ? renderUrlResources() : null}
     </ImageList>
   )
 }
 
-const RenderMediaResource = ({url, checkArrLength}) => {
+const RenderMediaResource = ({ url, checkArrLength }) => {
   return (
     <ImageListItem
       sx={{
@@ -215,10 +213,11 @@ const RenderMediaResource = ({url, checkArrLength}) => {
         height: checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"
       }}
     >
-      <img 
+      <img
         // width={checkArrLength === 1 ? "100%" : checkArrLength === 2 ? "50%" : "auto"}
         // height={checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"}
-        // style={{objectFit: "contain"}}
+        style={{objectFit: "fill"}}
+        height={"inherit"}
         src={url}
         loading={"lazy"}
       />

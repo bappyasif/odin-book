@@ -54,15 +54,9 @@ let getCurrentTrendingTweets = (req, res, next) => {
 let searchRecentTweetsAboutTopic = (req, res, next) => {
     let endpoint = "https://api.twitter.com/2/tweets/search/recent"
     let searchTerm = req.params.term;
-    // let focusedTopic = req.params.topic.toLowerCase();
-    // let focusedTopicCapitalized = focusedTopic[0].toUpperCase()+focusedTopic.substr(1)
-
-    // console.log(searchTerm, focusedTopic)
 
     const params = {
-        // "query": "Womens league",
         "query": `${searchTerm} -is:retweet`,
-        // "query": `${searchTerm}`,
         "user.fields": "created_at,description,name,username,public_metrics", // Edit optional query parameters here
         "tweet.fields": "attachments,author_id,created_at,public_metrics,source",
         "max_results": 11,
@@ -73,11 +67,7 @@ let searchRecentTweetsAboutTopic = (req, res, next) => {
     let filtered = []
  
     getDataFromTwitter(endpoint, params, "v2RecentSearchJS").then(results => {
-        // let filtered = []
 
-        // console.log(results, "results.includes<><>")
-
-        // res.status(200).json({success: true, data: results})
         filtered.push(results.includes ? results.includes : [])
 
         results?.data?.forEach(item => {
@@ -86,73 +76,12 @@ let searchRecentTweetsAboutTopic = (req, res, next) => {
                 filtered.push(item)
             }
         })
-        // console.log(filtered, "filtered!!")
-        // res.status(200).json({success: true, data: filtered})
+
     }).catch(err=>console.error(err))
     .then(() => {
         res.status(200).json({success: true, data: filtered})
     })
 }
-
-// let searchRecentTweetsAboutTopic = (req, res, next) => {
-//     let endpoint = "https://api.twitter.com/2/tweets/search/recent"
-//     let searchTerm = req.params.term;
-//     let focusedTopic = req.params.topic.toLowerCase();
-//     // let focusedTopicCapitalized = focusedTopic[0].toUpperCase()+focusedTopic.substr(1)
-
-//     // console.log(searchTerm, focusedTopic)
-
-//     const params = {
-//         // "query": "Womens league",
-//         // "query": `${searchTerm} -is:retweet`,
-//         "query": `${searchTerm}`,
-//         "user.fields": "created_at,description,name,username,public_metrics", // Edit optional query parameters here
-//         "tweet.fields": "author_id,context_annotations",
-//         "max_results": 11,
-//         "expansions": "attachments.media_keys",
-//         "media.fields": "url,preview_image_url",
-//     }
- 
-//     getDataFromTwitter(endpoint, params, "v2RecentSearchJS").then(results => {
-//         let filtered = []
-
-//         // console.log(results, "results.includes<><>")
-
-//         results?.data?.forEach(item => {
-//             // console.log("chk4 here!!")
-//             if(item?.context_annotations?.length) {
-//                 // console.log("chk3 here!!")
-
-//                 item?.context_annotations?.forEach((elem, idx) => {
-//                     // console.log("chk2 here!!", elem.domain.name, elem.domain.name.toLowerCase(), elem.domain.name.toLowerCase().includes(focusedTopic),  focusedTopic)
-
-//                     if(elem.domain.name.toLowerCase().includes(focusedTopic) || elem.entity.name.toLowerCase().includes(focusedTopic)) {
-//                         // console.log("chk1 here!!", elem.domain.name)
-//                         let findIdx = filtered.findIndex(item2 => item2.postData.id === item.id)
-//                         let chkTxt = filtered.findIndex(item2 => item2.postData.text === item.text)
-
-//                         if(findIdx === -1 && chkTxt === -1) {
-//                             if(item?.attachments && results?.includes) {
-//                                 let uRef = item.attachments.media_keys[0];
-//                                 let urlObjFromIncludes = results.includes.media.filter(uObj => uObj.media_key === uRef)
-//                                 filtered.push({postData: item, medias: urlObjFromIncludes}) 
-//                             } else {
-//                                 filtered.push({postData: item})
-//                             }
-//                         }
-//                     }
-//                 })
-//             } else {
-                
-//                 if(item?.context_annotations?.domain?.name.toLowerCase().includes(focusedTopic.toLowerCase())) {
-//                     filtered.push(item)
-//                 }
-//             }
-//         })
-//         // console.log(filtered, "filtered!!")
-//         res.status(200).json({success: true, data: filtered})
-//     }).catch(err=>console.error(err))
-// }
 
 let getSingleTweetData = (req, res, next) => {
     let endpoint = `https://api.twitter.com/2/tweets/${req.params.id}`
