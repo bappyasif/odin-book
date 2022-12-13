@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
 import { AppContexts } from '../../App'
-import { RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
+import { CurateKeywordBasedPostsFromNyTimes, RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
 import CreatePost from '../CreatePost';
 import ShowPostsFromTwitter, { RenderPost } from '../ShowPostsFromTwitter';
 import ShowUserCreatedPost from '../UserCreatedPost';
@@ -151,7 +151,8 @@ const ShowPostsFromThirdPartyApisBottomBunk = () => {
     return (
         <>
         <RenderMostSharedPostsFromNyTimes />
-        {/* <ShowPostsFromTwitter topics={topics} /> */}
+        <CurateKeywordBasedPostsFromNyTimes topics={topics} />
+        <ShowPostsFromTwitter topics={topics} />
         </>
     )
 }
@@ -163,8 +164,9 @@ const ShowPostsFromThirdPartyApisTopBunk = () => {
 
     return (
         <>
+        <CurateKeywordBasedPostsFromNyTimes topics={topics} />
         <RenderPopularPostsFromNyTimes />
-        {/* <ShowPostsFromTwitter topics={topics} /> */}
+        <ShowPostsFromTwitter topics={topics} />
         </>
     )
 }

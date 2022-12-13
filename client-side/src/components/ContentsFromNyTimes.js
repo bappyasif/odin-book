@@ -12,6 +12,36 @@ function ContentsFromNyTimes() {
     )
 }
 
+export const CurateKeywordBasedPostsFromNyTimes = ({ topics }) => {
+    let renderPosts = () => topics.map(topic => <RenderKeywordBasedPost key={topic} searchTerm={topic} />)
+
+    return (
+        <Stack sx={{ mt: "11px", gap: 1.5 }}>
+            {topics.length ? renderPosts() : null}
+        </Stack>
+    )
+}
+
+const RenderKeywordBasedPost = ({ searchTerm }) => {
+    let [articles, setArticles] = useState([]);
+
+    let url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchTerm}&api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
+
+    let { data } = useToFetchPostsFromNyTimes(url)
+
+    useEffect(() => setArticles(data), [data])
+
+    let renderTwoPosts = () => articles.map((item, idx) => idx < 2 && <RenderDataForArticles key={idx} data={item} />)
+
+    // console.log(articles, "articlesPosts", searchTerm)
+
+    return (
+        <>
+            {articles.length ? renderTwoPosts() : null}
+        </>
+    )
+}
+
 export const RenderMostSharedPostsFromNyTimes = () => {
     let [mostSharedPosts, setMostSharedPosts] = useState([]);
 
@@ -19,7 +49,6 @@ export const RenderMostSharedPostsFromNyTimes = () => {
 
     const rndGen = () => Math.floor(Math.random() * 3)
 
-    // let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/7/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
     let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/${periods[rndGen()]}/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
 
     let { data } = useToFetchPostsFromNyTimes(url)
@@ -28,10 +57,10 @@ export const RenderMostSharedPostsFromNyTimes = () => {
 
     let renderTwoPosts = () => mostSharedPosts.map((item, idx) => idx < 2 && <RenderData key={idx} assetId={item.asset_id} data={item} />)
 
-    console.log(mostSharedPosts, "mostSharedPosts")
+    // console.log(mostSharedPosts, "mostSharedPosts")
 
     return (
-        <Stack sx={{mt: "11px", gap: 1.5}}>
+        <Stack sx={{ mt: "11px", gap: 1.5 }}>
             {mostSharedPosts.length ? renderTwoPosts() : null}
         </Stack>
     )
@@ -45,7 +74,6 @@ export const RenderPopularPostsFromNyTimes = () => {
     const rndGen = () => Math.floor(Math.random() * 3)
 
     const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/${periods[rndGen()]}.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
-    // const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
 
     let { data } = useToFetchPostsFromNyTimes(url)
 
@@ -53,25 +81,52 @@ export const RenderPopularPostsFromNyTimes = () => {
 
     let renderTwoPosts = () => popularPosts.map((item, idx) => idx < 2 && <RenderData key={idx} assetId={item.asset_id} data={item} />)
 
-    console.log(popularPosts, "popularPosts")
+    // console.log(popularPosts, "popularPosts")
 
     return (
-        <Stack sx={{mt: "11px", gap: 1.5}}>
+        <Stack sx={{ mt: "11px", gap: 1.5 }}>
             {popularPosts.length ? renderTwoPosts() : null}
         </Stack>
     )
 }
 
+const RenderDataForArticles = ({ data }) => {
+    let [dataset, setDataset] = useState({})
+
+    const makingDataReliableForRendering = () => {
+        const dataObj = {}
+
+        dataObj.title = data.headline.main
+        dataObj.source = data.source
+        dataObj.section = data.section_name
+        dataObj.byline = data.byline.original
+        dataObj.url = data.web_url
+        dataObj.abstract = data.abstract || data.snippet
+        dataObj.leadParagraph = data.lead_paragraph
+        dataObj.articleMediaUrl = data?.multimedia[2]?.url
+
+        setDataset(dataObj)
+    }
+
+    useEffect(() => {
+        makingDataReliableForRendering()
+    }, [data])
+
+    // console.log(data, "articleData", dataset)
+
+    return dataset.title ? <RenderData data={dataset} /> : null
+}
+
 const RenderData = ({ data }) => {
     return (
-        data.asset_id
-        ?
-        <Card sx={{mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto"}}>
-            <RenderPostHeaderView data={data} />
-            <RenderPostMediaView data={data} />
-            <RenderPostContentView data={data} />
-        </Card>
-        : null
+        data.abstract
+            ?
+            <Card sx={{ mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto" }}>
+                <RenderPostHeaderView data={data} />
+                {data?.leadParagraph ? null : <RenderPostMediaView data={data} />}
+                <RenderPostContentView data={data} />
+            </Card>
+            : null
     )
 }
 
@@ -82,6 +137,7 @@ const RenderPostMediaView = ({ data }) => {
         url = metadataArr[metadataArr.length - 1]?.url
         return url;
     }
+    
     return (
         <CardMedia
             component={"img"}
@@ -95,16 +151,17 @@ const RenderPostMediaView = ({ data }) => {
 const RenderPostContentView = ({ data }) => {
     return (
         <CardContent>
-            <Typography variant='h6'>{data.abstract}</Typography>
+            <Typography sx={{textAlign: "justify"}} variant={data?.leadParagraph ? "subtitle1" : 'h6'}>{data.abstract}</Typography>
+            {data?.leadParagraph ? <Typography sx={{textAlign: "justify", mt: 2.4}} variant='h4'>{data.leadParagraph}</Typography> : null}
         </CardContent>
     )
 }
 
 const RenderPostHeaderView = ({ data }) => {
-    let handleClick = ()  => {
+    let handleClick = () => {
         window.open(data.url, "_blank").focus()
     }
-    
+
     return (
         <CardHeader
             sx={{

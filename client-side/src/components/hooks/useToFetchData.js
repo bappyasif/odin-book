@@ -18,12 +18,12 @@ function useToFetchUserActionSpecificPostData(appCtx, type) {
         getAllPostsForThisUser()
     }, [])
 
-    return {postsData}
+    return { postsData }
 }
 
 export let useToFetchPostsFromNyTimes = (url) => {
     let [data, setData] = useState([])
-    
+
     let [randomPosts, setRandomPosts] = useState([]);
 
     const removeItemFromDataset = assetId => {
@@ -43,39 +43,54 @@ export let useToFetchPostsFromNyTimes = (url) => {
 
     const fetchData = () => {
         fetch(url)
-        .then(resp => resp.json())
-        .catch(err => console.log("response error", err))
-        .then(dataset => {
-            let filtered = dataset.results.filter(item => item.media.length)
-            setData(filtered)
-            // setData(dataset.results)
-        })
-        .catch(err => console.log("somethings wrong!!", err))
+            .then(resp => resp.json())
+            .catch(err => console.log("response error", err))
+            .then(dataset => {
+                let data = dataset.results ? dataset.results : dataset.response.docs                
+                if (data?.asset_id) {
+                    let filtered = data?.filter(item => (item.media?.length))
+                    setData(filtered?.length ? filtered : [])
+                } else {
+                    setData(data)
+                }
+            })
+            .catch(err => console.log("somethings wrong!!", err, url))
     }
 
     useEffect(() => {
         fetchData()
     }, [])
 
-    return {data: randomPosts}
+    return { data: randomPosts }
 }
 
 export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
     let [dataset, setDataset] = useState({});
 
-  let appCtx = useContext(AppContexts);
+    let appCtx = useContext(AppContexts);
 
-  let handleDataset = result => setDataset(result)
+    let handleDataset = result => {
+        let filtered = []
+        // inserting all media attachments to match data rendering scheme
+        filtered.push(result.data.data[0])
+        // making sure there is no duplicates in dataset
+        result.data.data.forEach(item => {
+            let chkIdx = filtered.findIndex(tweetItem => tweetItem.id === item.id)
+            chkIdx === -1 && filtered.push(item)
+        })
 
-  let url = `${appCtx.baseUrl}/twitter/search/${searchKeyword}`
+        setDataset(filtered)
+    }
 
-  useEffect(() => {
-    readDataFromServer(url, handleDataset)
-  }, [url])
+    let url = `${appCtx.baseUrl}/twitter/search/${searchKeyword}`
 
-  console.log(searchKeyword, dataset, "twitter....")
+    useEffect(() => {
+        readDataFromServer(url, handleDataset)
+    }, [url])
 
-  return {dataset}
+    // console.log(searchKeyword, dataset, "twitter....")
+
+    return { dataset }
 }
 
 export default useToFetchUserActionSpecificPostData

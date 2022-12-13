@@ -7,18 +7,14 @@ import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
 function ShowPostsFromTwitter({topics}) {
-  // const appCtx = useContext(AppContexts);
+  // console.log(topics, "TOPICS!!")
 
-  console.log(topics, "TOPICS!!")
-
-  // let renderDataset = () => appCtx?.randomizedTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
   let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
   return (
     <Box>
       <Typography>Showing Post from Twitter</Typography>
       {topics.length ? renderDataset() : null}
-      {/* {appCtx?.randomizedTopics.length ? renderDataset() : null} */}
     </Box>
   )
 }
@@ -32,14 +28,12 @@ const ShowSearchTermData = ({ searchTerm }) => {
   let { dataset } = useToFetchSearchedTermedTwitterData(searchTerm)
 
   useEffect(() => {
-    if (dataset?.data?.data?.length) {
-      let slicedForTweets = dataset.data.data.slice(1)
+    if (dataset?.length) {
+      let slicedForTweets = dataset.slice(1)
       setTweetsData(slicedForTweets);
-      // console.log(slicedForTweets, "tweetsliced")
 
-      let attachments = dataset.data.data[0];
+      let attachments = dataset[0];
       setTweetsAttachments(attachments)
-      // console.log(attachments, "tweetsattachment")
     }
   }, [dataset])
 
@@ -48,13 +42,11 @@ const ShowSearchTermData = ({ searchTerm }) => {
     setTweetsAttachments([])
   }, [])
 
-  // console.log(dataset?.data?.data, "tweetsdata!!", tweetsData, tweetsAttachments)
-
   let renderPosts = () => tweetsData.map(item => <RenderPost key={item.id} item={item} baseUrl={appCtx.baseUrl} attachments={tweetsAttachments} />)
 
   return (
     <Box>
-      <Typography>Showing Post from Twitter</Typography>
+      {/* <Typography>Showing Post from Twitter</Typography> */}
       {tweetsData.length ? renderPosts() : null}
     </Box>
   )
@@ -76,8 +68,6 @@ export let RenderPost = ({ item, baseUrl, attachments }) => {
   useEffect(() => {
     extractAccountNameAndUserName()
   }, [item])
-
-  // userData && console.log(userData, "userData!!")
 
   return (
     userData?.data?.data?.name
@@ -168,20 +158,15 @@ const ShowTweetMediaResources = ({ item, attachments }) => {
   }
 
   useEffect(() => {
-    // setMediaIds([])
-    console.log("RUNNING!!")
     handleMediaResources()
   }, [])
 
-  console.log(mediaUrls, "mediaUrls")
+  // console.log(mediaUrls, "mediaUrls")
 
-  let renderUrlResources = () => mediaUrls.map(item => <RenderMediaResource key={item} item={item} checkArrLength={mediaUrls.length} />)
+  let renderUrlResources = () => mediaUrls.map(item => <RenderMediaResource key={item} item={item} />)
 
   return (
     <ImageList
-      // sx={{
-      //   maxHeight: "330px"
-      // }}
       variant={"masonry"}
       cols={mediaUrls.length > 1 ? 2 : 1}
     >
@@ -190,12 +175,10 @@ const ShowTweetMediaResources = ({ item, attachments }) => {
   )
 }
 
-const RenderMediaResource = ({ item, checkArrLength }) => {
+const RenderMediaResource = ({ item }) => {
   const decideElementMarkup = () => {
     let markup = ""
     if (item.type === "video") {
-      console.log(item.type, "item.type")
-      // markup = <video style={{ objectFit: "contain" }} height={"inherit"} loading={"lazy"}><source src={item.urlStr} type="video/mp4" /></video>
       markup = <img style={{ objectFit: "contain" }} height={"inherit"} src={item.urlStr} loading={"lazy"} />
     } else if (item.type === "photo") {
       markup = <img style={{ objectFit: "contain" }} height={"inherit"} src={item.urlStr} loading={"lazy"} />
@@ -204,10 +187,6 @@ const RenderMediaResource = ({ item, checkArrLength }) => {
   }
   return (
     <ImageListItem
-    // sx={{
-    //   width: checkArrLength === 1 ? "100%" : "auto",
-    //   height: checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"
-    // }}
     >
       {decideElementMarkup()}
     </ImageListItem>
