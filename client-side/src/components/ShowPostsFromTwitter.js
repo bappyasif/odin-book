@@ -8,7 +8,7 @@ import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
 function ShowPostsFromTwitter() {
-  const fakeTopics = ["astronomy", "animal planet"]
+  const fakeTopics = ["astronomy", "animalplanet"]
 
   let renderDataset = () => fakeTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
@@ -43,6 +43,11 @@ const ShowSearchTermData = ({ searchTerm }) => {
       // console.log(attachments, "tweetsattachment")
     }
   }, [dataset])
+
+  useEffect(() => {
+    setTweetsData([])
+    setTweetsAttachments([])
+  }, [])
 
   // console.log(dataset?.data?.data, "tweetsdata!!", tweetsData, tweetsAttachments)
 
@@ -151,78 +156,147 @@ const TweetCardHeader = ({ userData, tweetUrl }) => {
 
 const ShowTweetMediaResources = ({ item, attachments }) => {
   let [mediaUrls, setMediaUrls] = useState([]);
-  let [mediaIds, setMediaIds] = useState([]);
 
-  let handleMediaResourceIds = () => {
-    // console.log(item?.attachments?.media_keys?.length, "media", item?.attachments?.media_keys)
-    if (item?.attachments?.media_keys?.length && attachments.media.length) {
-      item.attachments.media_keys.forEach(mediaItem => {
-        console.log(mediaItem, "mediaItem")
-        setMediaIds(prev => [...prev, mediaItem])
-      })
-    }
-  }
+  // const handleMediaResources = () => {
+  //   attachments.media.forEach(mediaItem => {
+  //     item.attachments.media_keys.forEach(mediaKey => {
+  //       if((mediaKey === mediaItem.media_key) && mediaItem.url) {
+  //         setMediaUrls(prev => {
+  //           let chkIdx = prev.findIndex(urlStr => urlStr === mediaItem.url);
+  //           console.log(chkIdx, "mediaChck", mediaItem.url, prev)
+  //           return chkIdx === -1 ? [...prev, mediaItem.url] : prev
+  //         })
+  //       }
+  //     })
+  //   }) 
+  // }
 
-  const getMediaResourcesUrls = () => {
+  const handleMediaResources = () => {
     attachments.media.forEach(mediaItem => {
-      mediaIds.forEach(mediaId => {
-        if (mediaId === mediaItem.media_key) {
-          setMediaUrls(prev => [...prev, mediaItem.url])
+      item.attachments.media_keys.forEach(mediaKey => {
+        if ((mediaKey === mediaItem.media_key) && (mediaItem.url || mediaItem.preview_image_url)) {
+          setMediaUrls(prev => {
+            // let chkIdx = prev.findIndex(urlStr => urlStr === mediaItem.url);
+            let chkIdx = prev.findIndex(item => (item.urlStr === mediaItem.url) || (item.urlStr === mediaItem.preview_image_url));
+            console.log(chkIdx, "mediaChck", mediaItem.url, prev)
+            return chkIdx === -1 ? [...prev, { urlStr: (mediaItem.url || mediaItem.preview_image_url), type: mediaItem.type }] : prev
+          })
         }
       })
     })
   }
 
   useEffect(() => {
-    if (mediaIds.length) {
-      getMediaResourcesUrls()
-    }
-  }, [mediaIds])
-
-  useEffect(() => {
     // setMediaIds([])
-    handleMediaResourceIds()
-  }, [item])
+    console.log("RUNNING!!")
+    handleMediaResources()
+  }, [])
 
-  useEffect(() => setMediaIds([]), [])
+  console.log(mediaUrls, "mediaUrls")
 
-  console.log(mediaUrls, "mediaUrls", mediaIds);
-
-  let renderUrlResources = () => mediaUrls.map(url => <RenderMediaResource key={url} url={url} checkArrLength={mediaUrls.length} />)
+  let renderUrlResources = () => mediaUrls.map(item => <RenderMediaResource key={item} item={item} checkArrLength={mediaUrls.length} />)
 
   return (
     <ImageList
       sx={{
         maxHeight: "330px"
-        // width: mediaUrls.length === 1 ? "max-content" : "auto",
-        // display: mediaUrls.length !== 1 ? "flex" : "inline-block"
       }}
-      // variant={mediaUrls.length >= 2 ? 'masonry' : "standard"}
       variant={"masonry"}
+      cols={mediaUrls.length > 1 ? 2 : 1}
     >
       {mediaUrls.length ? renderUrlResources() : null}
     </ImageList>
   )
 }
 
-const RenderMediaResource = ({ url, checkArrLength }) => {
+const RenderMediaResource = ({ item, checkArrLength }) => {
+  const decideElementMarkup = () => {
+    let markup = ""
+    if (item.type === "video") {
+      console.log(item.type, "item.type")
+      // markup = <video style={{ objectFit: "contain" }} height={"inherit"} loading={"lazy"}><source src={item.urlStr} type="video/mp4" /></video>
+      markup = <img style={{ objectFit: "contain" }} height={"inherit"} src={item.urlStr} loading={"lazy"} />
+    } else if (item.type === "photo") {
+      markup = <img style={{ objectFit: "contain" }} height={"inherit"} src={item.urlStr} loading={"lazy"} />
+    }
+    return markup;
+  }
   return (
     <ImageListItem
       sx={{
-        width: checkArrLength === 1 ? "100%" : checkArrLength === 2 ? "50%" : "auto",
+        width: checkArrLength === 1 ? "100%" : "auto",
         height: checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"
       }}
     >
-      <img
-        // width={checkArrLength === 1 ? "100%" : checkArrLength === 2 ? "50%" : "auto"}
-        // height={checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"}
-        style={{objectFit: "fill"}}
+      {decideElementMarkup()}
+      {/* <img
+        style={{ objectFit: "contain" }}
         height={"inherit"}
-        src={url}
+        src={item.urlStr}
         loading={"lazy"}
-      />
+      /> */}
     </ImageListItem>
   )
 }
+
+// const ShowTweetMediaResources = ({ item, attachments }) => {
+//   let [mediaUrls, setMediaUrls] = useState([]);
+//   let [mediaIds, setMediaIds] = useState([]);
+
+//   let handleMediaResourceIds = () => {
+//     // console.log(item?.attachments?.media_keys?.length, "media", item?.attachments?.media_keys)
+//     if (item?.attachments?.media_keys?.length && attachments.media.length) {
+//       item.attachments.media_keys.forEach(mediaItem => {
+//         console.log(mediaItem, "mediaItem")
+//         setMediaIds(prev => [...prev, mediaItem])
+//       })
+//     }
+//   }
+
+//   const getMediaResourcesUrls = () => {
+//     attachments.media.forEach(mediaItem => {
+//       mediaIds.forEach(mediaId => {
+//         if (mediaId === mediaItem.media_key) {
+//           setMediaUrls(prev => [...prev, mediaItem.url])
+//         }
+//       })
+//     })
+
+//     setMediaIds([]);
+//   }
+
+//   useEffect(() => {
+//     if (mediaIds.length) {
+//       getMediaResourcesUrls()
+//     }
+//   }, [mediaIds])
+
+//   useEffect(() => {
+//     // setMediaIds([])
+//     console.log("RUNNING!!")
+//     handleMediaResourceIds()
+//   }, [])
+
+//   // useEffect(() => setMediaIds([]), [])
+
+//   console.log(mediaUrls, "mediaUrls", mediaIds);
+
+//   let renderUrlResources = () => mediaUrls.map(url => <RenderMediaResource key={url} url={url} checkArrLength={mediaUrls.length} />)
+
+//   return (
+//     <ImageList
+//       sx={{
+//         maxHeight: "330px"
+//         // width: mediaUrls.length === 1 ? "max-content" : "auto",
+//         // display: mediaUrls.length !== 1 ? "flex" : "inline-block"
+//       }}
+//       // variant={mediaUrls.length >= 2 ? 'masonry' : "standard"}
+//       variant={"masonry"}
+//     >
+//       {mediaUrls.length ? renderUrlResources() : null}
+//     </ImageList>
+//   )
+// }
+
 
 export default ShowPostsFromTwitter

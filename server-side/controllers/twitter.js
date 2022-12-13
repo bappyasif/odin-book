@@ -62,6 +62,7 @@ let searchRecentTweetsAboutTopic = (req, res, next) => {
         "max_results": 11,
         "expansions": "attachments.media_keys",
         "media.fields": "url,preview_image_url,public_metrics,duration_ms",
+        // "tweet_mode": "extended" // could be used for video url, but for a different endpoint "statuses/show"
     }
 
     let filtered = []
