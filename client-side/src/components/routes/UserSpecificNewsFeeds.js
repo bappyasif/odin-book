@@ -99,19 +99,23 @@ function UserSpecificNewsFeeds(props) {
         <Paper>
             {/* <ContentsFromNyTimes /> */}
 
-            <ShowPostsFromTwitter />
+            {/* <ShowPostsFromTwitter /> */}
+            
+            <ShowPostsFromThirdPartyApisTopBunk />
             
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
             {/* {showCreatePost ? <CreatePost /> : null} */}
 
-            <RenderPopularPostsFromNyTimes />
+            {/* <RenderPopularPostsFromNyTimes /> */}
             
             {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
 
-            <RenderMostSharedPostsFromNyTimes />
+            {/* <RenderMostSharedPostsFromNyTimes /> */}
+
+            <ShowPostsFromThirdPartyApisBottomBunk />
 
             <Typography
                 onClick={handleShowMore}
@@ -136,6 +140,32 @@ function UserSpecificNewsFeeds(props) {
                 </Fab>
             </ScrollToTop>
         </Paper>
+    )
+}
+
+const ShowPostsFromThirdPartyApisBottomBunk = () => {
+    const appCtx = useContext(AppContexts);
+
+    let topics = appCtx.randomizedTopics.slice(2)
+
+    return (
+        <>
+        <RenderMostSharedPostsFromNyTimes />
+        {/* <ShowPostsFromTwitter topics={topics} /> */}
+        </>
+    )
+}
+
+const ShowPostsFromThirdPartyApisTopBunk = () => {
+    const appCtx = useContext(AppContexts);
+
+    let topics = appCtx.randomizedTopics.slice(0,2)
+
+    return (
+        <>
+        <RenderPopularPostsFromNyTimes />
+        {/* <ShowPostsFromTwitter topics={topics} /> */}
+        </>
     )
 }
 

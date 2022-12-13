@@ -46,7 +46,9 @@ export let useToFetchPostsFromNyTimes = (url) => {
         .then(resp => resp.json())
         .catch(err => console.log("response error", err))
         .then(dataset => {
-            setData(dataset.results)
+            let filtered = dataset.results.filter(item => item.media.length)
+            setData(filtered)
+            // setData(dataset.results)
         })
         .catch(err => console.log("somethings wrong!!", err))
     }

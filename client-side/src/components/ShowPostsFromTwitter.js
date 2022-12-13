@@ -6,51 +6,19 @@ import { AppContexts } from '../App';
 import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
-function ShowPostsFromTwitter() {
-  // let [topics, setTopics] = useState([])
-  // const fakeTopics = ["astronomy", "animalplanet"]
+function ShowPostsFromTwitter({topics}) {
+  // const appCtx = useContext(AppContexts);
 
-  const appCtx = useContext(AppContexts);
+  console.log(topics, "TOPICS!!")
 
-  // const randomlySelectSixTopics = () => {
-  //   let foundTopics = appCtx.user.topics;
-  //   let rndNum = Math.floor(Math.random() * foundTopics.length);
-  //   setTopics(prev => {
-  //     let chkIdx = prev.findIndex(topic => topic === foundTopics[rndNum])
-
-  //     let trimTopic = () => foundTopics[rndNum].split(" ").join("")
-
-  //     console.log(chkIdx, trimTopic(), "TOPIC")
-
-  //     return chkIdx === -1 ? [...prev, trimTopic()] : prev
-  //     // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   if(topics.length < 6 && appCtx.user?._id) {
-  //     randomlySelectSixTopics()
-  //   }
-  // }, [topics])
-
-  // useEffect(() => {
-  //   if(appCtx.user?._id) {
-  //     randomlySelectSixTopics()
-  //   } else {
-  //     const fakeTopics = ["astronomy", "animalplanet", "space", "nature", "life", "world"]
-  //     setTopics(fakeTopics)
-  //   }
-  // }, [])
-
-  console.log(appCtx?.randomizedTopics, "TOPICS!!")
-
-  let renderDataset = () => appCtx?.randomizedTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
-  // let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
+  // let renderDataset = () => appCtx?.randomizedTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
+  let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
   return (
     <Box>
       <Typography>Showing Post from Twitter</Typography>
-      {appCtx?.randomizedTopics.length ? renderDataset() : null}
+      {topics.length ? renderDataset() : null}
+      {/* {appCtx?.randomizedTopics.length ? renderDataset() : null} */}
     </Box>
   )
 }

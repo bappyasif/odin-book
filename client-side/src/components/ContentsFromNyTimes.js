@@ -15,7 +15,12 @@ function ContentsFromNyTimes() {
 export const RenderMostSharedPostsFromNyTimes = () => {
     let [mostSharedPosts, setMostSharedPosts] = useState([]);
 
-    let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/1/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
+    const periods = [1, 7, 30];
+
+    const rndGen = () => Math.floor(Math.random() * 3)
+
+    // let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/7/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
+    let url = `https://api.nytimes.com/svc/mostpopular/v2/shared/${periods[rndGen()]}/facebook.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
 
     let { data } = useToFetchPostsFromNyTimes(url)
 
@@ -35,7 +40,12 @@ export const RenderMostSharedPostsFromNyTimes = () => {
 export const RenderPopularPostsFromNyTimes = () => {
     let [popularPosts, setPopularPosts] = useState([]);
 
-    const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
+    const periods = [1, 7, 30];
+
+    const rndGen = () => Math.floor(Math.random() * 3)
+
+    const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/${periods[rndGen()]}.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
+    // const url = `https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=${process.env.REACT_APP_NY_TIMES_API_KEY}`
 
     let { data } = useToFetchPostsFromNyTimes(url)
 

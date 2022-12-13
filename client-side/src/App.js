@@ -32,6 +32,8 @@ function App() {
   let [userAccessiblePostsDataset, setUserAccessiblePostsDataset] = useState([])
   let [topics, setTopics] = useState([])
 
+  let location = useLocation()
+
   const randomlySelectSixTopics = () => {
     let foundTopics = user.topics;
     let rndNum = Math.floor(Math.random() * foundTopics.length);
@@ -46,8 +48,6 @@ function App() {
       // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
     })
   }
-  
-  let location = useLocation()
 
   let handleData = result => {
     // console.log(result, "result!!")
@@ -155,7 +155,6 @@ function App() {
 
   useEffect(() => {
     if(user?._id) {
-      // randomlySelectSixTopics()
       setTopics([])
     } else {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
