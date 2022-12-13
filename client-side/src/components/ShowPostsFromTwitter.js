@@ -1,6 +1,5 @@
 import { Twitter } from '@mui/icons-material';
-import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, IconButton, ImageList, ImageListItem, Link, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import { display } from '@mui/system';
+import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, IconButton, ImageList, ImageListItem, Link, Stack, Tooltip, Typography } from '@mui/material'
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
@@ -8,14 +7,50 @@ import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
 function ShowPostsFromTwitter() {
-  const fakeTopics = ["astronomy", "animalplanet"]
+  // let [topics, setTopics] = useState([])
+  // const fakeTopics = ["astronomy", "animalplanet"]
 
-  let renderDataset = () => fakeTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
+  const appCtx = useContext(AppContexts);
+
+  // const randomlySelectSixTopics = () => {
+  //   let foundTopics = appCtx.user.topics;
+  //   let rndNum = Math.floor(Math.random() * foundTopics.length);
+  //   setTopics(prev => {
+  //     let chkIdx = prev.findIndex(topic => topic === foundTopics[rndNum])
+
+  //     let trimTopic = () => foundTopics[rndNum].split(" ").join("")
+
+  //     console.log(chkIdx, trimTopic(), "TOPIC")
+
+  //     return chkIdx === -1 ? [...prev, trimTopic()] : prev
+  //     // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
+  //   })
+  // }
+
+  // useEffect(() => {
+  //   if(topics.length < 6 && appCtx.user?._id) {
+  //     randomlySelectSixTopics()
+  //   }
+  // }, [topics])
+
+  // useEffect(() => {
+  //   if(appCtx.user?._id) {
+  //     randomlySelectSixTopics()
+  //   } else {
+  //     const fakeTopics = ["astronomy", "animalplanet", "space", "nature", "life", "world"]
+  //     setTopics(fakeTopics)
+  //   }
+  // }, [])
+
+  console.log(appCtx?.randomizedTopics, "TOPICS!!")
+
+  let renderDataset = () => appCtx?.randomizedTopics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
+  // let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
   return (
     <Box>
       <Typography>Showing Post from Twitter</Typography>
-      {renderDataset()}
+      {appCtx?.randomizedTopics.length ? renderDataset() : null}
     </Box>
   )
 }
@@ -27,10 +62,6 @@ const ShowSearchTermData = ({ searchTerm }) => {
   let appCtx = useContext(AppContexts);
 
   let { dataset } = useToFetchSearchedTermedTwitterData(searchTerm)
-
-  const checkForDuplicatesTweets = (tweetsData) => {
-    // tweetsData.
-  }
 
   useEffect(() => {
     if (dataset?.data?.data?.length) {
@@ -78,10 +109,10 @@ export let RenderPost = ({ item, baseUrl, attachments }) => {
     extractAccountNameAndUserName()
   }, [item])
 
-  userData && console.log(userData, "userData!!")
+  // userData && console.log(userData, "userData!!")
 
   return (
-    userData?.data?.data.name
+    userData?.data?.data?.name
       ?
       <Card
         sx={{
@@ -117,7 +148,6 @@ const TweetCardContent = ({ item }) => {
 const TweetCardHeader = ({ userData, tweetUrl }) => {
   return (
     <CardHeader
-      // sx={{justifyContent: "start"}}
       avatar={
         <Avatar sx={{ width: "110px", height: "110px", objectFit: "contain" }}>
           <img width={110} height={110} src={userData?.data?.data.profile_image_url} />
@@ -149,7 +179,6 @@ const TweetCardHeader = ({ userData, tweetUrl }) => {
         </Tooltip>
       }
     >
-
     </CardHeader>
   )
 }
@@ -157,28 +186,12 @@ const TweetCardHeader = ({ userData, tweetUrl }) => {
 const ShowTweetMediaResources = ({ item, attachments }) => {
   let [mediaUrls, setMediaUrls] = useState([]);
 
-  // const handleMediaResources = () => {
-  //   attachments.media.forEach(mediaItem => {
-  //     item.attachments.media_keys.forEach(mediaKey => {
-  //       if((mediaKey === mediaItem.media_key) && mediaItem.url) {
-  //         setMediaUrls(prev => {
-  //           let chkIdx = prev.findIndex(urlStr => urlStr === mediaItem.url);
-  //           console.log(chkIdx, "mediaChck", mediaItem.url, prev)
-  //           return chkIdx === -1 ? [...prev, mediaItem.url] : prev
-  //         })
-  //       }
-  //     })
-  //   }) 
-  // }
-
   const handleMediaResources = () => {
     attachments.media.forEach(mediaItem => {
       item.attachments.media_keys.forEach(mediaKey => {
         if ((mediaKey === mediaItem.media_key) && (mediaItem.url || mediaItem.preview_image_url)) {
           setMediaUrls(prev => {
-            // let chkIdx = prev.findIndex(urlStr => urlStr === mediaItem.url);
             let chkIdx = prev.findIndex(item => (item.urlStr === mediaItem.url) || (item.urlStr === mediaItem.preview_image_url));
-            console.log(chkIdx, "mediaChck", mediaItem.url, prev)
             return chkIdx === -1 ? [...prev, { urlStr: (mediaItem.url || mediaItem.preview_image_url), type: mediaItem.type }] : prev
           })
         }
@@ -198,9 +211,9 @@ const ShowTweetMediaResources = ({ item, attachments }) => {
 
   return (
     <ImageList
-      sx={{
-        maxHeight: "330px"
-      }}
+      // sx={{
+      //   maxHeight: "330px"
+      // }}
       variant={"masonry"}
       cols={mediaUrls.length > 1 ? 2 : 1}
     >
@@ -223,80 +236,14 @@ const RenderMediaResource = ({ item, checkArrLength }) => {
   }
   return (
     <ImageListItem
-      sx={{
-        width: checkArrLength === 1 ? "100%" : "auto",
-        height: checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"
-      }}
+    // sx={{
+    //   width: checkArrLength === 1 ? "100%" : "auto",
+    //   height: checkArrLength === 1 ? "330px !important" : checkArrLength === 2 ? "330px !important" : "auto"
+    // }}
     >
       {decideElementMarkup()}
-      {/* <img
-        style={{ objectFit: "contain" }}
-        height={"inherit"}
-        src={item.urlStr}
-        loading={"lazy"}
-      /> */}
     </ImageListItem>
   )
 }
-
-// const ShowTweetMediaResources = ({ item, attachments }) => {
-//   let [mediaUrls, setMediaUrls] = useState([]);
-//   let [mediaIds, setMediaIds] = useState([]);
-
-//   let handleMediaResourceIds = () => {
-//     // console.log(item?.attachments?.media_keys?.length, "media", item?.attachments?.media_keys)
-//     if (item?.attachments?.media_keys?.length && attachments.media.length) {
-//       item.attachments.media_keys.forEach(mediaItem => {
-//         console.log(mediaItem, "mediaItem")
-//         setMediaIds(prev => [...prev, mediaItem])
-//       })
-//     }
-//   }
-
-//   const getMediaResourcesUrls = () => {
-//     attachments.media.forEach(mediaItem => {
-//       mediaIds.forEach(mediaId => {
-//         if (mediaId === mediaItem.media_key) {
-//           setMediaUrls(prev => [...prev, mediaItem.url])
-//         }
-//       })
-//     })
-
-//     setMediaIds([]);
-//   }
-
-//   useEffect(() => {
-//     if (mediaIds.length) {
-//       getMediaResourcesUrls()
-//     }
-//   }, [mediaIds])
-
-//   useEffect(() => {
-//     // setMediaIds([])
-//     console.log("RUNNING!!")
-//     handleMediaResourceIds()
-//   }, [])
-
-//   // useEffect(() => setMediaIds([]), [])
-
-//   console.log(mediaUrls, "mediaUrls", mediaIds);
-
-//   let renderUrlResources = () => mediaUrls.map(url => <RenderMediaResource key={url} url={url} checkArrLength={mediaUrls.length} />)
-
-//   return (
-//     <ImageList
-//       sx={{
-//         maxHeight: "330px"
-//         // width: mediaUrls.length === 1 ? "max-content" : "auto",
-//         // display: mediaUrls.length !== 1 ? "flex" : "inline-block"
-//       }}
-//       // variant={mediaUrls.length >= 2 ? 'masonry' : "standard"}
-//       variant={"masonry"}
-//     >
-//       {mediaUrls.length ? renderUrlResources() : null}
-//     </ImageList>
-//   )
-// }
-
 
 export default ShowPostsFromTwitter

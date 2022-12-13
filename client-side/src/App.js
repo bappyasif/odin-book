@@ -30,6 +30,23 @@ function App() {
   let [user, setUser] = useState([]);
   let [jwtUser, setJwtUser] = useState({});
   let [userAccessiblePostsDataset, setUserAccessiblePostsDataset] = useState([])
+  let [topics, setTopics] = useState([])
+
+  const randomlySelectSixTopics = () => {
+    let foundTopics = user.topics;
+    let rndNum = Math.floor(Math.random() * foundTopics.length);
+    setTopics(prev => {
+      let chkIdx = prev.findIndex(topic => topic === foundTopics[rndNum])
+
+      let trimTopic = () => foundTopics[rndNum].split(" ").join("")
+
+      console.log(chkIdx, trimTopic(), "TOPIC")
+      
+      return chkIdx === -1 ? [...prev, trimTopic()] : prev
+      // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
+    })
+  }
+  
   let location = useLocation()
 
   let handleData = result => {
@@ -110,7 +127,8 @@ function App() {
     updateUserProfileDataInApp: updateUserProfileDataInApp,
     clearCurrentUserData: clearCurrentUserData,
     getUser: getUser,
-    deletePostFromAvailablePostsFeeds: deletePostFromAvailablePostsFeeds
+    deletePostFromAvailablePostsFeeds: deletePostFromAvailablePostsFeeds,
+    randomizedTopics: topics
   }
 
   useEffect(() => {
@@ -122,6 +140,28 @@ function App() {
     // when jwtUser data is present we'll deal with this, and for simplicity making userData empty
     if (Object.keys(jwtUser).length !== 0) { setUser(jwtUser) }
   }, [jwtUser])
+
+  useEffect(() => {
+    if(topics.length < 4 && user?._id) {
+      randomlySelectSixTopics()
+    }
+  }, [topics])
+  
+  useEffect(() => {
+    if(user._id && user.topics) {
+      setTopics([])
+    }
+  }, [user._id])
+
+  useEffect(() => {
+    if(user?._id) {
+      // randomlySelectSixTopics()
+      setTopics([])
+    } else {
+      const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
+      setTopics(fakeTopics)
+    }
+  }, [])
 
   user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 
