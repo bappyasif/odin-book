@@ -52,7 +52,6 @@ export let useToFetchPostsFromNyTimes = (url) => {
                     setData(filtered)
                 } else if (dataset.response.docs) {
                     let tempData = [];
-                    console.log("still!!")
                     let data = dataset.response.docs
                     data.forEach(dataItem => {
                         let chkDuplicates = tempData.findIndex(article => article.abstract === dataItem.abstract)
@@ -81,20 +80,13 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
         let filtered = []
         // inserting all media attachments to match data rendering scheme
         filtered.push(result.data.data[0])
-        // making randomized tweets ready with all attachments as well
-        // setRandomTweets(prev => [...prev, result.data.data[0]]);
+
         // making sure there is no duplicates in dataset
         result.data.data.forEach(item => {
             let chkIdx = filtered.findIndex(tweetItem => (tweetItem.id === item.id))
             let chkAuthor = filtered.findIndex(tweetItem => (tweetItem.author_id === item.author_id))
             chkIdx === -1 && chkAuthor === -1 && filtered.push(item)
         })
-
-        // for (let i = 0; i < 2; i++) {
-        //     let rndGen = Math.floor(Math.random() * filtered.length)
-        //     // setRandomTweets(prev => [...prev, filtered[rndGen]])
-        //     // setRandomTweets(prev => prev.push(filtered[rndGen]))
-        // }
 
         setDataset(filtered)
     }
@@ -108,7 +100,6 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
     }, [url])
 
     useEffect(() => {
-        console.log(dataset.length && randomTweets.length, dataset.length, randomTweets.length, "!!")
         if (dataset.length && randomTweets.length < 3) {
             if (randomTweets.length === 0) {
                 setRandomTweets(prev => [...prev, dataset[0]])
@@ -120,9 +111,6 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
         }
     }, [dataset, randomTweets])
 
-    // console.log(searchKeyword, dataset, "twitter....")
-
-    // return { dataset }
     return { dataset: randomTweets }
 }
 

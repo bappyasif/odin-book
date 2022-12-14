@@ -1,21 +1,56 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone } from "@mui/icons-material";
+import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone } from "@mui/icons-material";
 import { H1Element, H4Element, NavElement, WrapperDiv } from './GeneralElements'
 import { MuiButtonElement, MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Button, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Button, ButtonGroup, Container, Divider, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
+
+// function MainNavigation() {
+//   let appCtx = useContext(AppContexts);
+
+//   return (
+//     <WrapperDiv className="nav-wrapper">
+//       <H1Element value={"OdBo"} />
+//       {/* <NavigationLinks /> */}
+//       {
+//         appCtx?.user?._id
+//           ?
+//           <>
+//             <NavsWhenUserAuthenticated appCtx={appCtx} />
+//             <FloatingAuthenticatedUserFunctionality appCtx={appCtx} />
+//           </>
+//           :
+//           <>
+//             <NavsWhenUserIsNotAuthenticated />
+//             <FloatingLogin />
+//           </>
+//       }
+//     </WrapperDiv>
+//   )
+// }
 
 function MainNavigation() {
   let appCtx = useContext(AppContexts);
 
   return (
-    <WrapperDiv className="nav-wrapper">
+    <AppBar
+      position="static"
+      variant='outlined'
+      sx={{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        backgroundColor: "darkgrey"
+      }}
+    >
+      {/* <Container maxWidth="xl"> */}
+      {/* <Toolbar> */}
       <H1Element value={"OdBo"} />
       {/* <NavigationLinks /> */}
+      {/* <Menu> */}
       {
         appCtx?.user?._id
           ?
@@ -29,17 +64,20 @@ function MainNavigation() {
             <FloatingLogin />
           </>
       }
-    </WrapperDiv>
+      {/* </Menu> */}
+      {/* </Toolbar> */}
+      {/* </Container> */}
+    </AppBar>
   )
 }
 
 const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   let [showDropdown, setShowDropdown] = useState(false)
-  
+
   let toggleDropdown = () => setShowDropdown(!showDropdown)
-  
+
   let closeDropdown = () => setShowDropdown(false);
-  
+
   return (
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
@@ -53,16 +91,16 @@ let ShowAuthUserDropdowns = ({ closeDropdown }) => {
   let options = [{ name: "Edit Profile", icon: null }, { name: "Logout", icon: null }]
 
   let renderOptions = () => options.map(item => <RenderDropDownOption key={item.name} item={item} closeDropdown={closeDropdown} />)
-  
+
   let ref = useRef();
-  
+
   useToCloseModalOnClickedOutside(ref, closeDropdown)
 
   return (
     <Stack
-      ref={ref} 
+      ref={ref}
       sx={{
-        position: "absolute", right: 0, top: "62px", 
+        position: "absolute", right: 0, top: "62px",
         gap: "9px", backgroundColor: "gainsboro", p: 2
       }}
     >
@@ -121,15 +159,107 @@ export let NavigationLinks = () => {
   )
 }
 
+// let NavsWhenUserIsNotAuthenticated = () => {
+//   return (
+//     <NavElement className="main-nav">
+//       <TabElement className={"nav-item"} labelText={"Feeds"} path={"/"} icon={<DynamicFeedSharp />} />
+//       <TabElement className={"nav-item"} labelText={"Login"} path={"login"} icon={<LoginTwoTone />} />
+//       <TabElement className={"nav-item"} labelText={"Register"} path={"register"} icon={<AppRegistrationTwoTone />} />
+//     </NavElement>
+//   )
+// }
+
 let NavsWhenUserIsNotAuthenticated = () => {
+  let buttonsProps = [
+    { text: "Feeds", route: "/", icon: <DynamicFeedTwoTone /> },
+    { text: "Login", route: "login", icon: <LoginTwoTone /> },
+    { text: "Register", route: "register", icon: <AppRegistrationTwoTone /> },
+  ]
+  let renderButtons = () => buttonsProps.map(item => <ButtonElement key={item.text} item={item} />)
   return (
-    <NavElement className="main-nav">
-      <TabElement className={"nav-item"} labelText={"Feeds"} path={"/"} icon={<DynamicFeedSharp />} />
-      <TabElement className={"nav-item"} labelText={"Login"} path={"login"} icon={<LoginTwoTone />} />
-      <TabElement className={"nav-item"} labelText={"Register"} path={"register"} icon={<AppRegistrationTwoTone />} />
-    </NavElement>
+    <ButtonGroup
+      sx={{
+        alignItems: "center",
+        gap: 2
+      }}
+      variant='outlined'
+    >
+      {renderButtons()}
+    </ButtonGroup>
   )
 }
+
+const ButtonElement = ({ item }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate(item.route)
+  }
+  
+  return (
+    <Button
+      onClick={handleClick}
+      sx={{
+        height: "fit-content"
+      }}
+      startIcon={item.icon}
+    >
+      <Typography variant='h6'>{item.text}</Typography>
+    </Button>
+  )
+}
+
+// let NavsWhenUserIsNotAuthenticated = () => {
+//   return (
+//     // <Menu
+//     //   // anchorEl={{
+//     //   //   vertical: 'bottom',
+//     //   //   horizontal: 'left',
+//     //   // }}
+//     //   open={true}
+//     //   // onClose={handleClose}
+//     //   anchorOrigin={{
+//     //     vertical: "bottom",
+//     //     horizontal: "left",
+//     //   }}
+//     //   transformOrigin={{
+//     //     vertical: "top",
+//     //     horizontal: "left",
+//     //   }}
+//     // >
+//     //   <MenuItem>
+//     //     HTML
+//     //   </MenuItem>
+//     //   <MenuItem>
+//     //     CSS
+//     //   </MenuItem>
+//     //   <MenuItem>
+//     //     Javascript
+//     //   </MenuItem>
+//     //   <Divider />
+//     // </Menu>
+//     <Menu
+//     open={true}
+//       id="menu-appbar"
+//       anchorOrigin={{
+//         vertical: 'top',
+//         horizontal: 'left',
+//       }}
+//       keepMounted={true}
+//       // transformOrigin={{
+//       //   vertical: 'top',
+//       //   horizontal: 'left',
+//       // }}
+//     >
+//       <MenuItem>Feeds</MenuItem>
+//       <MenuItem>Login</MenuItem>
+//       <MenuItem>Register</MenuItem>
+//       {/* <TabElement className={"nav-item"} labelText={"Feeds"} path={"/"} icon={<DynamicFeedSharp />} />
+//       <TabElement className={"nav-item"} labelText={"Login"} path={"login"} icon={<LoginTwoTone />} />
+//       <TabElement className={"nav-item"} labelText={"Register"} path={"register"} icon={<AppRegistrationTwoTone />} /> */}
+//     </Menu>
+//   )
+// }
 
 let NavsWhenUserAuthenticated = ({ appCtx }) => {
   return (

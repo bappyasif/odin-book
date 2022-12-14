@@ -29,11 +29,9 @@ const ShowSearchTermData = ({ searchTerm }) => {
 
   useEffect(() => {
     if (dataset?.length) {
-      // console.log(dataset)
       let slicedForTweets = dataset.slice(1)
       setTweetsData(slicedForTweets);
 
-      // console.log(dataset[0])
       let attachments = dataset[0];
       setTweetsAttachments(attachments)
     }
@@ -43,8 +41,6 @@ const ShowSearchTermData = ({ searchTerm }) => {
     setTweetsData([])
     setTweetsAttachments([])
   }, [])
-
-  // console.log(tweetsData, "tweetsData!!", tweetsAttachments)
 
   let renderPosts = () => tweetsData.map(item => <RenderPost key={item.id} item={item} baseUrl={appCtx.baseUrl} attachments={tweetsAttachments} />)
 

@@ -97,25 +97,17 @@ function UserSpecificNewsFeeds(props) {
 
     return (
         <Paper>
-            {/* <ContentsFromNyTimes /> */}
-
-            {/* <ShowPostsFromTwitter /> */}
-            
-            <ShowPostsFromThirdPartyApisTopBunk />
+            {/* <ShowPostsFromThirdPartyApisTopBunk /> */}
             
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
             {/* {showCreatePost ? <CreatePost /> : null} */}
-
-            {/* <RenderPopularPostsFromNyTimes /> */}
             
             {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
 
-            {/* <RenderMostSharedPostsFromNyTimes /> */}
-
-            <ShowPostsFromThirdPartyApisBottomBunk />
+            {/* <ShowPostsFromThirdPartyApisBottomBunk /> */}
 
             <Typography
                 onClick={handleShowMore}
