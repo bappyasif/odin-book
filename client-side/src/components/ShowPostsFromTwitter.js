@@ -42,6 +42,8 @@ const ShowSearchTermData = ({ searchTerm }) => {
     setTweetsAttachments([])
   }, [])
 
+  console.log(tweetsData, "tweetsData!!")
+
   let renderPosts = () => tweetsData.map(item => <RenderPost key={item.id} item={item} baseUrl={appCtx.baseUrl} attachments={tweetsAttachments} />)
 
   return (
@@ -163,7 +165,7 @@ const ShowTweetMediaResources = ({ item, attachments }) => {
 
   // console.log(mediaUrls, "mediaUrls")
 
-  let renderUrlResources = () => mediaUrls.map(item => <RenderMediaResource key={item} item={item} />)
+  let renderUrlResources = () => mediaUrls.map((item, idx) => <RenderMediaResource key={item+idx} item={item} />)
 
   return (
     <ImageList

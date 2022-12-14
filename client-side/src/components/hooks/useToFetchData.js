@@ -46,13 +46,58 @@ export let useToFetchPostsFromNyTimes = (url) => {
             .then(resp => resp.json())
             .catch(err => console.log("response error", err))
             .then(dataset => {
-                let data = dataset.results ? dataset.results : dataset.response.docs                
-                if (data?.asset_id) {
-                    let filtered = data?.filter(item => (item.media?.length))
-                    setData(filtered?.length ? filtered : [])
-                } else {
-                    setData(data)
+                if (dataset.results) {
+                    let data = dataset.results
+                    let filtered = data.filter(item => item.media.length);
+                    setData(filtered)
+                } else if (dataset.response.docs) {
+                    let tempData = [];
+                    console.log("still!!")
+                    let data = dataset.response.docs
+                    data.forEach(dataItem => {
+                        let chkDuplicates = tempData.findIndex(article => article.abstract === dataItem.abstract)
+                        chkDuplicates === -1 && tempData.push(dataItem)
+                    })
+                    setData(tempData)
                 }
+                let data = dataset.results ? dataset.results : dataset.response.docs
+                // console.log(data, "dataset", dataset, data?.asset_id)
+
+                // let filtered = data.filter(item => item.media.length);
+                // setData(filtered)
+                // console.log(filtered, "filtered")
+
+                // let filtered = [];
+                // data.forEach(item => {
+                //     console.log(item, item.media.length)
+                //     if(item?.media.length) {
+                //         filtered.push(item)
+                //     } else {
+                // // let tempData = [];
+                // console.log("still!!")
+                // let chkDuplicates = filtered.findIndex(article => article.abstract === item.abstract)
+                // chkDuplicates === -1 && filtered.push(item)
+                //     }
+                // })
+
+                // setData(filtered)
+
+                // if (data?.asset_id) {
+                //     // let filtered = data?.filter(item => (item.media?.length))
+                //     let filtered = data?.map(item => item.media.length ? item : false).filter(item => item)
+                //     console.log(filtered, "filtered")
+                //     setData(filtered?.length ? filtered : [])
+                // } else {
+                //     let tempData = [];
+                //     data.forEach(item => {
+                //         let chkDuplicates = tempData.findIndex(article => article.abstract === item.abstract)
+                //         chkDuplicates === -1 && tempData.push(item)
+                //     })
+
+                //     console.log("why?!!!")
+                //     setData(tempData)
+                //     // setData(data)
+                // }
             })
             .catch(err => console.log("somethings wrong!!", err, url))
     }
@@ -75,8 +120,12 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
         filtered.push(result.data.data[0])
         // making sure there is no duplicates in dataset
         result.data.data.forEach(item => {
-            let chkIdx = filtered.findIndex(tweetItem => tweetItem.id === item.id)
-            chkIdx === -1 && filtered.push(item)
+            let chkIdx = filtered.findIndex(tweetItem => (tweetItem.id === item.id))
+            let chkAuthor = filtered.findIndex(tweetItem => (tweetItem.author_id === item.author_id))
+            // chkIdx === -1 && chkAuthor === -1 && item.media && filtered.push(item)
+            // chkIdx === -1 && item.media && filtered.push(item)
+            // chkIdx === -1 && filtered.push(item)
+            chkIdx === -1 && chkAuthor === -1 && filtered.push(item)
         })
 
         setDataset(filtered)
