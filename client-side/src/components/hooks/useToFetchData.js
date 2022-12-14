@@ -60,44 +60,6 @@ export let useToFetchPostsFromNyTimes = (url) => {
                     })
                     setData(tempData)
                 }
-                let data = dataset.results ? dataset.results : dataset.response.docs
-                // console.log(data, "dataset", dataset, data?.asset_id)
-
-                // let filtered = data.filter(item => item.media.length);
-                // setData(filtered)
-                // console.log(filtered, "filtered")
-
-                // let filtered = [];
-                // data.forEach(item => {
-                //     console.log(item, item.media.length)
-                //     if(item?.media.length) {
-                //         filtered.push(item)
-                //     } else {
-                // // let tempData = [];
-                // console.log("still!!")
-                // let chkDuplicates = filtered.findIndex(article => article.abstract === item.abstract)
-                // chkDuplicates === -1 && filtered.push(item)
-                //     }
-                // })
-
-                // setData(filtered)
-
-                // if (data?.asset_id) {
-                //     // let filtered = data?.filter(item => (item.media?.length))
-                //     let filtered = data?.map(item => item.media.length ? item : false).filter(item => item)
-                //     console.log(filtered, "filtered")
-                //     setData(filtered?.length ? filtered : [])
-                // } else {
-                //     let tempData = [];
-                //     data.forEach(item => {
-                //         let chkDuplicates = tempData.findIndex(article => article.abstract === item.abstract)
-                //         chkDuplicates === -1 && tempData.push(item)
-                //     })
-
-                //     console.log("why?!!!")
-                //     setData(tempData)
-                //     // setData(data)
-                // }
             })
             .catch(err => console.log("somethings wrong!!", err, url))
     }
@@ -110,7 +72,8 @@ export let useToFetchPostsFromNyTimes = (url) => {
 }
 
 export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
-    let [dataset, setDataset] = useState({});
+    let [dataset, setDataset] = useState([]);
+    let [randomTweets, setRandomTweets] = useState([]);
 
     let appCtx = useContext(AppContexts);
 
@@ -118,15 +81,20 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
         let filtered = []
         // inserting all media attachments to match data rendering scheme
         filtered.push(result.data.data[0])
+        // making randomized tweets ready with all attachments as well
+        // setRandomTweets(prev => [...prev, result.data.data[0]]);
         // making sure there is no duplicates in dataset
         result.data.data.forEach(item => {
             let chkIdx = filtered.findIndex(tweetItem => (tweetItem.id === item.id))
             let chkAuthor = filtered.findIndex(tweetItem => (tweetItem.author_id === item.author_id))
-            // chkIdx === -1 && chkAuthor === -1 && item.media && filtered.push(item)
-            // chkIdx === -1 && item.media && filtered.push(item)
-            // chkIdx === -1 && filtered.push(item)
             chkIdx === -1 && chkAuthor === -1 && filtered.push(item)
         })
+
+        // for (let i = 0; i < 2; i++) {
+        //     let rndGen = Math.floor(Math.random() * filtered.length)
+        //     // setRandomTweets(prev => [...prev, filtered[rndGen]])
+        //     // setRandomTweets(prev => prev.push(filtered[rndGen]))
+        // }
 
         setDataset(filtered)
     }
@@ -134,12 +102,28 @@ export const useToFetchSearchedTermedTwitterData = (searchKeyword) => {
     let url = `${appCtx.baseUrl}/twitter/search/${searchKeyword}`
 
     useEffect(() => {
+        setDataset([])
+        setRandomTweets([])
         readDataFromServer(url, handleDataset)
     }, [url])
 
+    useEffect(() => {
+        console.log(dataset.length && randomTweets.length, dataset.length, randomTweets.length, "!!")
+        if (dataset.length && randomTweets.length < 3) {
+            if (randomTweets.length === 0) {
+                setRandomTweets(prev => [...prev, dataset[0]])
+            } else {
+                let rndGen = Math.floor(Math.random() * dataset.length)
+                let chkItm = randomTweets.findIndex(item => item.id === dataset[rndGen].id)
+                setRandomTweets(prev => chkItm === -1  ? [...prev, dataset[rndGen]] : prev)
+            }
+        }
+    }, [dataset, randomTweets])
+
     // console.log(searchKeyword, dataset, "twitter....")
 
-    return { dataset }
+    // return { dataset }
+    return { dataset: randomTweets }
 }
 
 export default useToFetchUserActionSpecificPostData
