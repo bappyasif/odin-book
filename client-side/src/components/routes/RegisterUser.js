@@ -1,17 +1,20 @@
+import { AppRegistrationTwoTone } from '@mui/icons-material';
+import { Button, FormControl, Input, InputLabel, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
 import React, { useContext, useState } from 'react'
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { AppContexts } from '../../App';
 import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../FormElements'
 import { H1Element, WrapperDiv } from '../GeneralElements'
 import ShowErrors from '../ShowErrors';
 import { sendDataToServer } from '../utils';
 
-function RegisterUser({handleData}) {
+function RegisterUser({ handleData }) {
     let [errors, setErrors] = useState([]);
     let [formData, setFormData] = useState({});
 
     let navigate = useNavigate()
-    
+
     const enpoint = useContext(AppContexts)
 
     let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
@@ -25,21 +28,32 @@ function RegisterUser({handleData}) {
 
     let handleSubmit = evt => {
         evt.preventDefault();
-        sendDataToServer(enpoint.baseUrl+"/register", formData, handleError, updateData)
+        sendDataToServer(enpoint.baseUrl + "/register", formData, handleError, updateData)
     }
-    
+
     let renderFieldsets = () => createFormWithThese.map(data => <RenderFieldset key={data.id} data={data} handleChange={handleChange} />)
-    
+
     return (
         <WrapperDiv className={"register-user"}>
             <H1Element value={"Register User"} />
-            
+
             {errors?.length ? <ShowErrors errors={errors} /> : null}
 
             <FormElement handleSubmit={handleSubmit}>
                 <LegendElement text={"Please enter all required fileds data(denoted by * next to them)"} />
-                {renderFieldsets()}
-                <SubmitButton text={"Register"} />
+                <Stack
+                    sx={{
+                        mt: 1.5,
+                        gap: .6,
+                        alignItems: "center",
+                        mb: 2
+                    }}
+                >
+                    {renderFieldsets()}
+                </Stack>
+                <Button type='submit' variant='contained' startIcon={<AppRegistrationTwoTone />}>
+                    <Typography variant='h6'>Register</Typography>
+                </Button>
             </FormElement>
         </WrapperDiv>
     )
@@ -49,10 +63,17 @@ let RenderFieldset = ({ data, handleChange }) => {
     let { id, labelText, type, placeholder, required } = { ...data }
 
     return (
-        <FieldsetElement>
-            <LabelElement forVal={id} text={labelText} />
-            <InputElement id={id} name={id} type={type} text={placeholder} required={required} handleChange={handleChange} />
-        </FieldsetElement>
+        <FormControl>
+            <InputLabel variant='filled' htmlFor={id}>{labelText}</InputLabel>
+            <Input
+                size='xl'
+                id={id}
+                type={type}
+                placeholder={placeholder}
+                required={required}
+                onChange={e => handleChange(e, id)}
+            />
+        </FormControl>
     )
 }
 

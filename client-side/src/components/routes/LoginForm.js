@@ -4,8 +4,8 @@ import { H1Element, WrapperDiv } from '../GeneralElements'
 import { sendDataToServer } from '../utils';
 import { AppContexts } from "../../App"
 import ShowErrors from '../ShowErrors';
-import { Box, Button, Fab, Icon, IconButton, LinearProgress, Paper, Stack, Typography } from '@mui/material';
-import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, Twitter } from '@mui/icons-material';
+import { Box, Button, Fab, FormControl, Icon, IconButton, Input, InputAdornment, InputLabel, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, LoginTwoTone, PasswordTwoTone, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
@@ -14,7 +14,6 @@ function LoginForm() {
     let [processingRequest, setProcessingRequest] = useState(null);
 
     const navigate = useNavigate()
-    const enpoint = useContext(AppContexts)
 
     const appCtx = useContext(AppContexts);
 
@@ -30,8 +29,7 @@ function LoginForm() {
         setProcessingRequest("success");
         appCtx.handleData(result)
         // navigate("/");
-        console.log(result, "result!!")
-        // result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+        // console.log(result, "result!!")
         setTimeout(() => {
             result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
         }, 1100)
@@ -40,9 +38,8 @@ function LoginForm() {
     let handleSubmit = evt => {
         evt.preventDefault();
         setProcessingRequest("loading");
-        // sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
         setTimeout(() => {
-            sendDataToServer(enpoint.baseUrl + "/login", formData, handleError, updateData)
+            sendDataToServer(appCtx.baseUrl + "/login", formData, handleError, updateData)
         }, 2000)
     }
     // console.log(formData, "formData!!");
@@ -61,15 +58,21 @@ function LoginForm() {
 
                 <FormElement handleSubmit={handleSubmit}>
                     <LegendElement text={"Enter your registered email and password"} />
-                    <FieldsetElement>
+
+                    <LoginFromControlComponent handleChange={handleChange} />
+
+                    {/* <FieldsetElement>
                         <LabelElement forVal={"email"} text="Email: " />
                         <InputElement type={"email"} id={"email"} name="email" value={"t@e.st"} handleChange={handleChange} text="enter email (e.g. t@e.st)" required={true} />
                     </FieldsetElement>
                     <FieldsetElement>
                         <LabelElement forVal={"password"} text="Password: " />
                         <InputElement type={"password"} id={"password"} name="password" value={"e.g.: p1a2s3s4w5o6r7d8"} handleChange={handleChange} text="enter password (e.g.: p1a2s3s4w5o6r7d8)" required={true} />
-                    </FieldsetElement>
-                    <SubmitButton text={"Login"} />
+                    </FieldsetElement> */}
+                    {/* <SubmitButton text={"Login"} /> */}
+                    <Button type='submit' variant='contained' startIcon={<LoginTwoTone />}>
+                        <Typography variant='h6'>Login</Typography>
+                    </Button>
                 </FormElement>
             </WrapperDiv>
 
@@ -79,11 +82,56 @@ function LoginForm() {
     )
 }
 
+const LoginFromControlComponent = ({ handleChange }) => {
+    const formControlElements = [
+        { name: "email", type: "email", text: "e.g. Email: example@domain.com", icon: <AccountCircleTwoTone /> },
+        { name: "password", type: "password", text: "e.g. Password: p1a2s3s4w5o6r7d8", icon: <PasswordTwoTone /> },
+    ]
+
+    let renderFormControls = () => formControlElements.map(item => <RenderFormControlElement key={item.name} item={item} handleChange={handleChange} />)
+    
+    return (
+        <Stack
+            sx={{
+                m: .8,
+                mb: 1.8
+            }}
+        >
+            {renderFormControls()}
+        </Stack>
+    )
+}
+
+export const RenderFormControlElement = ({ item, handleChange }) => {
+    return (
+        <FormControl
+            sx={{
+                mt: 2
+            }}
+        >
+            {/* <InputLabel htmlFor={item.name} sx={{textTransform: "capitalize"}}>{item.name} :</InputLabel> */}
+            <Input
+                name={item.name}
+                id={item.name}
+                type={item.type}
+                required={true}
+                onChange={e => handleChange(e, item.name)}
+                placeholder={item.text}
+                startAdornment={
+                    <InputAdornment position='start'>
+                        {item.icon}
+                    </InputAdornment>
+                }
+            />
+        </FormControl>
+    )
+}
+
 const ShowDataProcessingLoaders = ({ processingRequest }) => {
     let decideLoader = () => {
         let loader = null;
         if (processingRequest === "loading") {
-            loader = <LinearProgress sx={{height: "20px"}} />
+            loader = <LinearProgress sx={{ height: "20px" }} />
         } else if (processingRequest === "success") {
             loader = <RenderLoader icon={<Check />} announcement="Login Successfull" />
         } else if (processingRequest === "error") {
