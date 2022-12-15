@@ -8,16 +8,17 @@ import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderE
 import ChoosePrivacy from './ChoosePrivacy'
 import CreatePoll from './CreatePoll'
 import ShowUserPostMedias from './ShowUserPostMedias'
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
 import { useNavigate } from 'react-router-dom'
 
-function CreatePost({handleSuccessfullPostShared}) {
+function CreatePost({ handleSuccessfullPostShared }) {
   let [addedOptions, setAddedOptions] = useState({})
   let [errors, setErrors] = useState([])
   let [postData, setPostData] = useState([])
+  let [postText, setPostText] = useState(null)
 
   let ref = useRef();
 
@@ -42,16 +43,22 @@ function CreatePost({handleSuccessfullPostShared}) {
         : setAddedOptions(prev => ({ ...prev, current: elm }))
     } else {
       // console.log(evt.target)
+      // console.log(addedOptions["body"]?.length, "body length", evt.target.getContent().length)
+
       setAddedOptions(prev => ({ ...prev, [elm]: evt.target.getContent(), current: elm }))
     }
   }
 
   let createPost = () => {
-    if(appCtx.user._id) {
+    if (appCtx.user._id) {
       if (addedOptions.body) {
-        console.log("create post")
-        let url = `${appCtx.baseUrl}/posts/post/create/${appCtx.user._id}`
-        sendDataToServer(url, addedOptions, handleErrors, handlePostData)
+        if (addedOptions.body.length < 220) {
+          console.log("create post")
+          let url = `${appCtx.baseUrl}/posts/post/create/${appCtx.user._id}`
+          sendDataToServer(url, addedOptions, handleErrors, handlePostData)
+        } else {
+          alert("more than characters limit count found, maximum word count is 220")
+        }
       } else {
         alert("at least post text needs to be there")
       }
@@ -59,7 +66,7 @@ function CreatePost({handleSuccessfullPostShared}) {
       // setPromptLogin(!promptLogin)
       // re routing prompt for user consent to login page for authentication
       let choose = prompt("you need to be registered or authenticated before creating any post, do you want to proceed to login Page? Y || N", "Y")
-      if(choose === "Y" || choose === "y") {
+      if (choose === "Y" || choose === "y") {
         navigate("/login")
       }
     }
@@ -67,7 +74,7 @@ function CreatePost({handleSuccessfullPostShared}) {
 
   // useEffect(() => postData?.length && setAddedOptions({}), [postData])
 
-  console.log(addedOptions, "addedOptions!!", errors, postData)
+  // console.log(addedOptions, "addedOptions!!", errors, postData, postText)
 
   return (
     <ContainerElement width={"md"}>
@@ -80,14 +87,16 @@ function CreatePost({handleSuccessfullPostShared}) {
             joined={appCtx.user?.created || Date.now()}
           />
 
-          <form ref={ref}>
-            <CardContentElement>
-              <ShowRichTextEditor handleChange={handleAddedOptions} />
-            </CardContentElement>
-          </form>
+          <CardContentElement>
+            <form ref={ref} style={{position: "relative"}}>
+              <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
+              <VisualizeWordCountProgress postText={postText} maxLimit={220} />
+            </form>
+            <ShowUserPostMedias mediaContents={addedOptions} />
+          </CardContentElement>
 
           {/* showing user selected medias in post */}
-          <ShowUserPostMedias mediaContents={addedOptions} />
+          {/* <ShowUserPostMedias mediaContents={addedOptions} /> */}
 
           <Stack
             flexDirection={"row"}
@@ -100,8 +109,8 @@ function CreatePost({handleSuccessfullPostShared}) {
 
           <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
 
-          <Stack 
-            sx={{position: "relative"}}
+          <Stack
+            sx={{ position: "relative" }}
             onClick={createPost}
           >
             <Button variant='contained' endIcon={<PostAddTwoTone />}>
@@ -119,22 +128,86 @@ function CreatePost({handleSuccessfullPostShared}) {
   )
 }
 
-let ShowRichTextEditor = ({ handleChange }) => {
+const VisualizeWordCountProgress = ({postText, maxLimit}) => {
+  let [progress, setProgress] = useState(0);
+  
+  let handleProgress = () => {
+    let countPercentile = Math.round((postText?.length/maxLimit)*100)
+    if (postText?.length <= maxLimit) {
+      // console.log(countPercentile, "countPercentile", postText, (postText?.length/20), (postText?.length/20)*100)
+      // console.log(postText)
+      setProgress(countPercentile)
+    } else {
+      alert("character count limit exceeded!!")
+    }
+    // console.log(count, "progress")
+  }
+
+  useEffect(() => {
+    postText?.length && handleProgress()
+  }, [postText])
+
+  return (
+    <CircularProgress 
+      sx={{
+        position: "absolute",
+        right: 0,
+        top: 0,
+        zIndex: 9
+      }}
+      variant="determinate" 
+      value={progress} 
+    />
+  )
+}
+
+let ShowRichTextEditor = ({ handleChange, setPostText }) => {
+  // let handlePostBodyChange = (evt) => {
+  //   console.log(evt.target.getContent().length)
+  //   setPostText(evt.target.getContent())
+  //   handleChange(evt, 'body')
+  // }
   return (
     <>
       <Editor
         initialValue=" "
         init={{
           selector: 'textarea',  // change this value according to your HTML
+          init_instance_callback: function (editor) {
+            // editor.on('click', function (e) {
+            //   console.log('Element clicked:', e.target.nodeName);
+            // });
+            editor.on("keyup change", (e) => {
+              // const content = editor.getContent();
+              // console.log(content, "!!")
+              // console.log(e.target, editor.getContent())
+              
+              // let regExp = /^(<[a-z]+>)|^(<\/[a-z]+>)/g
+              // let regExp = /^(<[a-z]+>).^(<\/[a-z]+>)/g
+              // let regExp = /<[^>]*>|[&nbsp;]/g
+              // let preRe = /^[&nbsp;]/
+              let regExp = /<[^>]*>/g
+              setPostText(editor.getContent().replace(regExp, ''))
+
+              // console.log(editor.getContent().replace(regExp, ''))
+              // editor.getContent().match(regExp); // still getting tags matched
+              // editor.getContent().match(regExp)?.length
+              // console.log(editor.getContent().match(regExp), editor.getContent().match(regExp)?.length)
+              // setPostText(editor.getContent())
+              // setPostText(editor.getBody())
+            });
+          },
           height: 200,
           branding: false,
           menubar: false,
           preview_styles: false,
-          plugins: 'link code emoticons autolink',
-          toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | emoticons'
+          plugins: 'link code emoticons autolink wordcount',
+          toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | emoticons | wordcount',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:22px }'
         }}
         id="body"
         onChange={(e) => handleChange(e, 'body')}
+        // onChange={handlePostBodyChange}
       />
     </>
   )
