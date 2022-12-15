@@ -16,11 +16,8 @@ function EditUserProfile() {
     let appCtx = useContext(AppContexts);
 
     let updateUserEditTopicsDataFromChooser = (updatedTopicsList) => {
-        // setUserData(appCtx.user || fakeDataModel[0]);
-        // setUserData(prev => ({...prev, topics: appCtx.user.topics}));
-        // setUserData(prev => ({...prev, topics: updatedTopicsList, newTopics: updatedTopicsList}));
         setUserData({})
-        console.log(appCtx.user, "checkit", userData, updatedTopicsList)
+        // console.log(appCtx.user, "checkit", userData, updatedTopicsList)
         setReloadDataFlag(true);
     }
 
@@ -30,7 +27,11 @@ function EditUserProfile() {
             setUserData(prev => ({ ...prev, [elem]: temp }))
 
         } else {
-            setUserData(prev => ({ ...prev, [elem]: evt.target.value }))
+            if (evt.target.value.length < 220) {
+                setUserData(prev => ({ ...prev, [elem]: evt.target.value }))
+            } else {
+                alert("character limit of 220 has exceeded")
+            }
         }
     }
 
@@ -43,7 +44,7 @@ function EditUserProfile() {
         }
     }, [reloadDataFlag])
 
-    console.log(userData, "!!")
+    // console.log(userData, "!!")
 
     return (
         <Box>
@@ -116,6 +117,15 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
             let elem = key;
             let initialValue = data[key]
 
+            // checking if "bio" key exists in dataset, otherwise inserting it manually, it will happen just once
+            let allKeys = Object.keys(data);
+            let findBioIdx = allKeys.findIndex(val => val === "bio")
+            if (findBioIdx === -1) {
+                elem = "bio";
+                data["bio"] = ""
+                key = "bio"
+            }
+
             if (elem === "frSent" || elem === "frRecieved" || elem === "friends") {
                 initialValue = data[key].length;
 
@@ -124,7 +134,11 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
             } else if (elem === "topics") {
                 console.log(key, data[key], "checkcheck!!")
                 initialValue = data[key]
+            } else if (elem === "bio") {
+                console.log("elem?!", data[key], data[elem])
+                initialValue = data[key]
             }
+
 
             renderData.push(<RenderFormControlItem key={key} handleData={handleData} dataVal={initialValue} elem={key} updateTopicsDataFromChooser={updateTopicsDataFromChooser} />)
         }
@@ -144,7 +158,7 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
 
 let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromChooser }) => {
     let [showModal, setShowModal] = useState(false)
-    
+
     // let appCtx = useContext(AppContexts);
 
     let navigate = useNavigate()
@@ -158,6 +172,8 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
             label = "Friend Request Sent"
         } else if (elem === "frRecieved") {
             label = "Friend Request Recieved"
+        } else if (elem === "bio") {
+            label = "Profile Bio"
         } else {
             label = elem
         }
@@ -170,6 +186,8 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
 
         if (elem === "fullName") {
             label = "This how it will show up in your profile, can not be left empty"
+        } else if (elem === "bio") {
+            label = "This how it will show up in your profile, should not be left empty otherwise random text will showup on profile for bio section"
         } else if (elem === "topics") {
             label = "Make sure to use comma when adding new entries, should not be left empty or "
         } else if (elem === "ppUrl" || elem === "cpUrl") {
@@ -177,6 +195,8 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
         } else {
             label = "It's system generated and can not be altered directly"
         }
+
+        console.log(elem, "elem")
 
         return label
     }
@@ -209,7 +229,10 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
             {
                 elem === "bio"
                     ?
-                    <TextareaAutosize style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver" }} minRows={2} maxRows={4} cols={40} defaultValue={dataVal} onChange={e => handleData(e, elem)} />
+                    <>
+                        <Typography  sx={{textAlign: "justify", pl: "17px", fontSize: "26px"}}>{formatElemLabel()}</Typography>
+                        <TextareaAutosize style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver", marginLeft: "15px", fontSize: "20px" }} minRows={8} maxRows={4} cols={40} defaultValue={dataVal} maxLength={220} onChange={e => handleData(e, elem)} />
+                    </>
                     :
                     <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={e => handleData(e, elem)} />
             }
@@ -219,7 +242,7 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
     )
 }
 
-let OpenTopicsChooserModal = ({closeModal}) => {
+let OpenTopicsChooserModal = ({ closeModal }) => {
     let url = "/choose-topics"
 
     return (

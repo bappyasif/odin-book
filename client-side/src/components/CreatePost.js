@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom'
 function CreatePost({ handleSuccessfullPostShared }) {
   let [addedOptions, setAddedOptions] = useState({})
   let [errors, setErrors] = useState([])
-  let [postData, setPostData] = useState([])
   let [postText, setPostText] = useState(null)
 
   let ref = useRef();
@@ -29,7 +28,6 @@ function CreatePost({ handleSuccessfullPostShared }) {
   let handleErrors = data => setErrors(data.errors);
 
   let handlePostData = result => {
-    setPostData(result.post)
     setAddedOptions({})
     appCtx.updateAvailablePostsFeeds(result.post)
     ref.current.reset()
@@ -42,9 +40,6 @@ function CreatePost({ handleSuccessfullPostShared }) {
         ? setAddedOptions(prev => ({ ...prev, [elm]: val, current: elm }))
         : setAddedOptions(prev => ({ ...prev, current: elm }))
     } else {
-      // console.log(evt.target)
-      // console.log(addedOptions["body"]?.length, "body length", evt.target.getContent().length)
-
       setAddedOptions(prev => ({ ...prev, [elm]: evt.target.getContent(), current: elm }))
     }
   }
@@ -90,7 +85,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
           <CardContentElement>
             <form ref={ref} style={{position: "relative"}}>
               <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
-              <VisualizeWordCountProgress postText={postText} maxLimit={220} />
+              <VisualizeWordCountProgress textContent={postText} maxLimit={220} />
             </form>
             <ShowUserPostMedias mediaContents={addedOptions} />
           </CardContentElement>
@@ -128,32 +123,31 @@ function CreatePost({ handleSuccessfullPostShared }) {
   )
 }
 
-const VisualizeWordCountProgress = ({postText, maxLimit}) => {
+export const VisualizeWordCountProgress = ({textContent, maxLimit}) => {
   let [progress, setProgress] = useState(0);
   
   let handleProgress = () => {
-    let countPercentile = Math.round((postText?.length/maxLimit)*100)
-    if (postText?.length <= maxLimit) {
-      // console.log(countPercentile, "countPercentile", postText, (postText?.length/20), (postText?.length/20)*100)
-      // console.log(postText)
+    let countPercentile = Math.round((textContent?.length/maxLimit)*100)
+    if (textContent?.length <= maxLimit) {
       setProgress(countPercentile)
     } else {
       alert("character count limit exceeded!!")
     }
-    // console.log(count, "progress")
   }
 
   useEffect(() => {
-    postText?.length && handleProgress()
-  }, [postText])
+    textContent?.length && handleProgress()
+    textContent?.length === 0 && setProgress(0)
+  }, [textContent])
 
   return (
     <CircularProgress 
       sx={{
         position: "absolute",
         right: 0,
-        top: 0,
-        zIndex: 9
+        top: 1.1,
+        zIndex: 9,
+        color: progress === 100 ? "red" : "auto"
       }}
       variant="determinate" 
       value={progress} 
@@ -162,11 +156,6 @@ const VisualizeWordCountProgress = ({postText, maxLimit}) => {
 }
 
 let ShowRichTextEditor = ({ handleChange, setPostText }) => {
-  // let handlePostBodyChange = (evt) => {
-  //   console.log(evt.target.getContent().length)
-  //   setPostText(evt.target.getContent())
-  //   handleChange(evt, 'body')
-  // }
   return (
     <>
       <Editor
@@ -174,27 +163,9 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
         init={{
           selector: 'textarea',  // change this value according to your HTML
           init_instance_callback: function (editor) {
-            // editor.on('click', function (e) {
-            //   console.log('Element clicked:', e.target.nodeName);
-            // });
             editor.on("keyup change", (e) => {
-              // const content = editor.getContent();
-              // console.log(content, "!!")
-              // console.log(e.target, editor.getContent())
-              
-              // let regExp = /^(<[a-z]+>)|^(<\/[a-z]+>)/g
-              // let regExp = /^(<[a-z]+>).^(<\/[a-z]+>)/g
-              // let regExp = /<[^>]*>|[&nbsp;]/g
-              // let preRe = /^[&nbsp;]/
               let regExp = /<[^>]*>/g
               setPostText(editor.getContent().replace(regExp, ''))
-
-              // console.log(editor.getContent().replace(regExp, ''))
-              // editor.getContent().match(regExp); // still getting tags matched
-              // editor.getContent().match(regExp)?.length
-              // console.log(editor.getContent().match(regExp), editor.getContent().match(regExp)?.length)
-              // setPostText(editor.getContent())
-              // setPostText(editor.getBody())
             });
           },
           height: 200,
@@ -207,7 +178,6 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
         }}
         id="body"
         onChange={(e) => handleChange(e, 'body')}
-        // onChange={handlePostBodyChange}
       />
     </>
   )

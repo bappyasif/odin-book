@@ -1,8 +1,16 @@
 import { CancelTwoTone, Send } from '@mui/icons-material'
 import { Box, Button, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useState } from 'react'
+import { VisualizeWordCountProgress } from './CreatePost';
 
 function PostCommentModal({handleShowCommentModal, handleCommentText, handleCommentCounts}) {
+    let [commentText, setCommentText] = useState(null);
+
+    const handleText = evt => {
+        handleCommentText(evt)
+        setCommentText(evt.target.value)
+    }
+    
     return (
         <Box
             sx={{
@@ -14,9 +22,11 @@ function PostCommentModal({handleShowCommentModal, handleCommentText, handleComm
                 flexDirection: "column"
             }}
         >
-            <Typography>PostCommentModal</Typography>
+            <Typography variant='h4'>PostCommentModal</Typography>
 
-            <ShowTextarea handleCommentText={handleCommentText} />
+            <VisualizeWordCountProgress textContent={commentText} maxLimit={20} />
+
+            <ShowTextarea handleCommentText={handleText} />
 
             <ShowButtons handleCommentCounts={handleCommentCounts} handleShowCommentModal={handleShowCommentModal} />
 
@@ -75,7 +85,10 @@ const ShowButton = ({ item, handleShowCommentModal, handleCommentCounts }) => {
 const ShowTextarea = ({handleCommentText}) => {
     let [text, setText] = useState(null);
     
-    let handleTextChange = evt => setText(evt.target.value)
+    let handleTextChange = evt => {
+        setText(evt.target.value)
+        handleCommentText(evt)
+    }
     // console.log(text, "text!!")
 
     return (
@@ -83,7 +96,8 @@ const ShowTextarea = ({handleCommentText}) => {
             // onChange={handleTextChange}
             onChange={handleCommentText}
             rows="9" 
-            cols="69" 
+            cols="69"
+            maxLength={220}
             placeholder='type in your comment text here....'
         ></textarea>
     )

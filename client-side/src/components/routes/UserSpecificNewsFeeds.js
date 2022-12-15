@@ -103,7 +103,7 @@ function UserSpecificNewsFeeds(props) {
 
             {showCreatePost ? <CreatePost /> : null}
             
-            {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
+            {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
 
