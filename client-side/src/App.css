@@ -16,6 +16,20 @@
   align-items: center;
 }
 
+.wrapper-div.login-form {
+  padding: 11px;
+}
+
+/* .wrapper-div.login-form, */
+.wrapper-div.register-user {
+  position: relative;
+}
+
+.wrapper-div.show-errors {
+  position: absolute;
+  text-align: justify;
+}
+
 /* .cards-wrapper .all-cards {
   display: flex;
   justify-content: space-around;

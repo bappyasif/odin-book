@@ -8,10 +8,12 @@ import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement
 import { H1Element, WrapperDiv } from '../GeneralElements'
 import ShowErrors from '../ShowErrors';
 import { sendDataToServer } from '../utils';
+import { ShowDataProcessingLoaders } from './LoginForm';
 
 function RegisterUser({ handleData }) {
     let [errors, setErrors] = useState([]);
     let [formData, setFormData] = useState({});
+    let [processingRequest, setProcessingRequest] = useState(null);
 
     let navigate = useNavigate()
 
@@ -19,25 +21,42 @@ function RegisterUser({ handleData }) {
 
     let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
 
-    let handleError = data => setErrors(data.errors)
+    let handleError = data => {
+        setErrors(data.errors)
+        setProcessingRequest("error");
+        let timer = setTimeout(() => {
+            setProcessingRequest("")
+            if(timer >= 1700) clearTimeout(timer)
+        }, 1700)
+    }
 
     let updateData = result => {
+        setProcessingRequest("success");
         handleData(result)
-        navigate(result.user?.topics.length < 4 ? "/choose-topics" : "/");
+        let timer = setTimeout(() => {
+            navigate(result.user?.topics.length < 4 ? "/choose-topics" : "/");
+
+            if(timer >= 1100) clearTimeout(timer)
+        }, 1100)
     }
 
     let handleSubmit = evt => {
         evt.preventDefault();
-        sendDataToServer(enpoint.baseUrl + "/register", formData, handleError, updateData)
+        setProcessingRequest("loading");
+        let timer = setTimeout(() => {
+            sendDataToServer(enpoint.baseUrl + "/register", formData, handleError, updateData)
+            if(timer >= 1700) clearTimeout(timer)
+        }, 1700)
     }
 
     let renderFieldsets = () => createFormWithThese.map(data => <RenderFieldset key={data.id} data={data} handleChange={handleChange} />)
 
     return (
         <WrapperDiv className={"register-user"}>
+            <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <H1Element value={"Register User"} />
 
-            {errors?.length ? <ShowErrors errors={errors} /> : null}
+            {/* {errors?.length ? <ShowErrors errors={errors} /> : null} */}
 
             <FormElement handleSubmit={handleSubmit}>
                 <LegendElement text={"Please enter all required fileds data(denoted by * next to them)"} />
@@ -55,6 +74,7 @@ function RegisterUser({ handleData }) {
                     <Typography variant='h6'>Register</Typography>
                 </Button>
             </FormElement>
+            {errors?.length ? <ShowErrors errors={errors} /> : null}
         </WrapperDiv>
     )
 }

@@ -23,6 +23,10 @@ function LoginForm() {
     let handleError = data => {
         setErrors(data.errors);
         setProcessingRequest("error");
+        let timer = setTimeout(() => {
+            setProcessingRequest("")
+            if(timer >= 1700) clearTimeout(timer)
+        }, 1700)
     }
 
     let updateData = result => {
@@ -30,50 +34,47 @@ function LoginForm() {
         appCtx.handleData(result)
         // navigate("/");
         // console.log(result, "result!!")
-        setTimeout(() => {
+        let timer = setTimeout(() => {
             result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+            if(timer >= 1100) clearTimeout(timer)
         }, 1100)
     }
 
     let handleSubmit = evt => {
         evt.preventDefault();
         setProcessingRequest("loading");
-        setTimeout(() => {
+        let timer = setTimeout(() => {
             sendDataToServer(appCtx.baseUrl + "/login", formData, handleError, updateData)
-        }, 2000)
+            if(timer >= 1700) clearTimeout(timer)
+        }, 1700)
     }
     // console.log(formData, "formData!!");
     // console.log(errors, "errors!!")
 
     return (
         <Box
-            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative" }}
+            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative", gap: 6}}
         >
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
             <WrapperDiv className="login-form">
-                <H1Element value={"Login Form"} />
+                <Typography fontWeight={"bold"} fontSize={"42px"} variant='h3'>Login Form</Typography>
 
-                {errors?.length ? <ShowErrors errors={errors} /> : null}
+                {/* {errors?.length ? <ShowErrors errors={errors} /> : null} */}
 
                 <FormElement handleSubmit={handleSubmit}>
                     <LegendElement text={"Enter your registered email and password"} />
 
                     <LoginFromControlComponent handleChange={handleChange} />
 
-                    {/* <FieldsetElement>
-                        <LabelElement forVal={"email"} text="Email: " />
-                        <InputElement type={"email"} id={"email"} name="email" value={"t@e.st"} handleChange={handleChange} text="enter email (e.g. t@e.st)" required={true} />
-                    </FieldsetElement>
-                    <FieldsetElement>
-                        <LabelElement forVal={"password"} text="Password: " />
-                        <InputElement type={"password"} id={"password"} name="password" value={"e.g.: p1a2s3s4w5o6r7d8"} handleChange={handleChange} text="enter password (e.g.: p1a2s3s4w5o6r7d8)" required={true} />
-                    </FieldsetElement> */}
-                    {/* <SubmitButton text={"Login"} /> */}
-                    <Button type='submit' variant='contained' startIcon={<LoginTwoTone />}>
+                    <Button 
+                    // sx={{position: "relative"}} 
+                    type='submit' variant='contained' startIcon={<LoginTwoTone />}
+                    >
                         <Typography variant='h6'>Login</Typography>
                     </Button>
                 </FormElement>
+                {errors?.length ? <ShowErrors errors={errors} /> : null}
             </WrapperDiv>
 
             <ThirdPartyLoginOutlets />
@@ -127,7 +128,7 @@ export const RenderFormControlElement = ({ item, handleChange }) => {
     )
 }
 
-const ShowDataProcessingLoaders = ({ processingRequest }) => {
+export const ShowDataProcessingLoaders = ({ processingRequest }) => {
     let decideLoader = () => {
         let loader = null;
         if (processingRequest === "loading") {
@@ -145,8 +146,10 @@ const ShowDataProcessingLoaders = ({ processingRequest }) => {
         <Box
             sx={{
                 position: "absolute",
-                top: "-18px",
-                width: "100%"
+                top: processingRequest !== "loading" ? "2px" : "-18px",
+                width: "100%",
+                textAlign: processingRequest !== "loading" ? "justify" : "auto",
+                paddingLeft: processingRequest !== "loading" ? "13%" : "auto"
             }}
         >
             {decideLoader()}
@@ -225,6 +228,7 @@ let GuestUsers = ({ handleSubmit, setFormData }) => {
     let renderUsers = () => guestUsers.map(user => <RenderGuestUser key={user.name} item={user} handleSubmit={handleSubmit} setFormData={setFormData} />)
     return (
         <Box>
+            <Typography variant='h2'>Guest Accounts</Typography>
             {renderUsers()}
         </Box>
     )

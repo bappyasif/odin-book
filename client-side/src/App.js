@@ -142,7 +142,7 @@ function App() {
   }, [jwtUser])
 
   useEffect(() => {
-    if(topics.length < 4 && user?._id) {
+    if(topics.length && topics.length < 4 && user?._id) {
       randomlySelectSixTopics()
     }
   }, [topics])

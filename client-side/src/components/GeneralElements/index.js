@@ -42,7 +42,7 @@ let OlElement = props => {
 }
 
 let LiElement = (props) => {
-    return <li>{props.msg}</li>
+    return <li style={{listStyle: "inside"}}>{props.msg}</li>
 }
 
 let LinkElement = ({className, value, path}) => {
