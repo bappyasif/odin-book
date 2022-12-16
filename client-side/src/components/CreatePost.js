@@ -85,7 +85,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
           <CardContentElement>
             <form ref={ref} style={{position: "relative"}}>
               <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
-              <VisualizeWordCountProgress textContent={postText} maxLimit={220} />
+              <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
             </form>
             <ShowUserPostMedias mediaContents={addedOptions} />
           </CardContentElement>
@@ -123,7 +123,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
   )
 }
 
-export const VisualizeWordCountProgress = ({textContent, maxLimit}) => {
+export const VisualizeWordCountProgress = ({textContent, maxLimit, smallerSize, topPlacingUnits}) => {
   let [progress, setProgress] = useState(0);
   
   let handleProgress = () => {
@@ -144,13 +144,16 @@ export const VisualizeWordCountProgress = ({textContent, maxLimit}) => {
     <CircularProgress 
       sx={{
         position: "absolute",
-        right: 0,
-        top: 1.1,
+        right: "4px",
+        top: topPlacingUnits ? topPlacingUnits : 1.1,
         zIndex: 9,
+        height: smallerSize ? "31px !important" : "auto",
+        width: smallerSize ? "29px !important" : "auto",
         color: progress === 100 ? "red" : "auto"
       }}
       variant="determinate" 
-      value={progress} 
+      value={progress}
+      // size="xs" 
     />
   )
 }

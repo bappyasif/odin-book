@@ -4,6 +4,7 @@ import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
+import { VisualizeWordCountProgress } from '../CreatePost'
 import { fakeDataModel } from '../UserProfileInfoSection'
 import { updateDataInDatabase } from '../utils'
 import ChooseTopics from './ChooseTopics'
@@ -27,10 +28,14 @@ function EditUserProfile() {
             setUserData(prev => ({ ...prev, [elem]: temp }))
 
         } else {
-            if (evt.target.value.length < 220) {
+            if (
+                elem === "bio" && evt.target.value.length < 220
+                ||
+                elem === "fullName" && evt.target.value.length < 72
+            ) {
                 setUserData(prev => ({ ...prev, [elem]: evt.target.value }))
             } else {
-                alert("character limit of 220 has exceeded")
+                alert(`character limit of ${elem === "bio" ? 220 : 72} has exceeded`)
             }
         }
     }
@@ -158,6 +163,12 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
 
 let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromChooser }) => {
     let [showModal, setShowModal] = useState(false)
+    let [editableText, setEditableText] = useState(null);
+
+    const handleEditableText = evt => {
+        setEditableText(evt.target.value);
+        handleData(evt, elem)
+    }
 
     // let appCtx = useContext(AppContexts);
 
@@ -224,19 +235,35 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
     elem === "topics" && console.log(dataVal, "checkcheckchekc")
 
     return (
-        <FormControl sx={{ m: 2 }} disabled={check} value>
+        <FormControl sx={{ m: 2, position: "relative" }} disabled={check} value>
+            
+            {
+                elem === "bio" 
+                || 
+                elem === "fullName"
+                ? <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={elem === "bio" ? 220 : 72} smallerSize={true} topPlacingUnits={elem === "fullName" ? "-13.9px" : "4.11px"} />
+                : null
+            }
+            
             {elem !== "bio" ? <InputLabel sx={{ textTransform: "capitalize", fontSize: 26, fontWeight: "bold" }} htmlFor={elem}>{formatElemLabel()}</InputLabel> : null}
             {
                 elem === "bio"
                     ?
                     <>
                         <Typography  sx={{textAlign: "justify", pl: "17px", fontSize: "26px"}}>{formatElemLabel()}</Typography>
-                        <TextareaAutosize style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver", marginLeft: "15px", fontSize: "20px" }} minRows={8} maxRows={4} cols={40} defaultValue={dataVal} maxLength={220} onChange={e => handleData(e, elem)} />
+                        <TextareaAutosize placeholder='e.g. your bio text should go here, tell everybody how aweeesomeee you are :-)' style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver", marginLeft: "15px", fontSize: "20px", outline: "1.1px solid skyblue" }} minRows={8} maxRows={4} cols={40} defaultValue={dataVal} maxLength={220} onChange={handleEditableText} />
+                        {/* <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> */}
                     </>
                     :
-                    <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={e => handleData(e, elem)} />
+                    <>
+                    <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={handleEditableText} />
+                    {/* <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> */}
+                    </>
+                    // <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={e => handleData(e, elem)} />
             }
             <Typography variant="subtitle1" sx={{ color: "darkgrey", textAlign: "left", pl: 2, position: "relative" }}>{showHelperText()} {showClickableIframeLink()}</Typography>
+            {/* {elem === "fullName" ? <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> : null} */}
+            
             {showModal ? <OpenTopicsChooserModal closeModal={closeModal} /> : null}
         </FormControl>
     )

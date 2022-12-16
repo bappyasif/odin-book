@@ -101,9 +101,9 @@ function UserSpecificNewsFeeds(props) {
             
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
-            {showCreatePost ? <CreatePost /> : null}
+            {/* {showCreatePost ? <CreatePost /> : null} */}
             
-            {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
+            {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
 
