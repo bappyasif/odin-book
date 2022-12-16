@@ -232,7 +232,7 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
         return btn;
     }
 
-    elem === "topics" && console.log(dataVal, "checkcheckchekc")
+    // elem === "topics" && console.log(dataVal, "checkcheckchekc")
 
     return (
         <FormControl sx={{ m: 2, position: "relative" }} disabled={check} value>
@@ -252,17 +252,13 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
                     <>
                         <Typography  sx={{textAlign: "justify", pl: "17px", fontSize: "26px"}}>{formatElemLabel()}</Typography>
                         <TextareaAutosize placeholder='e.g. your bio text should go here, tell everybody how aweeesomeee you are :-)' style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver", marginLeft: "15px", fontSize: "20px", outline: "1.1px solid skyblue" }} minRows={8} maxRows={4} cols={40} defaultValue={dataVal} maxLength={220} onChange={handleEditableText} />
-                        {/* <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> */}
                     </>
                     :
                     <>
                     <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={handleEditableText} />
-                    {/* <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> */}
                     </>
-                    // <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={e => handleData(e, elem)} />
             }
             <Typography variant="subtitle1" sx={{ color: "darkgrey", textAlign: "left", pl: 2, position: "relative" }}>{showHelperText()} {showClickableIframeLink()}</Typography>
-            {/* {elem === "fullName" ? <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={220} smallerSize={true} /> : null} */}
             
             {showModal ? <OpenTopicsChooserModal closeModal={closeModal} /> : null}
         </FormControl>

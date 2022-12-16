@@ -123,7 +123,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
   )
 }
 
-export const VisualizeWordCountProgress = ({textContent, maxLimit, smallerSize, topPlacingUnits}) => {
+export const VisualizeWordCountProgress = ({forRegister, forLogin, textContent, maxLimit, smallerSize, topPlacingUnits}) => {
   let [progress, setProgress] = useState(0);
   
   let handleProgress = () => {
@@ -144,7 +144,8 @@ export const VisualizeWordCountProgress = ({textContent, maxLimit, smallerSize, 
     <CircularProgress 
       sx={{
         position: "absolute",
-        right: "4px",
+        right: (!forLogin || !forRegister) ? "4px" : "auto",
+        left: forLogin ? "-2px" : forRegister ? "-35px" : "auto",
         top: topPlacingUnits ? topPlacingUnits : 1.1,
         zIndex: 9,
         height: smallerSize ? "31px !important" : "auto",

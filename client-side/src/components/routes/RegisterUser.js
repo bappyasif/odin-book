@@ -1,9 +1,10 @@
 import { AppRegistrationTwoTone } from '@mui/icons-material';
 import { Button, FormControl, Input, InputLabel, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import { AppContexts } from '../../App';
+import { VisualizeWordCountProgress } from '../CreatePost';
 import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../FormElements'
 import { H1Element, WrapperDiv } from '../GeneralElements'
 import ShowErrors from '../ShowErrors';
@@ -26,7 +27,7 @@ function RegisterUser({ handleData }) {
         setProcessingRequest("error");
         let timer = setTimeout(() => {
             setProcessingRequest("")
-            if(timer >= 1700) clearTimeout(timer)
+            if (timer >= 1700) clearTimeout(timer)
         }, 1700)
     }
 
@@ -36,7 +37,7 @@ function RegisterUser({ handleData }) {
         let timer = setTimeout(() => {
             navigate(result.user?.topics.length < 4 ? "/choose-topics" : "/");
 
-            if(timer >= 1100) clearTimeout(timer)
+            if (timer >= 1100) clearTimeout(timer)
         }, 1100)
     }
 
@@ -45,7 +46,7 @@ function RegisterUser({ handleData }) {
         setProcessingRequest("loading");
         let timer = setTimeout(() => {
             sendDataToServer(enpoint.baseUrl + "/register", formData, handleError, updateData)
-            if(timer >= 1700) clearTimeout(timer)
+            if (timer >= 1700) clearTimeout(timer)
         }, 1700)
     }
 
@@ -81,9 +82,37 @@ function RegisterUser({ handleData }) {
 
 let RenderFieldset = ({ data, handleChange }) => {
     let { id, labelText, type, placeholder, required } = { ...data }
+    let [userInput, setUserInput] = useState(null);
+    let [maxLimit, setMaxLimit] = useState()
+
+    const handleUserInputChange = evt => {
+        let currentLength = evt.target.value.length
+        
+        if (
+            id === "fullname" && currentLength <= maxLimit
+            ||
+            id === "email" && currentLength <= maxLimit
+            ||
+            id === "password" && currentLength <= maxLimit
+            ||
+            id === "confirm" && currentLength <= maxLimit
+        ) {
+            setUserInput(evt.target.value)
+            handleChange(evt, id)
+        } else {
+            // let maxLimit = id === "fullName" ? 72 : id === "email" ? 45 : 89;
+            alert(`${id} has exceeded its maximum limit of ${maxLimit}`)
+        }
+    }
+
+    useEffect(() => {
+        // console.log(id, "regiuster ids")
+        let maxLimit = id === "fullname" ? 72 : id === "email" ? 45 : 89;
+        setMaxLimit(maxLimit)
+    }, [])
 
     return (
-        <FormControl>
+        <FormControl sx={{position: "relative"}}>
             <InputLabel variant='filled' htmlFor={id}>{labelText}</InputLabel>
             <Input
                 size='xl'
@@ -91,8 +120,10 @@ let RenderFieldset = ({ data, handleChange }) => {
                 type={type}
                 placeholder={placeholder}
                 required={required}
-                onChange={e => handleChange(e, id)}
+                onChange={handleUserInputChange}
+            // onChange={e => handleChange(e, id)}
             />
+            <VisualizeWordCountProgress topPlacingUnits={"14.1px"} maxLimit={maxLimit} smallerSize={true} textContent={userInput} forRegister={true} />
         </FormControl>
     )
 }

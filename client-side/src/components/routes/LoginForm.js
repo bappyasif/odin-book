@@ -7,6 +7,7 @@ import ShowErrors from '../ShowErrors';
 import { Box, Button, Fab, FormControl, Icon, IconButton, Input, InputAdornment, InputLabel, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, LoginTwoTone, PasswordTwoTone, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { VisualizeWordCountProgress } from '../CreatePost';
 
 function LoginForm() {
     let [errors, setErrors] = useState([]);
@@ -25,7 +26,7 @@ function LoginForm() {
         setProcessingRequest("error");
         let timer = setTimeout(() => {
             setProcessingRequest("")
-            if(timer >= 1700) clearTimeout(timer)
+            if (timer >= 1700) clearTimeout(timer)
         }, 1700)
     }
 
@@ -36,7 +37,7 @@ function LoginForm() {
         // console.log(result, "result!!")
         let timer = setTimeout(() => {
             result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
-            if(timer >= 1100) clearTimeout(timer)
+            if (timer >= 1100) clearTimeout(timer)
         }, 1100)
     }
 
@@ -45,7 +46,7 @@ function LoginForm() {
         setProcessingRequest("loading");
         let timer = setTimeout(() => {
             sendDataToServer(appCtx.baseUrl + "/login", formData, handleError, updateData)
-            if(timer >= 1700) clearTimeout(timer)
+            if (timer >= 1700) clearTimeout(timer)
         }, 1700)
     }
     // console.log(formData, "formData!!");
@@ -53,7 +54,7 @@ function LoginForm() {
 
     return (
         <Box
-            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative", gap: 6}}
+            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative", gap: 6 }}
         >
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
@@ -67,9 +68,9 @@ function LoginForm() {
 
                     <LoginFromControlComponent handleChange={handleChange} />
 
-                    <Button 
-                    // sx={{position: "relative"}} 
-                    type='submit' variant='contained' startIcon={<LoginTwoTone />}
+                    <Button
+                        // sx={{position: "relative"}} 
+                        type='submit' variant='contained' startIcon={<LoginTwoTone />}
                     >
                         <Typography variant='h6'>Login</Typography>
                     </Button>
@@ -90,7 +91,7 @@ const LoginFromControlComponent = ({ handleChange }) => {
     ]
 
     let renderFormControls = () => formControlElements.map(item => <RenderFormControlElement key={item.name} item={item} handleChange={handleChange} />)
-    
+
     return (
         <Stack
             sx={{
@@ -104,19 +105,34 @@ const LoginFromControlComponent = ({ handleChange }) => {
 }
 
 export const RenderFormControlElement = ({ item, handleChange }) => {
+    let [userInput, setUserInput] = useState("")
+
+    const handleUserInput = (evt) => {
+        if (
+            item.name === "email" && evt.target.value.length < 45
+            ||
+            item.name === "password" && evt.target.value.length < 90
+        ) {
+            setUserInput(evt.target.value);
+            handleChange(evt, item.name)
+        } else {
+            alert(`${item.name} limit of ${item.name === "email" ? 44 : 89} has eceeded`)
+        }
+    }
     return (
         <FormControl
             sx={{
-                mt: 2
+                mt: 2,
+                position: "relative"
             }}
         >
-            {/* <InputLabel htmlFor={item.name} sx={{textTransform: "capitalize"}}>{item.name} :</InputLabel> */}
             <Input
                 name={item.name}
                 id={item.name}
                 type={item.type}
                 required={true}
-                onChange={e => handleChange(e, item.name)}
+                onChange={handleUserInput}
+                // onChange={e => handleChange(e, item.name)}
                 placeholder={item.text}
                 startAdornment={
                     <InputAdornment position='start'>
@@ -124,6 +140,7 @@ export const RenderFormControlElement = ({ item, handleChange }) => {
                     </InputAdornment>
                 }
             />
+            <VisualizeWordCountProgress smallerSize={true} textContent={userInput} maxLimit={item.name === "email" ? 44 : 89} forLogin={true} topPlacingUnits={"0.371px"} />
         </FormControl>
     )
 }
@@ -134,9 +151,9 @@ export const ShowDataProcessingLoaders = ({ processingRequest }) => {
         if (processingRequest === "loading") {
             loader = <LinearProgress sx={{ height: "20px" }} />
         } else if (processingRequest === "success") {
-            loader = <RenderLoader icon={<Check />} announcement="Login Successfull" />
+            loader = <RenderLoader icon={<Check />} announcement="Authentication Successfull" />
         } else if (processingRequest === "error") {
-            loader = <RenderLoader icon={<Error />} announcement="Login Error" />
+            loader = <RenderLoader icon={<Error />} announcement="Authentication Error" />
         }
 
         return loader;
@@ -149,7 +166,7 @@ export const ShowDataProcessingLoaders = ({ processingRequest }) => {
                 top: processingRequest !== "loading" ? "2px" : "-18px",
                 width: "100%",
                 textAlign: processingRequest !== "loading" ? "justify" : "auto",
-                paddingLeft: processingRequest !== "loading" ? "13%" : "auto"
+                paddingLeft: processingRequest !== "loading" ? "2px" : "auto"
             }}
         >
             {decideLoader()}
@@ -158,11 +175,18 @@ export const ShowDataProcessingLoaders = ({ processingRequest }) => {
 }
 
 let RenderLoader = ({ icon, announcement }) => {
+    let [bgColor, setBgColor] = useState(null);
+    
+    useEffect(() => {
+        setBgColor(announcement === "Authentication Error" ? "maroon" : announcement === "Authentication Successfull" ? "aquamarine" : "auto")
+    }, [announcement])
+
     return (
         <Fab
             variant='extended'
             sx={{
-                cursor: "auto", width: "fit-content", p: 1.1
+                cursor: "auto", width: "fit-content", p: 1.1,
+                backgroundColor: bgColor
             }}
             aria-label="user log in successfull" color="primary"
         >
