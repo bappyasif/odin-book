@@ -32,11 +32,11 @@ const TabElementWithoutLink = ({ icon, labelText }) => {
     return <Tab icon={icon} label={labelText} />
 }
 
-const MuiInputElement = ({ id, type, handleChange, text, required, color, error }) => {
+const MuiInputElement = ({ id, type, handleChange, text, required, color, error, fontSize }) => {
     console.log(error)
     return (
         <Input
-            sx={{ border: 2, margin: 1.1, width: "263px", color: color, borderColor: "secondary.main" }}
+            sx={{ fontSize: fontSize ? fontSize : "auto", border: 0, margin: 1.1, width: "263px", color: color, backgroundColor: error ? "GrayText" : "transparent", borderColor: "primary.main" }}
             id={id}
             name={id}
             type={type}
@@ -51,9 +51,9 @@ const MuiInputElement = ({ id, type, handleChange, text, required, color, error 
     )
 }
 
-const MuiButtonElement = ({ type, text }) => {
+const MuiButtonElement = ({ type, text, fullWidth=false }) => {
     return (
-        <Button variant="contained" color={"success"} type={type} sx={{ borderRadius: 9 }}>{text}</Button>
+        <Button fullWidth={fullWidth} variant="contained" color={"success"} type={type} sx={{ borderRadius: 9 }}>{text}</Button>
     )
 }
 

@@ -5,21 +5,21 @@ import { MuiButtonElement, MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AppBar, Avatar, Button, ButtonGroup, Container, Divider, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Button, ButtonGroup, Container, Divider, FormControl, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
 function MainNavigation() {
   let [showFloatingLogin, setShowFloatingLogin] = useState(true)
-  
+
   let appCtx = useContext(AppContexts);
-  
+
   const location = useLocation()
 
   useEffect(() => {
-    if(location.pathname === "/login") {
+    if (location.pathname === "/login") {
       setShowFloatingLogin(false)
-    } else if(location.pathname === "/register") {
+    } else if (location.pathname === "/register") {
       setShowFloatingLogin(false)
     } else {
       setShowFloatingLogin(true)
@@ -150,7 +150,7 @@ let NavsWhenUserIsNotAuthenticated = () => {
   ]
 
   let renderButtons = () => buttonsProps.map(item => <ButtonElement key={item.text} item={item} />)
-  
+
   return (
     <ButtonGroup
       sx={{
@@ -171,9 +171,9 @@ let NavsWhenUserAuthenticated = ({ appCtx }) => {
     { text: "Friendships", route: "user-friendships", icon: <PeopleTwoTone /> },
     { text: "Profile", route: `users/${appCtx.user?._id}/profile`, icon: <PersonTwoTone /> },
   ]
-  
+
   let renderButtons = () => buttonsProps.map(item => <ButtonElement key={item.text} item={item} />)
-  
+
   return (
     <ButtonGroup
       sx={{
@@ -189,7 +189,7 @@ let NavsWhenUserAuthenticated = ({ appCtx }) => {
 
 const ButtonElement = ({ item }) => {
   const navigate = useNavigate();
-  
+
   const handleClick = () => {
     navigate(item.route)
   }
@@ -197,8 +197,16 @@ const ButtonElement = ({ item }) => {
   return (
     <Button
       onClick={handleClick}
+      variant={"text"}
+      color={"info"}
       sx={{
-        height: "fit-content"
+        height: "fit-content",
+        '&:hover': {
+          backgroundColor: 'primary.main',
+          opacity: .8,
+          borderRadius: "11px",
+          color: "gainsboro"
+        },
       }}
       startIcon={item.icon}
     >
@@ -215,9 +223,18 @@ let FloatingLogin = () => {
   const navigate = useNavigate();
   const ref = React.useRef(null);
 
-  let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
+  let handleChange = (evt, elm) => {
+    let currentLength = evt.target.value.length;
+    if (currentLength >= 0 && currentLength < 90) {
+      setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
+    } else {
+      alert(`you have exceeded ${elm} maximum limit of 89`)
+    }
+  }
 
-  let handleError = data => setErrors(data.errors)
+  let handleError = data => {
+    setErrors(data.errors)
+  }
 
   let updateData = result => {
     appCtx.handleData(result)
@@ -234,27 +251,55 @@ let FloatingLogin = () => {
 
   return (
     <WrapperDiv className="fl-wrapper">
-      <H4Element value={"Login to your profile"} />
-      <form ref={ref} method={"post"} onSubmit={handleSubmit}>
-        <MuiInputElement
-          type={"email"}
-          id={"email"}
-          handleChange={handleChange}
-          text="enter email (e.g. t@e.st)"
-          required={true}
-          color={errors?.length ? "error" : "success"}
-          error={errors?.length ? true : false}
-        />
-        <MuiInputElement
-          type={"password"}
-          id={"password"}
-          handleChange={handleChange}
-          text="enter password"
-          required={true}
-          color={errors?.length ? "error" : "success"}
-          error={errors?.length ? true : false}
-        />
-        <MuiButtonElement type={"submit"} text="Login" />
+      {/* <H4Element value={"Login to your profile"} /> */}
+      <Typography variant='h5'>Login to your profile from here</Typography>
+      <form 
+        ref={ref} method={"post"} onSubmit={handleSubmit}
+        style={{position: "relative", marginLeft: "11px"}}
+      >
+        {errors?.length ? <Typography variant='body2' sx={{position: "absolute", color: "maroon", bottom: "-13px", left: "10.1px"}}>User email and password does not match!!</Typography> : null}
+
+        <Stack
+          sx={{
+            flexDirection: "row",
+            alignItems: "baseline"
+          }}
+        >
+          <FormControl>
+            <MuiInputElement
+              type={"email"}
+              id={"email"}
+              handleChange={handleChange}
+              text="enter email (e.g. t@e.st)"
+              required={true}
+              color={errors?.length ? "error" : "success"}
+              error={errors?.length ? true : false}
+              fontSize={"1.3em"}
+            />
+          </FormControl>
+          <FormControl>
+            <MuiInputElement
+              type={"password"}
+              id={"password"}
+              handleChange={handleChange}
+              text="enter password"
+              required={true}
+              color={errors?.length ? "error" : "success"}
+              error={errors?.length ? true : false}
+              fontSize={"1.3em"}
+            />
+          </FormControl>
+          <Button 
+            color={"primary"} 
+            variant="contained"
+            sx={{height: "fit-content"}}
+            type={"submit"}
+          >
+            <Typography variant='h6'>Login</Typography>
+          </Button>
+        </Stack>
+
+        {/* <MuiButtonElement type={"submit"} text="Login" fullWidth={true} style /> */}
       </form>
     </WrapperDiv>
   )
