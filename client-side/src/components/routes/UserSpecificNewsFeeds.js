@@ -1,4 +1,5 @@
-import { KeyboardArrowUp } from '@mui/icons-material';
+import { CheckCircleTwoTone, CheckTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
 import { Button, Fab, IconButton, Paper, Stack, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
@@ -93,21 +94,42 @@ function UserSpecificNewsFeeds(props) {
         setShowPostsUntilIndex(prev => prev + 10 > appCtx.availablePostsFeeds.length ? appCtx.availablePostsFeeds.length : prev + 10)
     }
 
+    let [toggle, setToggle] = useState(false);
+
+    let handleToggle = () => setToggle(!toggle)
+
     console.log(showPostsUntilIndex, "untilIndex", appCtx.availablePostsFeeds.length)
 
     return (
         <Paper>
             {/* <ShowPostsFromThirdPartyApisTopBunk /> */}
-            
+
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
             {/* {showCreatePost ? <CreatePost /> : null} */}
-            
+
+            <Stack>
+                <ShowApiContentsToggler handleToggle={handleToggle} toggle={toggle} dataReady={false} />
+            </Stack>
+            {
+                toggle
+                    ?
+                    <ShowPostsFromThirdPartyApisTopBunk />
+                    : null
+            }
+
             {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
             <TweetEmbed tweetsDataset={tweetPostsDataset} />
 
             {/* <ShowPostsFromThirdPartyApisBottomBunk /> */}
+
+            {
+                toggle
+                    ?
+                    <ShowPostsFromThirdPartyApisTopBunk />
+                    : null
+            }
 
             <Typography
                 onClick={handleShowMore}
@@ -135,6 +157,17 @@ function UserSpecificNewsFeeds(props) {
     )
 }
 
+const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
+    return (
+        <Button
+            onClick={handleToggle}
+            startIcon={toggle ? <CheckCircleTwoTone /> : <DownloadingTwoTone />}
+        >
+            <Typography>{`${toggle ? "Hide" : "Show"} Third Party Api Contents`}</Typography>
+        </Button>
+    )
+}
+
 const ShowPostsFromThirdPartyApisBottomBunk = () => {
     const appCtx = useContext(AppContexts);
 
@@ -142,9 +175,9 @@ const ShowPostsFromThirdPartyApisBottomBunk = () => {
 
     return (
         <>
-        <RenderMostSharedPostsFromNyTimes />
-        <CurateKeywordBasedPostsFromNyTimes topics={topics} />
-        <ShowPostsFromTwitter topics={topics} />
+            <RenderMostSharedPostsFromNyTimes />
+            <CurateKeywordBasedPostsFromNyTimes topics={topics} />
+            <ShowPostsFromTwitter topics={topics} />
         </>
     )
 }
@@ -152,13 +185,13 @@ const ShowPostsFromThirdPartyApisBottomBunk = () => {
 const ShowPostsFromThirdPartyApisTopBunk = () => {
     const appCtx = useContext(AppContexts);
 
-    let topics = appCtx.randomizedTopics.slice(0,2)
+    let topics = appCtx.randomizedTopics.slice(0, 2)
 
     return (
         <>
-        <CurateKeywordBasedPostsFromNyTimes topics={topics} />
-        <RenderPopularPostsFromNyTimes />
-        <ShowPostsFromTwitter topics={topics} />
+            <CurateKeywordBasedPostsFromNyTimes topics={topics} />
+            <RenderPopularPostsFromNyTimes />
+            <ShowPostsFromTwitter topics={topics} />
         </>
     )
 }

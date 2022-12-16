@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone } from "@mui/icons-material";
-import { H1Element, H4Element, NavElement, WrapperDiv } from './GeneralElements'
-import { MuiButtonElement, MuiInputElement, TabElement } from './MuiElements';
+import { H1Element, NavElement, WrapperDiv } from './GeneralElements'
+import { MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AppBar, Avatar, Button, ButtonGroup, Container, Divider, FormControl, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AppBar, Avatar, Button, ButtonGroup, FormControl, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
@@ -251,7 +251,6 @@ let FloatingLogin = () => {
 
   return (
     <WrapperDiv className="fl-wrapper">
-      {/* <H4Element value={"Login to your profile"} /> */}
       <Typography variant='h5'>Login to your profile from here</Typography>
       <form 
         ref={ref} method={"post"} onSubmit={handleSubmit}
@@ -298,8 +297,6 @@ let FloatingLogin = () => {
             <Typography variant='h6'>Login</Typography>
           </Button>
         </Stack>
-
-        {/* <MuiButtonElement type={"submit"} text="Login" fullWidth={true} style /> */}
       </form>
     </WrapperDiv>
   )

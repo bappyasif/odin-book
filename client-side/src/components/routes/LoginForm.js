@@ -18,7 +18,6 @@ function LoginForm() {
 
     const appCtx = useContext(AppContexts);
 
-
     let handleChange = (evt, elm) => setFormData(prev => ({ ...prev, [elm]: evt.target.value }))
 
     let handleError = data => {
@@ -33,8 +32,7 @@ function LoginForm() {
     let updateData = result => {
         setProcessingRequest("success");
         appCtx.handleData(result)
-        // navigate("/");
-        // console.log(result, "result!!")
+
         let timer = setTimeout(() => {
             result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
             if (timer >= 1100) clearTimeout(timer)
@@ -44,13 +42,13 @@ function LoginForm() {
     let handleSubmit = evt => {
         evt.preventDefault();
         setProcessingRequest("loading");
+
         let timer = setTimeout(() => {
             sendDataToServer(appCtx.baseUrl + "/login", formData, handleError, updateData)
             if (timer >= 1700) clearTimeout(timer)
         }, 1700)
     }
     // console.log(formData, "formData!!");
-    // console.log(errors, "errors!!")
 
     return (
         <Box
@@ -58,23 +56,20 @@ function LoginForm() {
         >
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
+            
             <WrapperDiv className="login-form">
                 <Typography fontWeight={"bold"} fontSize={"42px"} variant='h3'>Login Form</Typography>
 
-                {/* {errors?.length ? <ShowErrors errors={errors} /> : null} */}
-
                 <FormElement handleSubmit={handleSubmit}>
                     <LegendElement text={"Enter your registered email and password"} />
-
                     <LoginFromControlComponent handleChange={handleChange} />
-
                     <Button
-                        // sx={{position: "relative"}} 
                         type='submit' variant='contained' startIcon={<LoginTwoTone />}
                     >
                         <Typography variant='h6'>Login</Typography>
                     </Button>
                 </FormElement>
+
                 {errors?.length ? <ShowErrors errors={errors} /> : null}
             </WrapperDiv>
 
@@ -132,7 +127,6 @@ export const RenderFormControlElement = ({ item, handleChange }) => {
                 type={item.type}
                 required={true}
                 onChange={handleUserInput}
-                // onChange={e => handleChange(e, item.name)}
                 placeholder={item.text}
                 startAdornment={
                     <InputAdornment position='start'>
@@ -228,7 +222,7 @@ let RenderLoginOutlet = ({ item }) => {
         } else if (item.name === "Twitter") {
             url = `http://localhost:3000/auth/twitter`
         }
-        // loginPrompt(url, navigate)
+
         loginPrompt(url, getAuthenticatedUserData)
     }
 
@@ -276,7 +270,6 @@ let RenderGuestUser = ({ item, handleSubmit, setFormData }) => {
                 <AccountCircleTwoTone />
                 <Typography>{item.name}</Typography>
             </Button>
-            {/* <Typography>{item.name}</Typography> */}
         </IconButton>
     )
 }
@@ -290,7 +283,6 @@ let loginPrompt = (url, getData) => {
         timer = setInterval(() => {
             if (newWindow.closed) {
                 if (timer) clearInterval(timer)
-                // navigate("/")
                 getData()
             }
         }, 1001)

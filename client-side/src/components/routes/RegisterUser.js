@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import { AppContexts } from '../../App';
 import { VisualizeWordCountProgress } from '../CreatePost';
-import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../FormElements'
+import { FormElement, LegendElement } from '../FormElements'
 import { H1Element, WrapperDiv } from '../GeneralElements'
 import ShowErrors from '../ShowErrors';
 import { sendDataToServer } from '../utils';
@@ -55,9 +55,8 @@ function RegisterUser({ handleData }) {
     return (
         <WrapperDiv className={"register-user"}>
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
+            
             <H1Element value={"Register User"} />
-
-            {/* {errors?.length ? <ShowErrors errors={errors} /> : null} */}
 
             <FormElement handleSubmit={handleSubmit}>
                 <LegendElement text={"Please enter all required fileds data(denoted by * next to them)"} />
@@ -71,10 +70,12 @@ function RegisterUser({ handleData }) {
                 >
                     {renderFieldsets()}
                 </Stack>
+                
                 <Button type='submit' variant='contained' startIcon={<AppRegistrationTwoTone />}>
                     <Typography variant='h6'>Register</Typography>
                 </Button>
             </FormElement>
+            
             {errors?.length ? <ShowErrors errors={errors} /> : null}
         </WrapperDiv>
     )
@@ -100,13 +101,11 @@ let RenderFieldset = ({ data, handleChange }) => {
             setUserInput(evt.target.value)
             handleChange(evt, id)
         } else {
-            // let maxLimit = id === "fullName" ? 72 : id === "email" ? 45 : 89;
             alert(`${id} has exceeded its maximum limit of ${maxLimit}`)
         }
     }
 
     useEffect(() => {
-        // console.log(id, "regiuster ids")
         let maxLimit = id === "fullname" ? 72 : id === "email" ? 45 : 89;
         setMaxLimit(maxLimit)
     }, [])
@@ -121,7 +120,6 @@ let RenderFieldset = ({ data, handleChange }) => {
                 placeholder={placeholder}
                 required={required}
                 onChange={handleUserInputChange}
-            // onChange={e => handleChange(e, id)}
             />
             <VisualizeWordCountProgress topPlacingUnits={"14.1px"} maxLimit={maxLimit} smallerSize={true} textContent={userInput} forRegister={true} />
         </FormControl>
