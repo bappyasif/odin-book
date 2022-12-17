@@ -1,6 +1,6 @@
 import { CheckCircleTwoTone, CheckTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
-import { Button, Fab, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Button, Fab, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
@@ -106,7 +106,7 @@ function UserSpecificNewsFeeds(props) {
 
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
-            {/* {showCreatePost ? <CreatePost /> : null} */}
+            {showCreatePost ? <CreatePost /> : null}
 
             <Stack>
                 <ShowApiContentsToggler handleToggle={handleToggle} toggle={toggle} dataReady={false} />
@@ -159,12 +159,26 @@ function UserSpecificNewsFeeds(props) {
 
 const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
     return (
-        <Button
-            onClick={handleToggle}
-            startIcon={toggle ? <CheckCircleTwoTone /> : <DownloadingTwoTone />}
+        <Stack 
+            sx={{
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: 4
+            }}
         >
-            <Typography>{`${toggle ? "Hide" : "Show"} Third Party Api Contents`}</Typography>
-        </Button>
+            <Switch
+                checked={toggle}
+                onChange={handleToggle}
+                name="api content loader toogle"
+                color="primary"
+            />
+            <Button
+                onClick={handleToggle}
+                startIcon={toggle ? <CheckCircleTwoTone /> : <DownloadingTwoTone />}
+            >
+                <Typography>{`${toggle ? "Hide" : "Show"} Third Party Api Contents`}</Typography>
+            </Button>
+        </Stack>
     )
 }
 

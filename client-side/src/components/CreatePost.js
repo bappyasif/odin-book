@@ -13,6 +13,7 @@ import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
 import { useNavigate } from 'react-router-dom'
+import { ButtonToIndicateHelp, HowToUseCreatePostComponent } from './HowToUseApp'
 
 function CreatePost({ handleSuccessfullPostShared }) {
   let [addedOptions, setAddedOptions] = useState({})
@@ -73,7 +74,9 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   return (
     <ContainerElement width={"md"}>
-      <PaperElement>
+      <PaperElement position="relative">
+        <ButtonToIndicateHelp />
+        <HowToUseCreatePostComponent />
         <CardElement>
           <CardHeaderElement
             avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}

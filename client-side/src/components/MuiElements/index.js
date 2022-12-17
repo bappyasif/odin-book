@@ -148,7 +148,7 @@ const LoveIconElement = ({ fontSize }) => <HeatPumpRounded fontSize={fontSize ||
 
 const ShareIconElement = ({ fontSize }) => <ShareRounded fontSize={fontSize || "medium"} />
 
-const PaperElement = (props) => <Paper sx={{ backgroundColor: props.bgColor || "darkslategray" }}>{props.children}</Paper>
+const PaperElement = (props) => <Paper sx={{ position: props.position || "relative", backgroundColor: props.bgColor || "darkslategray" }}>{props.children}</Paper>
 
 const ContainerElement = props => <Container maxWidth={props.width || "lg"}>{props.children}</Container>
 
