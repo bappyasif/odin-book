@@ -1,7 +1,8 @@
 import { ArrowBackIosTwoTone, ArrowForwardIosTwoTone, ArrowForwardTwoTone, HighlightOffTwoTone } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { Stack } from '@mui/system';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { AppContexts } from '../App';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
 export function HowToUseApp() {
@@ -11,15 +12,17 @@ export function HowToUseApp() {
 }
 
 export const HowToUseCreatePostComponent = () => {
-    let [showDialog, setShowDialog] = useState(false);
+    // let [showDialog, setShowDialog] = useState(false);
 
     let [slideNumber, setSlideNumber] = useState(0);
 
     // const ref = useRef();
 
-    const handleOpenShowDialog = () => setShowDialog(true)
+    const appCtx = useContext(AppContexts);
 
-    const handleCloseShowDialog = () => setShowDialog(false)
+    // const handleOpenShowDialog = () => setShowDialog(true)
+
+    // const handleCloseShowDialog = () => setShowDialog(false)
 
     // useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
 
@@ -39,9 +42,10 @@ export const HowToUseCreatePostComponent = () => {
 
     console.log(titleText, "titleText", slideNumber)
 
-    useEffect(() => {
-        handleOpenShowDialog();
-    }, [])
+    // useEffect(() => {
+    //     // handleOpenShowDialog();
+    //     appCtx.handleOpenDialogModal()
+    // }, [])
 
     const handleButtonActions = (buttonName) => {
         if (buttonName === "Previous") {
@@ -54,15 +58,17 @@ export const HowToUseCreatePostComponent = () => {
             }
         } else if (buttonName === "Cancel") {
             console.log("Cancel")
-            handleCloseShowDialog()
+            appCtx.handleCloseDialogModal()
         }
     }
 
     return (
         <Dialog
             // ref={ref}
-            onClose={handleCloseShowDialog}
-            open={showDialog}
+            // onClose={handleCloseShowDialog}
+            onClose={appCtx.handleCloseDialogModal}
+            // open={showDialog}
+            open={appCtx.showDialogModal}
         >
             <RenderHowToUseInformationsTitleText text={titleText} />
             <DialogContent dividers>
@@ -152,15 +158,32 @@ const RenderActionDescriptionDetail = ({ text }) => {
     )
 }
 
-export const ButtonToIndicateHelp = ({ alertPosition }) => {
+export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
     let [showMoreInfo, setShowMoreInfo] = useState(false);
-    const handleShowMoreInfo = () => setShowMoreInfo(true)
-    const handleHideMoreInfo = () => setShowMoreInfo(false)
+
+    const appCtx = useContext(AppContexts);
+    
+    const handleShowMoreInfo = () => {
+        setShowMoreInfo(true)
+        // appCtx.handleDialogTextFor(forWhichItem)
+    }
+    
+    const handleHideMoreInfo = () => {
+        setShowMoreInfo(false)
+        // appCtx.handleDialogTextFor("")
+    }
+
+    const handleDialogModalActivity = () => {
+        appCtx.handleDialogTextFor(forWhichItem)
+        appCtx.handleOpenDialogModal()
+    }
+
     return (
         <>
             <Alert
                 onMouseEnter={handleShowMoreInfo}
                 onMouseLeave={handleHideMoreInfo}
+                onClick={handleDialogModalActivity}
                 sx={{
                     position: "absolute",
                     zIndex: 9,

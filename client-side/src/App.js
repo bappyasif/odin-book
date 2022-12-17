@@ -31,8 +31,16 @@ function App() {
   let [jwtUser, setJwtUser] = useState({});
   let [userAccessiblePostsDataset, setUserAccessiblePostsDataset] = useState([])
   let [topics, setTopics] = useState([])
+  let [dialogTextFor, setDialogTextFor] = useState(null);
+  let [showDialogModal, setShowDialogModal] = useState(false);
 
-  let location = useLocation()
+  const location = useLocation()
+
+  const handleOpenDialogModal = () => setShowDialogModal(true)
+
+  const handleCloseDialogModal = () => setShowDialogModal(false)
+
+  const handleDialogTextFor = (name) => setDialogTextFor(name);
 
   const randomlySelectSixTopics = () => {
     let foundTopics = user.topics;
@@ -128,7 +136,12 @@ function App() {
     clearCurrentUserData: clearCurrentUserData,
     getUser: getUser,
     deletePostFromAvailablePostsFeeds: deletePostFromAvailablePostsFeeds,
-    randomizedTopics: topics
+    randomizedTopics: topics,
+    handleOpenDialogModal: handleOpenDialogModal,
+    handleCloseDialogModal: handleCloseDialogModal,
+    handleDialogTextFor: handleDialogTextFor,
+    dialogTextFor: dialogTextFor,
+    showDialogModal: showDialogModal
   }
 
   useEffect(() => {

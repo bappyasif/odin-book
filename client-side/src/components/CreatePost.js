@@ -72,11 +72,13 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   // console.log(addedOptions, "addedOptions!!", errors, postData, postText)
 
+  console.log(appCtx.dialogTextFor, "dialogTextFor")
+
   return (
     <ContainerElement width={"md"}>
       <PaperElement position="relative">
-        <ButtonToIndicateHelp />
-        <HowToUseCreatePostComponent />
+        <ButtonToIndicateHelp forWhichItem={"Create Post"} />
+        {appCtx.dialogTextFor === "Create Post" ? <HowToUseCreatePostComponent /> : null}
         <CardElement>
           <CardHeaderElement
             avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
@@ -172,6 +174,7 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
           init_instance_callback: function (editor) {
             editor.on("keyup change", (e) => {
               let regExp = /<[^>]*>/g
+              // console.log(editor.getContent(), "checkcheck")
               setPostText(editor.getContent().replace(regExp, ''))
             });
           },
