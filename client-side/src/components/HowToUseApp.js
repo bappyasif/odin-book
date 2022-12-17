@@ -1,4 +1,6 @@
-import { Alert, AlertTitle, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, ListItem, ListItemText, Typography } from '@mui/material'
+import { ArrowBackIosTwoTone, ArrowForwardIosTwoTone, ArrowForwardTwoTone, HighlightOffTwoTone } from '@mui/icons-material';
+import { Alert, AlertTitle, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText, Typography } from '@mui/material'
+import { Stack } from '@mui/system';
 import React, { useEffect, useRef, useState } from 'react'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
@@ -11,13 +13,15 @@ export function HowToUseApp() {
 export const HowToUseCreatePostComponent = () => {
     let [showDialog, setShowDialog] = useState(false);
 
-    const ref = useRef();
+    let [slideNumber, setSlideNumber] = useState(0);
+
+    // const ref = useRef();
 
     const handleOpenShowDialog = () => setShowDialog(true)
 
     const handleCloseShowDialog = () => setShowDialog(false)
 
-    useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
+    // useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
 
     const titleText = 'Things you can do with Create post!!'
 
@@ -33,30 +37,92 @@ export const HowToUseCreatePostComponent = () => {
 
     let renderActions = () => actions.map(action => <RenderHowToUseInformations key={action.name} actionItem={action} />)
 
-    console.log(titleText, "titleText", renderActions())
+    console.log(titleText, "titleText", slideNumber)
 
     useEffect(() => {
         handleOpenShowDialog();
     }, [])
 
+    const handleButtonActions = (buttonName) => {
+        if (buttonName === "Previous") {
+            if (slideNumber > 0 && slideNumber < actions.length) {
+                setSlideNumber(prev => prev - 1)
+            }
+        } else if (buttonName === "Next") {
+            if (slideNumber >= 0 && slideNumber < actions.length - 1) {
+                setSlideNumber(prev => prev + 1)
+            }
+        } else if (buttonName === "Cancel") {
+            console.log("Cancel")
+            handleCloseShowDialog()
+        }
+    }
+
     return (
         <Dialog
-            ref={ref}
+            // ref={ref}
             onClose={handleCloseShowDialog}
             open={showDialog}
         >
             <RenderHowToUseInformationsTitleText text={titleText} />
-            <DialogContent>
-                {renderActions()}
+            <DialogContent dividers>
+                {/* {renderActions()} */}
+                {renderActions()[slideNumber]}
             </DialogContent>
+            <Stack
+                sx={{
+                    flexDirection: "row",
+                    justifyContent: "center"
+                }}
+            >
+                <Typography variant='body1'>Slide Number: <b>{slideNumber + 1}</b> Out Of <b>{actions.length}</b></Typography>
+            </Stack>
+            <DialogActions
+                sx={{
+                    justifyContent: "center"
+                }}
+            >
+                <RenderDialogActionsButtons totalSlides={renderActions().length} slideNumber={slideNumber} handleButtonActions={handleButtonActions} />
+            </DialogActions>
         </Dialog>
     )
 
 }
 
+const RenderDialogActionsButtons = ({ handleButtonActions, slideNumber, totalSlides }) => {
+    const actionButtons = [
+        { name: "Previous", icon: <ArrowBackIosTwoTone /> },
+        { name: "Cancel", icon: <HighlightOffTwoTone /> },
+        { name: "Next", icon: <ArrowForwardIosTwoTone /> }
+    ]
+
+    let renderActionButtons = () => actionButtons.map(item => <RenderDialogActionButton key={item.name} buttonItem={item} handleButtonActions={handleButtonActions} />)
+
+    return (
+        <ButtonGroup>
+            {renderActionButtons()}
+        </ButtonGroup>
+    )
+}
+
+const RenderDialogActionButton = ({ buttonItem, handleButtonActions }) => {
+    return (
+        <Button
+            onClick={() => handleButtonActions(buttonItem.name)}
+            sx={{
+                borderRadius: 9
+            }}
+            startIcon={buttonItem.name !== "Next" && buttonItem.icon}
+            endIcon={buttonItem.name === "Next" && buttonItem.icon}
+        >
+            <Typography>{buttonItem.name}</Typography>
+        </Button>
+    )
+}
+
 const RenderHowToUseInformationsTitleText = ({ text }) => {
     return (
-        <DialogTitle>{text}</DialogTitle>
+        <DialogTitle variant='h5'>{text}</DialogTitle>
     )
 }
 
@@ -67,19 +133,22 @@ const RenderHowToUseInformations = ({ actionItem }) => {
 
     return (
         <DialogContentText>
-            <Typography>{name}</Typography>
-            <ListItem>
+            <Typography variant='h4'>{name}</Typography>
+            <List>
                 {renderDescriptions()}
-            </ListItem>
+            </List>
         </DialogContentText>
     )
 }
 
 const RenderActionDescriptionDetail = ({ text }) => {
     return (
-        <ListItemText>
-            <Typography>{text}</Typography>
-        </ListItemText>
+        <ListItem>
+            <ListItemText>
+                <Typography variant='h6'>{text}</Typography>
+            </ListItemText>
+        </ListItem>
+
     )
 }
 
@@ -128,7 +197,7 @@ export const MoreInfoOnHover = ({ name }) => {
         >
             <Alert severity='info'>
                 <AlertTitle>How To Use Info</AlertTitle>
-                <Typography variant='body2'>Click on this info icon to find out more about how to use it better</Typography>
+                <Typography variant='body2'>Click on this info icon to find out!!</Typography>
             </Alert>
         </Button>
     )
