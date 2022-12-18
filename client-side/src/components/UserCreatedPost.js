@@ -3,6 +3,7 @@ import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
+import { ButtonToIndicateHelp, HowToUsePostListItems } from './HowToUseApp'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
 import PostCommentModal from './PostCommentModal'
 import { PostOrCommentOptions } from './PostOrCommentOptions'
@@ -38,6 +39,8 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
       borderRadius={1.1}
       position={"relative"}
     >
+      <ButtonToIndicateHelp forWhichItem={"Post Listings"} />
+      {appCtx.dialogTextFor === "Post Listings" ? <HowToUsePostListItems /> : null}
       <PostOrCommentOptions postId={postData._id} userId={postData.userId} />
       <RenderPostDataEssentials postData={postData} />
       {postData?.includedSharedPostId ? <ShowIncludedSharedPost appCtx={appCtx} includedPostId={postData.includedSharedPostId} /> : null}

@@ -11,20 +11,91 @@ export function HowToUseApp() {
     )
 }
 
+// export const HowToUseCreatePostComponent = () => {
+//     // let [showDialog, setShowDialog] = useState(false);
+
+//     let [slideNumber, setSlideNumber] = useState(0);
+
+//     // const ref = useRef();
+
+//     const appCtx = useContext(AppContexts);
+
+//     // const handleOpenShowDialog = () => setShowDialog(true)
+
+//     // const handleCloseShowDialog = () => setShowDialog(false)
+
+//     // useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
+
+//     const titleText = 'Things you can do with Create post!!'
+
+//     const actions = [
+//         { name: "Editor", descriptions: ["This is a Rich Text Editor(tinymce). You can use this editor to have your post text look much more presentable than just plan text", "You can use this to add code or emoticon within your post", "You can also see current word/character counts from toolbar or at bottom right corner of editor", "Feel free to play with other available tools from this editor to make your posts standout nicely"] },
+//         { name: "Image", descriptions: ["You can add a picture from web to include this in your post", "Currently you can Only use any valid Image Url to do so", "No file upload is currently available"] },
+//         { name: "Video", descriptions: ["You can add a video from web to include this in your post", "Currently you can Only use any valid Video Url to do so", "No file upload is currently available"] },
+//         { name: "Gif", descriptions: ["When you click on it a List of most trending Gifs will show up", "You can choose one of them in your post as well", "Currently only one Gif resource per post is available"] },
+//         { name: "Poll", descriptions: ["When clicked on it a Poll creating view will show up", "You can ask a question to your audience via this", "Your can add choices for your audience to choose from and cast their votes on"] },
+//         { name: "Privacy", descriptions: ["When clicked upon a Privacy selecting choices will dropdown will show up", "You can make your posts private and only visible to your friends by selecting option Friends", "By default Privacy is Everyone, if you dont change it"] },
+//         { name: "Create", descriptions: ["When you're ready with your post hit this button to post it on OdBo", "When you create a post this will show up in your profile and also in your news feeds page, a.k.a page that you are currently on"] }
+//     ];
+
+//     let renderActions = () => actions.map(action => <RenderHowToUseInformations key={action.name} actionItem={action} />)
+
+//     console.log(titleText, "titleText", slideNumber)
+
+//     // useEffect(() => {
+//     //     // handleOpenShowDialog();
+//     //     appCtx.handleOpenDialogModal()
+//     // }, [])
+
+//     const handleButtonActions = (buttonName) => {
+//         if (buttonName === "Previous") {
+//             if (slideNumber > 0 && slideNumber < actions.length) {
+//                 setSlideNumber(prev => prev - 1)
+//             }
+//         } else if (buttonName === "Next") {
+//             if (slideNumber >= 0 && slideNumber < actions.length - 1) {
+//                 setSlideNumber(prev => prev + 1)
+//             }
+//         } else if (buttonName === "Cancel") {
+//             console.log("Cancel")
+//             appCtx.handleCloseDialogModal()
+//         }
+//     }
+
+//     return (
+//         <Dialog
+//             // ref={ref}
+//             // onClose={handleCloseShowDialog}
+//             onClose={appCtx.handleCloseDialogModal}
+//             // open={showDialog}
+//             open={appCtx.showDialogModal}
+//         >
+//             <RenderHowToUseInformationsTitleText text={titleText} />
+//             <DialogContent dividers>
+//                 {/* {renderActions()} */}
+//                 {renderActions()[slideNumber]}
+//             </DialogContent>
+//             <Stack
+//                 sx={{
+//                     flexDirection: "row",
+//                     justifyContent: "center"
+//                 }}
+//             >
+//                 <Typography variant='body1'>Slide Number: <b>{slideNumber + 1}</b> Out Of <b>{actions.length}</b></Typography>
+//             </Stack>
+//             <DialogActions
+//                 sx={{
+//                     justifyContent: "center"
+//                 }}
+//             >
+//                 <RenderDialogActionsButtons totalSlides={renderActions().length} slideNumber={slideNumber} handleButtonActions={handleButtonActions} />
+//             </DialogActions>
+//         </Dialog>
+//     )
+
+// }
+
 export const HowToUseCreatePostComponent = () => {
-    // let [showDialog, setShowDialog] = useState(false);
-
-    let [slideNumber, setSlideNumber] = useState(0);
-
-    // const ref = useRef();
-
-    const appCtx = useContext(AppContexts);
-
-    // const handleOpenShowDialog = () => setShowDialog(true)
-
-    // const handleCloseShowDialog = () => setShowDialog(false)
-
-    // useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
 
     const titleText = 'Things you can do with Create post!!'
 
@@ -38,14 +109,80 @@ export const HowToUseCreatePostComponent = () => {
         { name: "Create", descriptions: ["When you're ready with your post hit this button to post it on OdBo", "When you create a post this will show up in your profile and also in your news feeds page, a.k.a page that you are currently on"] }
     ];
 
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+
+}
+
+export const HowToUsePostListItems = () => {
+    const titleText = 'Things you can do from Post Listings!!'
+    const actions = [
+        {name: "Post Thread", descriptions: ["If you click any where in Post Content body, you will be routed to this post thread", "You can do every functionality from Post thread as you would from Home or Profile page as well"]},
+        {name: "Post List Option Settings", descriptions: ["You can delete post if its created by you", "You can visit thread from selecting that option from there as well, which is highly recommended"]},
+        {name: "Interaction - Comment", descriptions: ["You click on Comment icon from post listing view to begin writing a comment", "you can write as many comments for any posts as you would like", "When you click Send button comment will be submitted and not otherwise", "When submitted as a comment then it will show up in Post comemnts sectioon just below Post Listing", "App will keep track of your Commented posts for posterity", "You can see all commented posts from your Profile page as well"]},
+        {name: "Interaction - Like", descriptions: ["You can like any post by clicking Like button on a Post Listing", "You can also Unlike this by clicking on it again", "All of your like posts will be available to see from your Profile page"]},
+        {name: "Interaction - Dislike", descriptions: ["You can Dislike any post by clicking Dislike button on a Post Listing", "You can also Un-Dislike this by clicking on it again", "All of your Dislike posts will be available to see from your Profile page"]},
+        {name: "Interaction - Love", descriptions: ["You can love any post by clicking Love button on a Post Listing", "You can also Un-love this by clicking on it again", "All of your love posts will be available to see from your Profile page"]},
+        {name: "Interaction - Share", descriptions: ["You can share any post by clicking Share button on a Post Listing", "When clicked a new create post alike modal will show up to Share and create a new Post on OdBo", "All of your share posts will be available to see from your Profile page"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseCommentListItems = () => {
+    const titleText = 'Things you can do from Comment Listings!!'
+    const actions = [
+        {name: "Post Thread", descriptions: ["If you click on Show Thread, you will be routed to this post thread", "You can do every functionality from Post thread as you would from Home or Profile page as well"]},
+        {name: "Comment Listings Option Settings", descriptions: ["You can delete comment if its created by you", "You can also delete any comemnts if it's on your Post", "You can edit also Edit comment if its created by you"]},
+        {name: "Interaction - Like", descriptions: ["You can like any Comment by clicking Like button on a Comment Listing", "You can also Unlike this by clicking on it again"]},
+        {name: "Interaction - Dislike", descriptions: ["You can Dislike any Comment by clicking Dislike button on a Comment Listing", "You can also Un-Dislike this by clicking on it again"]},
+        {name: "Interaction - Love", descriptions: ["You can Love any post by clicking Love button on a Comment Listing", "You can also Un-love this by clicking on it again"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseThirdPartyApiContentsListItems = () => {
+    const titleText = 'Things you can do from Third Party Api Content Listings!!'
+    const actions = [
+        {name: "NYTimes Contents Type", descriptions: ["You will most popular posts extracting from either today, 7day or 1 month earlier times", "You will see posts based on Topics that you selected on your profile onboarding process", "If you want to bring any changes to that you can edit your Topic list from Edit Profile page"]},
+        {name: "NYTimes Contents View", descriptions: ["You will see a small fragment of Actual post from their free to use api", "You will see a Web or Globe alike icon on top right corner of each posts, which you can click and see Original Article from source"]},
+        {name: "Twitter Contents Type", descriptions: ["You will see most recent tweets on Topics that you chose", "If you want to bring any changes to that you can edit your Topic list from Edit Profile page"]},
+        {name: "Twitter Contents View", descriptions: ["You will see actual Tweets contents in them", "You will also see user egnagements parameters on them as well", "You will see a Twitter icon on top right corner of each such posts", "You can visit Twitter and see its actual post from there by clicking on that Twitter icon"]}
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseShowMorePostsListings = () => {
+    const titleText = 'Things you can do from Show More Post Listings!!'
+    const actions = [
+        {name: "Initial Users Posts Loads Details", descriptions: ["You will see a maximum of 11 posts at a time which were created by Users like You and Others"]},
+        {name: "Initial Api Provided Posts Loads Details", descriptions: ["You will see a maximum of 16 posts at a time which were Vurated from Api such as NyTimes and Twitter recent Search endpoint"]},
+        {name: "What can you expect", descriptions: ["You will see this on News Feeds page to let you know that there are more posts from earlier times are available for You to explore"]},
+        {name: "What you will see", descriptions: ["When you click on this Show More button more Post Listings will be loaded onto Page for you to see and interact with"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+const RenderDialogForComponent = ({actions, titleText}) => {
+    let [slideNumber, setSlideNumber] = useState(0);
+
+    const appCtx = useContext(AppContexts);
+
     let renderActions = () => actions.map(action => <RenderHowToUseInformations key={action.name} actionItem={action} />)
 
     console.log(titleText, "titleText", slideNumber)
-
-    // useEffect(() => {
-    //     // handleOpenShowDialog();
-    //     appCtx.handleOpenDialogModal()
-    // }, [])
 
     const handleButtonActions = (buttonName) => {
         if (buttonName === "Previous") {
@@ -64,15 +201,11 @@ export const HowToUseCreatePostComponent = () => {
 
     return (
         <Dialog
-            // ref={ref}
-            // onClose={handleCloseShowDialog}
             onClose={appCtx.handleCloseDialogModal}
-            // open={showDialog}
             open={appCtx.showDialogModal}
         >
             <RenderHowToUseInformationsTitleText text={titleText} />
             <DialogContent dividers>
-                {/* {renderActions()} */}
                 {renderActions()[slideNumber]}
             </DialogContent>
             <Stack
@@ -92,7 +225,6 @@ export const HowToUseCreatePostComponent = () => {
             </DialogActions>
         </Dialog>
     )
-
 }
 
 const RenderDialogActionsButtons = ({ handleButtonActions, slideNumber, totalSlides }) => {

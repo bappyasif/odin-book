@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App'
 import { EditComment } from './EditComment';
+import { ButtonToIndicateHelp, HowToUseCommentListItems, HowToUsePostListItems } from './HowToUseApp';
 import { PostOrCommentOptions } from './PostOrCommentOptions';
 import { RenderCardHeader } from './RenderPostData';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
@@ -17,9 +18,9 @@ function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, 
 
     let handleCommentsData = result => setCommentsData(result.data.data)
 
-    let updateCommentText = (commentId, value) => {        
+    let updateCommentText = (commentId, value) => {
         let newCommentsData = commentsData.map(item => {
-            if(item._id === commentId) {
+            if (item._id === commentId) {
                 item.body = value
             }
             return item
@@ -27,7 +28,7 @@ function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, 
 
         try {
             setCommentsData(newCommentsData);
-        } catch(err) {
+        } catch (err) {
             console.log("eror!! caught!!", err);
         }
     }
@@ -159,10 +160,13 @@ export const RenderComment = ({ postOwner, commentData, deleteCommentFromDataset
                 mb: .29
             }}
         >
+            <ButtonToIndicateHelp forWhichItem={"Comment Listings"} />
+            {appCtx.dialogTextFor === "Comment Listings" ? <HowToUseCommentListItems /> : null}
+
             <PostOrCommentOptions postOwner={postOwner} commentId={commentData._id} deleteCommentFromDataset={deleteCommentFromDataset} userId={commentData.userId} showEditableText={setEditCommentFlag} />
-            
+
             <RenderCardHeader userData={userData} forComment={true} />
-            
+
             <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
             {
                 editCommentFlag

@@ -1,7 +1,9 @@
 import { LanguageTwoTone } from '@mui/icons-material';
 import { Card, CardContent, CardHeader, CardMedia, Container, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContexts } from '../App';
 import { useToFetchPostsFromNyTimes } from './hooks/useToFetchData'
+import { ButtonToIndicateHelp, HowToUseThirdPartyApiContentsListItems } from './HowToUseApp';
 
 function ContentsFromNyTimes() {
     return (
@@ -118,10 +120,15 @@ const RenderDataForArticles = ({ data }) => {
 }
 
 const RenderData = ({ data }) => {
+    const appCtx = useContext(AppContexts)
+
     return (
         data.abstract
             ?
-            <Card sx={{ mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto" }}>
+            <Card sx={{ mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto", position: "relative" }}>
+                <ButtonToIndicateHelp forWhichItem={"Api Content Listings"} />
+                {appCtx.dialogTextFor === "Api Content Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null}
+                
                 <RenderPostHeaderView data={data} />
                 {data?.leadParagraph ? null : <RenderPostMediaView data={data} />}
                 <RenderPostContentView data={data} />
@@ -137,7 +144,7 @@ const RenderPostMediaView = ({ data }) => {
         url = metadataArr[metadataArr.length - 1]?.url
         return url;
     }
-    
+
     return (
         <CardMedia
             component={"img"}
@@ -151,8 +158,8 @@ const RenderPostMediaView = ({ data }) => {
 const RenderPostContentView = ({ data }) => {
     return (
         <CardContent>
-            <Typography sx={{textAlign: "justify"}} variant={data?.leadParagraph ? "subtitle1" : 'h6'}>{data.abstract}</Typography>
-            {data?.leadParagraph ? <Typography sx={{textAlign: "justify", mt: 2.4}} variant='h4'>{data.leadParagraph}</Typography> : null}
+            <Typography sx={{ textAlign: "justify" }} variant={data?.leadParagraph ? "subtitle1" : 'h6'}>{data.abstract}</Typography>
+            {data?.leadParagraph ? <Typography sx={{ textAlign: "justify", mt: 2.4 }} variant='h4'>{data.leadParagraph}</Typography> : null}
         </CardContent>
     )
 }

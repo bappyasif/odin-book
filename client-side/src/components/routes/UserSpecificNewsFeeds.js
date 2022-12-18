@@ -1,4 +1,4 @@
-import { CheckCircleTwoTone, CheckTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
+import { AllOutTwoTone, CheckCircleTwoTone, CheckTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import { Button, Fab, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
@@ -7,6 +7,7 @@ import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterH
 import { AppContexts } from '../../App'
 import { CurateKeywordBasedPostsFromNyTimes, RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
 import CreatePost from '../CreatePost';
+import { ButtonToIndicateHelp, HowToUseThirdPartyApiContentsListItems } from '../HowToUseApp';
 import ShowPostsFromTwitter, { RenderPost } from '../ShowPostsFromTwitter';
 import ShowUserCreatedPost from '../UserCreatedPost';
 import { readDataFromServer } from '../utils';
@@ -108,7 +109,7 @@ function UserSpecificNewsFeeds(props) {
 
             {showCreatePost ? <CreatePost /> : null}
 
-            <Stack>
+            <Stack sx={{ position: "relative" }}>
                 <ShowApiContentsToggler handleToggle={handleToggle} toggle={toggle} dataReady={false} />
             </Stack>
             {
@@ -131,7 +132,26 @@ function UserSpecificNewsFeeds(props) {
                     : null
             }
 
-            <Typography
+            <Button
+                startIcon={<AllOutTwoTone sx={{fontSize: "29px !important"}} />}
+                variant='contained'
+                sx={{
+                    width: "fit-content",
+                    margin: "auto",
+                    position: "relative",
+                }}
+            >
+                <Typography
+                    onClick={handleShowMore}
+                    variant="h6"
+                >
+                    <ButtonToIndicateHelp forWhichItem={"Show More Listings"} />
+                    {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null}
+                    Show More
+                </Typography>
+            </Button>
+
+            {/* <Typography
                 onClick={handleShowMore}
                 variant="h4"
                 sx={{
@@ -145,8 +165,10 @@ function UserSpecificNewsFeeds(props) {
                     },
                 }}
             >
+                <ButtonToIndicateHelp forWhichItem={"Show More Listings"} />
+                {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null}
                 Show More
-            </Typography>
+            </Typography> */}
             {/* {renderTweetPosts()} */}
             <ScrollToTop {...props}>
                 <Fab size="small" aria-label="scroll back to top">
@@ -158,8 +180,10 @@ function UserSpecificNewsFeeds(props) {
 }
 
 const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
+    // const appCtx = useContext(AppContexts);
+
     return (
-        <Stack 
+        <Stack
             sx={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -167,11 +191,15 @@ const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
             }}
         >
             <Switch
+                // sx={{ position: "relative" }}
                 checked={toggle}
                 onChange={handleToggle}
                 name="api content loader toogle"
                 color="primary"
             />
+            {/* <ButtonToIndicateHelp forWhichItem={"Api Content Listings"} />
+            {appCtx.dialogTextFor === "Api Content Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null} */}
+
             <Button
                 onClick={handleToggle}
                 startIcon={toggle ? <CheckCircleTwoTone /> : <DownloadingTwoTone />}
