@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
 import { WrapperDiv } from '../GeneralElements'
+import { ButtonToIndicateHelp, HowToUseConnectUsersListings } from '../HowToUseApp'
 import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderElement, MasonryElement, SkeletonBasicElement, StackElement, TypographyElement } from '../MuiElements'
 import { readDataFromServer, updateUserInDatabase } from '../utils'
 
@@ -76,8 +77,12 @@ let RenderUser = ({ userData }) => {
   return (
     <CardElement
       className="card-wrapper"
-      styles={{ backgroundColor: "text.secondary" }}
+      styles={{ backgroundColor: "text.secondary", position: "relative" }}
     >
+      <ButtonToIndicateHelp alertPosition={{left: "13px", top: 0}} forWhichItem={"Connect Users Listings"} />
+      {/* <ButtonToIndicateHelp forWhichItem={"Connect Users Listings"} /> */}
+      {appCtx.dialogTextFor === "Connect Users Listings" ? <HowToUseConnectUsersListings /> : null}
+
       <CardHeaderElement avatarUrl={ppUrl || test} altText={fullName} title={fullName} joined={created} forConnect={true} />
       <CardContentElement>
         <TypographyElement

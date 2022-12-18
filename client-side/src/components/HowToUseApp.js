@@ -1,99 +1,14 @@
-import { ArrowBackIosTwoTone, ArrowForwardIosTwoTone, ArrowForwardTwoTone, HighlightOffTwoTone } from '@mui/icons-material';
+import { ArrowBackIosTwoTone, ArrowForwardIosTwoTone, HighlightOffTwoTone } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { Stack } from '@mui/system';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
-import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
 export function HowToUseApp() {
     return (
         <div>HowToUseApp</div>
     )
 }
-
-// export const HowToUseCreatePostComponent = () => {
-//     // let [showDialog, setShowDialog] = useState(false);
-
-//     let [slideNumber, setSlideNumber] = useState(0);
-
-//     // const ref = useRef();
-
-//     const appCtx = useContext(AppContexts);
-
-//     // const handleOpenShowDialog = () => setShowDialog(true)
-
-//     // const handleCloseShowDialog = () => setShowDialog(false)
-
-//     // useToCloseModalOnClickedOutside(ref, handleCloseShowDialog)
-
-//     const titleText = 'Things you can do with Create post!!'
-
-//     const actions = [
-//         { name: "Editor", descriptions: ["This is a Rich Text Editor(tinymce). You can use this editor to have your post text look much more presentable than just plan text", "You can use this to add code or emoticon within your post", "You can also see current word/character counts from toolbar or at bottom right corner of editor", "Feel free to play with other available tools from this editor to make your posts standout nicely"] },
-//         { name: "Image", descriptions: ["You can add a picture from web to include this in your post", "Currently you can Only use any valid Image Url to do so", "No file upload is currently available"] },
-//         { name: "Video", descriptions: ["You can add a video from web to include this in your post", "Currently you can Only use any valid Video Url to do so", "No file upload is currently available"] },
-//         { name: "Gif", descriptions: ["When you click on it a List of most trending Gifs will show up", "You can choose one of them in your post as well", "Currently only one Gif resource per post is available"] },
-//         { name: "Poll", descriptions: ["When clicked on it a Poll creating view will show up", "You can ask a question to your audience via this", "Your can add choices for your audience to choose from and cast their votes on"] },
-//         { name: "Privacy", descriptions: ["When clicked upon a Privacy selecting choices will dropdown will show up", "You can make your posts private and only visible to your friends by selecting option Friends", "By default Privacy is Everyone, if you dont change it"] },
-//         { name: "Create", descriptions: ["When you're ready with your post hit this button to post it on OdBo", "When you create a post this will show up in your profile and also in your news feeds page, a.k.a page that you are currently on"] }
-//     ];
-
-//     let renderActions = () => actions.map(action => <RenderHowToUseInformations key={action.name} actionItem={action} />)
-
-//     console.log(titleText, "titleText", slideNumber)
-
-//     // useEffect(() => {
-//     //     // handleOpenShowDialog();
-//     //     appCtx.handleOpenDialogModal()
-//     // }, [])
-
-//     const handleButtonActions = (buttonName) => {
-//         if (buttonName === "Previous") {
-//             if (slideNumber > 0 && slideNumber < actions.length) {
-//                 setSlideNumber(prev => prev - 1)
-//             }
-//         } else if (buttonName === "Next") {
-//             if (slideNumber >= 0 && slideNumber < actions.length - 1) {
-//                 setSlideNumber(prev => prev + 1)
-//             }
-//         } else if (buttonName === "Cancel") {
-//             console.log("Cancel")
-//             appCtx.handleCloseDialogModal()
-//         }
-//     }
-
-//     return (
-//         <Dialog
-//             // ref={ref}
-//             // onClose={handleCloseShowDialog}
-//             onClose={appCtx.handleCloseDialogModal}
-//             // open={showDialog}
-//             open={appCtx.showDialogModal}
-//         >
-//             <RenderHowToUseInformationsTitleText text={titleText} />
-//             <DialogContent dividers>
-//                 {/* {renderActions()} */}
-//                 {renderActions()[slideNumber]}
-//             </DialogContent>
-//             <Stack
-//                 sx={{
-//                     flexDirection: "row",
-//                     justifyContent: "center"
-//                 }}
-//             >
-//                 <Typography variant='body1'>Slide Number: <b>{slideNumber + 1}</b> Out Of <b>{actions.length}</b></Typography>
-//             </Stack>
-//             <DialogActions
-//                 sx={{
-//                     justifyContent: "center"
-//                 }}
-//             >
-//                 <RenderDialogActionsButtons totalSlides={renderActions().length} slideNumber={slideNumber} handleButtonActions={handleButtonActions} />
-//             </DialogActions>
-//         </Dialog>
-//     )
-
-// }
 
 export const HowToUseCreatePostComponent = () => {
 
@@ -175,14 +90,83 @@ export const HowToUseShowMorePostsListings = () => {
     )
 }
 
+export const HowToUseConnectUsersListings = () => {
+    const titleText = 'Things you can do from Connect Users Listings!!'
+    const actions = [
+        {name: "Send A Friend Request", descriptions: ["You can send any users from listings a Friend request by clicking on Send button from User Listing Card", "When you sent a friend request you can undo that action by clicking on Undo Button"]},
+        {name: "Undo A Friend Request", descriptions: ["You can only click Undo button when there is a friend request is being Sent other wise it will stay Stale"]},
+        {name: "Other User Card Behaviors", descriptions: ["When you alreay a frined you will see that on User Card", "When you are already a friend with some User then Both Send and Undo buttons will be Non Responsive to clicks"]},
+        {name: "Card Clickable Buttons Behaviors", descriptions: ["By default only Send button will be Clickable", "Send button will be Satel when a Friend request is Sent to that User", "When friend request is Sent only then Undo Button will be Responsive to User Clicks"]}
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseExistingFriendsListings = () => {
+    const titleText = 'Things you can do from Existing Friends Listings!!'
+    const actions = [
+        {name: "Listings Options", descriptions: ["You can click on it to open up available options to interact with", "You can visit their Profile Page", "You can also delete them from Friend list as well, if you want to"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseFriendsRequestsListings = () => {
+    const titleText = 'Things you can do from Friends Requests Listings!!'
+    const actions = [
+        {name: "Accept Request", descriptions: ["You can Accept a Friend Request", "When you accept a friend request User name will show up in Friends List"]},
+        {name: "Reject Request", descriptions: ["You can Reject a Friend Request", "When you reject a friend request User name will be removed from Friend Request List"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseUserProfilePage = () => {
+    const titleText = 'Things you can do from User Profile Page!!'
+    const actions = [
+        {name: "Change Cover Picture Directly", descriptions: ["You can change Cover Photo directly from profile page", "You will have to click on Cover Photo thumnail caption and it will popup a modal fascilitating this feature"]},
+        {name: "Change Profile Picture Directly", descriptions: ["You can change Profile Picture directly from profile page", "You will have to click on Profile Photo thumnail caption and it will popup a modal fascilitating this feature"]},
+        {name: "Edit Profile", descriptions: ["You can click on Edit button, right beside User Email address", "After you click on Edit button a new page will show up to fascilitate other possible changes from tehir at once all together"]},
+        {name: "Categorized Posts - All Posts", descriptions: ["You can see all of your posts that You Created so far in this Tab Panel view"]},
+        {name: "Categorized Posts - Liked", descriptions: ["You can see all of those posts that You Liked in this Tab Panel view"]},
+        {name: "Categorized Posts - Disliked", descriptions: ["You can see all of those posts that You Disliked in this Tab Panel view"]},
+        {name: "Categorized Posts - Loved", descriptions: ["You can see all of those posts that You Loved in this Tab Panel view"]},
+        {name: "Categorized Posts - Shared", descriptions: ["You can see all of those posts that You Shared in this Tab Panel view"]},
+        {name: "Categorized Posts - Commented", descriptions: ["You can see all of those posts that You Commented in this Tab Panel view"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
+export const HowToUseEditUserProfilePage = () => {
+    const titleText = 'Things you can do from Edit User Profile Page!!'
+    const actions = [
+        {name: "Change Cover Picture Url", descriptions: ["You can change Cover Photo Url", "You will see image loads up instantaneously if url is valid"]},
+        {name: "Change Profile Picture Url", descriptions: ["You will see image loads up instantaneously if url is valid"]},
+        {name: "Change User Profile Name", descriptions: ["You can only change user profile name from here"]},
+        {name: "Change User Profile Bio", descriptions: ["You can only change user profile Bio from here"]},
+    ]
+
+    return (
+        <RenderDialogForComponent actions={actions} titleText={titleText} />
+    )
+}
+
 const RenderDialogForComponent = ({actions, titleText}) => {
     let [slideNumber, setSlideNumber] = useState(0);
+    let [renderSlide, setRenderSlide] = useState(null);
 
     const appCtx = useContext(AppContexts);
 
     let renderActions = () => actions.map(action => <RenderHowToUseInformations key={action.name} actionItem={action} />)
-
-    console.log(titleText, "titleText", slideNumber)
 
     const handleButtonActions = (buttonName) => {
         if (buttonName === "Previous") {
@@ -194,10 +178,13 @@ const RenderDialogForComponent = ({actions, titleText}) => {
                 setSlideNumber(prev => prev + 1)
             }
         } else if (buttonName === "Cancel") {
-            console.log("Cancel")
             appCtx.handleCloseDialogModal()
         }
     }
+
+    useEffect(() => {
+        setRenderSlide(renderActions()[slideNumber])
+    }, [slideNumber])
 
     return (
         <Dialog
@@ -206,7 +193,8 @@ const RenderDialogForComponent = ({actions, titleText}) => {
         >
             <RenderHowToUseInformationsTitleText text={titleText} />
             <DialogContent dividers>
-                {renderActions()[slideNumber]}
+                {/* {renderActions()[slideNumber]} */}
+                {renderSlide}
             </DialogContent>
             <Stack
                 sx={{
@@ -297,12 +285,10 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
     
     const handleShowMoreInfo = () => {
         setShowMoreInfo(true)
-        // appCtx.handleDialogTextFor(forWhichItem)
     }
     
     const handleHideMoreInfo = () => {
         setShowMoreInfo(false)
-        // appCtx.handleDialogTextFor("")
     }
 
     const handleDialogModalActivity = () => {
@@ -330,7 +316,7 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
                         backgroundColor: 'rgba(255,255,255,.9)',
                         opacity: .9,
                     },
-                    // ...alertPosition
+                    ...alertPosition
                 }}
                 severity='info'
             />

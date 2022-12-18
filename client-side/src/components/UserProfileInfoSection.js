@@ -4,6 +4,7 @@ import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AppContexts } from "../App"
+import { ButtonToIndicateHelp, HowToUseUserProfilePage } from './HowToUseApp'
 import { MutualFriends } from './routes/ConnectUsers'
 import { checkIfItHasJpgExtension } from './routes/EditUserProfile'
 import { readDataFromServer, updateDataInDatabase } from './utils'
@@ -46,7 +47,7 @@ function UserProfileInfoSection({ appCtx, userId }) {
                         <>
                             <UserNameAndInfo userData={userProfileData} userId={userId} />
                             <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
-                            <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={ userId === appCtx.user._id ? true : userId ? false : true } />
+                            <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={userId === appCtx.user._id ? true : userId ? false : true} />
                             <UserFriendsAndInfo userData={userProfileData} />
                         </>
                         : null
@@ -239,6 +240,8 @@ let UserFriendsAndInfo = ({ userData }) => {
 let UserNameAndInfo = ({ userData, userId }) => {
     let { fullName, email } = { ...userData }
 
+    const appCtx = useContext(AppContexts);
+
     let navigate = useNavigate();
 
     let styles = {
@@ -268,9 +271,13 @@ let UserNameAndInfo = ({ userData, userId }) => {
                     gap: 6,
                     mt: .6,
                     alignItems: "baseline",
-                    justifyContent: "space-around"
+                    justifyContent: "space-around",
+                    position: "relative"
                 }}
             >
+                <ButtonToIndicateHelp alertPosition={{left: 0}} forWhichItem={"User Profile Page"} />
+                {appCtx.dialogTextFor === "User Profile Page" ? <HowToUseUserProfilePage /> : null}
+
                 {renderItems()}
                 {
                     !userId

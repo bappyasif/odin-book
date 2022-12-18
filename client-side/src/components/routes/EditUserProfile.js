@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
 import { VisualizeWordCountProgress } from '../CreatePost'
+import { ButtonToIndicateHelp, HowToUseEditUserProfilePage } from '../HowToUseApp'
 import { fakeDataModel } from '../UserProfileInfoSection'
 import { updateDataInDatabase } from '../utils'
 import ChooseTopics from './ChooseTopics'
@@ -52,8 +53,13 @@ function EditUserProfile() {
     // console.log(userData, "!!")
 
     return (
-        <Box>
-            <Typography variant='h1'>Edit User Profile</Typography>
+        <Box
+            
+        >
+            <Typography sx={{ position: "relative" }} variant='h1'>Edit User Profile</Typography>
+            <ButtonToIndicateHelp alertPosition={{ left: 0 }} forWhichItem={"Edit User Profile Page"} />
+            {appCtx.dialogTextFor === "Edit User Profile Page" ? <HowToUseEditUserProfilePage /> : null}
+            
             {userData.created ? <RenderPhoto cpUrl={userData.cpUrl || fakeDataModel[0].coverPhotoUrl} fullName={userData.fullName} /> : null}
             {userData.created ? <RenderFormWithData handleData={handleData} data={userData} updateTopicsDataFromChooser={updateUserEditTopicsDataFromChooser} /> : null}
             {userData.created ? <RenderFormActionButtons userData={userData} appCtx={appCtx} /> : null}
@@ -236,30 +242,30 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
 
     return (
         <FormControl sx={{ m: 2, position: "relative" }} disabled={check} value>
-            
+
             {
-                elem === "bio" 
-                || 
-                elem === "fullName"
-                ? <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={elem === "bio" ? 220 : 72} smallerSize={true} topPlacingUnits={elem === "fullName" ? "-13.9px" : "4.11px"} />
-                : null
+                elem === "bio"
+                    ||
+                    elem === "fullName"
+                    ? <VisualizeWordCountProgress textContent={editableText ? editableText : dataVal} maxLimit={elem === "bio" ? 220 : 72} smallerSize={true} topPlacingUnits={elem === "fullName" ? "-13.9px" : "4.11px"} />
+                    : null
             }
-            
+
             {elem !== "bio" ? <InputLabel sx={{ textTransform: "capitalize", fontSize: 26, fontWeight: "bold" }} htmlFor={elem}>{formatElemLabel()}</InputLabel> : null}
             {
                 elem === "bio"
                     ?
                     <>
-                        <Typography  sx={{textAlign: "justify", pl: "17px", fontSize: "26px"}}>{formatElemLabel()}</Typography>
+                        <Typography sx={{ textAlign: "justify", pl: "17px", fontSize: "26px" }}>{formatElemLabel()}</Typography>
                         <TextareaAutosize placeholder='e.g. your bio text should go here, tell everybody how aweeesomeee you are :-)' style={{ backgroundColor: "transparent", border: "none", borderBottom: "solid .1px silver", marginLeft: "15px", fontSize: "20px", outline: "1.1px solid skyblue" }} minRows={8} maxRows={4} cols={40} defaultValue={dataVal} maxLength={220} onChange={handleEditableText} />
                     </>
                     :
                     <>
-                    <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={handleEditableText} />
+                        <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={handleEditableText} />
                     </>
             }
             <Typography variant="subtitle1" sx={{ color: "darkgrey", textAlign: "left", pl: 2, position: "relative" }}>{showHelperText()} {showClickableIframeLink()}</Typography>
-            
+
             {showModal ? <OpenTopicsChooserModal closeModal={closeModal} /> : null}
         </FormControl>
     )

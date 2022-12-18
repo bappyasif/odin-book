@@ -1,6 +1,5 @@
-import { AllOutTwoTone, CheckCircleTwoTone, CheckTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import { Button, Fab, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
+import { AllOutTwoTone, CheckCircleTwoTone, DownloadingTwoTone, KeyboardArrowUp } from '@mui/icons-material';
+import { Button, Fab, Paper, Stack, Switch, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
@@ -103,8 +102,6 @@ function UserSpecificNewsFeeds(props) {
 
     return (
         <Paper>
-            {/* <ShowPostsFromThirdPartyApisTopBunk /> */}
-
             <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
 
             {showCreatePost ? <CreatePost /> : null}
@@ -121,9 +118,7 @@ function UserSpecificNewsFeeds(props) {
 
             {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
 
-            <TweetEmbed tweetsDataset={tweetPostsDataset} />
-
-            {/* <ShowPostsFromThirdPartyApisBottomBunk /> */}
+            {/* <TweetEmbed tweetsDataset={tweetPostsDataset} /> */}
 
             {
                 toggle
@@ -151,25 +146,6 @@ function UserSpecificNewsFeeds(props) {
                 </Typography>
             </Button>
 
-            {/* <Typography
-                onClick={handleShowMore}
-                variant="h4"
-                sx={{
-                    backgroundColor: 'primary.main',
-                    color: "floralwhite",
-                    '&:hover': {
-                        backgroundColor: "lightsky",
-                        color: 'text.secondary',
-                        opacity: [0.9, 0.8, 0.7],
-                        cursor: "pointer"
-                    },
-                }}
-            >
-                <ButtonToIndicateHelp forWhichItem={"Show More Listings"} />
-                {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null}
-                Show More
-            </Typography> */}
-            {/* {renderTweetPosts()} */}
             <ScrollToTop {...props}>
                 <Fab size="small" aria-label="scroll back to top">
                     <KeyboardArrowUp />
@@ -180,8 +156,6 @@ function UserSpecificNewsFeeds(props) {
 }
 
 const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
-    // const appCtx = useContext(AppContexts);
-
     return (
         <Stack
             sx={{
@@ -191,15 +165,11 @@ const ShowApiContentsToggler = ({ toggle, handleToggle, dataReady }) => {
             }}
         >
             <Switch
-                // sx={{ position: "relative" }}
                 checked={toggle}
                 onChange={handleToggle}
                 name="api content loader toogle"
                 color="primary"
             />
-            {/* <ButtonToIndicateHelp forWhichItem={"Api Content Listings"} />
-            {appCtx.dialogTextFor === "Api Content Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null} */}
-
             <Button
                 onClick={handleToggle}
                 startIcon={toggle ? <CheckCircleTwoTone /> : <DownloadingTwoTone />}

@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../../App'
 import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside';
+import { ButtonToIndicateHelp, HowToUseExistingFriendsListings, HowToUseFriendsRequestsListings } from '../HowToUseApp';
 import { readDataFromServer, updateDataInDatabase, updateUserInDatabase } from '../utils';
 import { MutualFriends } from './ConnectUsers';
 
@@ -56,6 +57,8 @@ let RenderFriend = ({ friendID, baseUrl }) => {
 
     let ref = useRef()
 
+    const appCtx = useContext(AppContexts)
+
     useToCloseModalOnClickedOutside(ref, () => setShowActionOptions(false))
 
     let toggleShowActionOptions = () => setShowActionOptions(!showActionOptions);
@@ -88,11 +91,14 @@ let RenderFriend = ({ friendID, baseUrl }) => {
                         display: "flex",
                         flexDirection: "row",
                         gap: 2,
-                        alignItems: "flex-start"
+                        alignItems: "flex-start",
+                        position: "relative"
                     }}
                 >
+                    <ButtonToIndicateHelp forWhichItem={"Existing Friends Listings"} />
+                    {appCtx.dialogTextFor === "Existing Friends Listings" ? <HowToUseExistingFriendsListings /> : null}
                     <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} />
-                    <CardContent sx={{alignSelf: "center"}}>
+                    <CardContent sx={{ alignSelf: "center" }}>
                         <MutualFriends friends={data.friends} variantType="subtitle2" />
                     </CardContent>
                     <CardActions>
@@ -175,7 +181,7 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
             visitUserProfile()
         } else if (item.name.includes("Remove")) {
             let userChose = prompt("Are you sure you want to REMOVE this user as a FRIEND? Type Y to continue", "N")
-            if(userChose === "Y" || userChose === "y") {
+            if (userChose === "Y" || userChose === "y") {
                 removeFromFriendList()
             } else {
                 alert("You chose NOT TO REMOVE this user as a FRIEND")
@@ -230,6 +236,8 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
 
     let url = `${baseUrl}/users/${friendId}`
 
+    const appCtx = useContext(AppContexts);
+
     let dataHandler = dataset => setData(dataset.data.data)
 
     useEffect(() => {
@@ -240,7 +248,10 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
 
     return (
         <Stack sx={{ width: "100%", }}>
-            <List sx={{ display: "flex", alignItems: "center", }}>
+            <List sx={{ display: "flex", alignItems: "center", position: "relative" }}>
+
+                <ButtonToIndicateHelp alertPosition={{left: 0, top: 0}} forWhichItem={"Friends Requests Listings"} />
+                {appCtx.dialogTextFor === "Friends Requests Listings" ? <HowToUseFriendsRequestsListings /> : null}
 
                 <ListItem
                     sx={{ outline: "solid .6px red", borderRadius: 2, justifyContent: "space-around" }}
