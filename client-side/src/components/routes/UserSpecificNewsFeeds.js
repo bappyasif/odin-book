@@ -6,7 +6,7 @@ import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterH
 import { AppContexts } from '../../App'
 import { CurateKeywordBasedPostsFromNyTimes, RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
 import CreatePost from '../CreatePost';
-import { ButtonToIndicateHelp, HowToUseShowMorePostsListings, HowToUseThirdPartyApiContentsListItems } from '../HowToUseApp';
+import { ButtonToIndicateHelp, HowToUseShowMorePostsListings } from '../HowToUseApp';
 import ShowPostsFromTwitter, { RenderPost } from '../ShowPostsFromTwitter';
 import ShowUserCreatedPost from '../UserCreatedPost';
 import { readDataFromServer } from '../utils';
@@ -140,19 +140,11 @@ function UserSpecificNewsFeeds(props) {
                     onClick={handleShowMore}
                     variant="h6"
                 >
-                    {/* <ButtonToIndicateHelp forWhichItem={"Show More Listings"} />
-                    {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null} */}
                     Show More
                 </Typography>
-                {
-                    // appCtx.assistiveMode
-                    // ?
-                    <>
-                        <ButtonToIndicateHelp hoverPosition={{left: "-185px", top: "-110px"}} alertPosition={{left: 0}} forWhichItem={"Show More Listings"} />
-                        {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseShowMorePostsListings /> : null}
-                    </>
-                    // : null
-                }
+
+                <ButtonToIndicateHelp hoverPosition={{ left: "-185px", top: "-110px" }} alertPosition={{ left: 0 }} forWhichItem={"Show More Listings"} />
+                {appCtx.dialogTextFor === "Show More Listings" ? <HowToUseShowMorePostsListings /> : null}
             </Button>
 
             <ScrollToTop {...props}>
