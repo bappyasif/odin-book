@@ -33,8 +33,11 @@ function App() {
   let [topics, setTopics] = useState([])
   let [dialogTextFor, setDialogTextFor] = useState(null);
   let [showDialogModal, setShowDialogModal] = useState(false);
+  let [assistiveMode, setAssistiveMode] = useState(false);
 
   const location = useLocation()
+
+  const handleAssitiveModeToggle = () => setAssistiveMode(!assistiveMode)
 
   const handleOpenDialogModal = () => setShowDialogModal(true)
 
@@ -141,7 +144,9 @@ function App() {
     handleCloseDialogModal: handleCloseDialogModal,
     handleDialogTextFor: handleDialogTextFor,
     dialogTextFor: dialogTextFor,
-    showDialogModal: showDialogModal
+    showDialogModal: showDialogModal,
+    handleAssitiveModeToggle: handleAssitiveModeToggle,
+    assistiveMode: assistiveMode
   }
 
   useEffect(() => {

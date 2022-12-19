@@ -72,7 +72,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   // console.log(addedOptions, "addedOptions!!", errors, postData, postText)
 
-  console.log(appCtx.dialogTextFor, "dialogTextFor")
+  // console.log(appCtx.dialogTextFor, "dialogTextFor")
 
   return (
     <ContainerElement width={"md"}>
@@ -92,11 +92,9 @@ function CreatePost({ handleSuccessfullPostShared }) {
               <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
               <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
             </form>
+            {/* showing user selected medias in post */}
             <ShowUserPostMedias mediaContents={addedOptions} />
           </CardContentElement>
-
-          {/* showing user selected medias in post */}
-          {/* <ShowUserPostMedias mediaContents={addedOptions} /> */}
 
           <Stack
             flexDirection={"row"}

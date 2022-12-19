@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone } from "@mui/icons-material";
+import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone } from "@mui/icons-material";
 import { H1Element, NavElement, WrapperDiv } from './GeneralElements'
 import { MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppBar, Avatar, Button, ButtonGroup, FormControl, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Button, ButtonGroup, FormControl, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
@@ -63,6 +63,7 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
 
   return (
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
+      <AssistiveModeActivatingToggler />
       <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
       <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
       {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
@@ -70,8 +71,32 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   )
 }
 
+const AssistiveModeActivatingToggler = () => {
+  const appCtx = useContext(AppContexts);
+  return (
+    <Stack>
+      <FormControlLabel
+        control={
+        <Switch 
+          checked={appCtx.assistiveMode}
+          onChange={appCtx.handleAssitiveModeToggle}
+          size='small' 
+          color="primary" 
+        />
+      }
+        label={`Turn ${appCtx.assistiveMode ? "Off" : "On"} Assitive Mode`}
+        // labelPlacement="top"
+      />
+    </Stack>
+  )
+}
+
 let ShowAuthUserDropdowns = ({ closeDropdown }) => {
-  let options = [{ name: "Edit Profile", icon: null }, { name: "Logout", icon: null }]
+  let options = [
+    { name: "Assistive Mode", icon: <InfoTwoTone /> },
+    { name: "Edit Profile", icon: <ManageAccountsTwoTone /> },
+    { name: "Logout", icon: <LogoutTwoTone /> }
+  ]
 
   let renderOptions = () => options.map(item => <RenderDropDownOption key={item.name} item={item} closeDropdown={closeDropdown} />)
 
@@ -113,6 +138,8 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
       handleLogoutUser()
     } else if (item.name === "Edit Profile") {
       navigate(`/edit-user-profile`);
+    } else if (item.name === "Assistive Mode") {
+      appCtx.handleAssitiveModeToggle()
     }
     closeDropdown()
   }
@@ -251,11 +278,11 @@ let FloatingLogin = () => {
   return (
     <WrapperDiv className="fl-wrapper">
       <Typography variant='h5'>Login to your profile from here</Typography>
-      <form 
+      <form
         ref={ref} method={"post"} onSubmit={handleSubmit}
-        style={{position: "relative", marginLeft: "11px"}}
+        style={{ position: "relative", marginLeft: "11px" }}
       >
-        {errors?.length ? <Typography variant='body2' sx={{position: "absolute", color: "maroon", bottom: "-13px", left: "10.1px"}}>User email and password does not match!!</Typography> : null}
+        {errors?.length ? <Typography variant='body2' sx={{ position: "absolute", color: "maroon", bottom: "-13px", left: "10.1px" }}>User email and password does not match!!</Typography> : null}
 
         <Stack
           sx={{
@@ -287,10 +314,10 @@ let FloatingLogin = () => {
               fontSize={"1.3em"}
             />
           </FormControl>
-          <Button 
-            color={"primary"} 
+          <Button
+            color={"primary"}
             variant="contained"
-            sx={{height: "fit-content"}}
+            sx={{ height: "fit-content" }}
             type={"submit"}
           >
             <Typography variant='h6'>Login</Typography>

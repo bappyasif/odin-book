@@ -278,7 +278,7 @@ const RenderActionDescriptionDetail = ({ text }) => {
     )
 }
 
-export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
+export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem, hoverPosition }) => {
     let [showMoreInfo, setShowMoreInfo] = useState(false);
 
     const appCtx = useContext(AppContexts);
@@ -297,6 +297,8 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
     }
 
     return (
+        appCtx.assistiveMode
+        ?
         <>
             <Alert
                 onMouseEnter={handleShowMoreInfo}
@@ -320,12 +322,13 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem }) => {
                 }}
                 severity='info'
             />
-            {showMoreInfo ? <MoreInfoOnHover /> : null}
+            {showMoreInfo ? <MoreInfoOnHover hoverPosition={hoverPosition} /> : null}
         </>
+        : null
     )
 }
 
-export const MoreInfoOnHover = ({ name }) => {
+export const MoreInfoOnHover = ({ name, hoverPosition }) => {
     return (
         <Button
             sx={{
@@ -333,7 +336,8 @@ export const MoreInfoOnHover = ({ name }) => {
                 left: 0,
                 zIndex: 9,
                 top: "35px",
-                maxWidth: "200px"
+                maxWidth: "200px",
+                ...hoverPosition
             }}
         >
             <Alert severity='info'>
