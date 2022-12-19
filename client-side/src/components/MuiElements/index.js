@@ -96,7 +96,7 @@ const CardHeaderElement = ({ avatarUrl, title, joined, altText, forPost, forComm
 }
 
 const CardContentElement = (props) => {
-    return <CardContent sx={{mt: 2}}>{props.children}</CardContent>
+    return <CardContent sx={{mt: 2, p:0}}>{props.children}</CardContent>
 }
 
 const ButtonElement = ({ text, type, fontSize, action, disable, variant }) => {
