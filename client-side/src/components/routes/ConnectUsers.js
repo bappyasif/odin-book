@@ -34,8 +34,6 @@ function ConnectUsers() {
 
   return (
     <WrapperDiv className="cards-wrapper">
-      {/* <TypographyElement text={"Connect With Other User"} type="h1" /> */}
-
       <Stack sx={{ position: "relative" }}>
         <Typography variant='h1'>Connect With Other User</Typography>
         <ButtonToIndicateHelp alertPosition={{ left: "13px", top: 2 }} forWhichItem={"Connect Users Listings"} />
@@ -61,7 +59,6 @@ function ConnectUsers() {
 let RenderUser = ({ userData }) => {
   let [friendAlready, setFriendAlready] = useState(false);
   let [friendRequestSent, setFriendRequestSentAlready] = useState(false)
-  // let [friendOrRequestSentAlready, setFriendOrRequestSentAlready] = useState(false);
 
   let { fullName, email, friends, created, bio, _id, ppUrl } = { ...userData }
 
@@ -86,7 +83,6 @@ let RenderUser = ({ userData }) => {
   useEffect(() => {
     setFriendAlready(appCtx.user.friends.includes(_id))
     setFriendRequestSentAlready(appCtx.user.frSent.includes(_id))
-    // setFriendOrRequestSentAlready(appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id))
   }, [_id])
 
   // console.log(appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id), appCtx.user.frSent.includes(_id), appCtx.user.friends.includes(_id))
@@ -96,15 +92,10 @@ let RenderUser = ({ userData }) => {
       className="card-wrapper"
       styles={{ backgroundColor: "text.secondary", position: "relative" }}
     >
-      {/* <ButtonToIndicateHelp alertPosition={{left: "13px", top: 0}} forWhichItem={"Connect Users Listings"} />
-      {appCtx.dialogTextFor === "Connect Users Listings" ? <HowToUseConnectUsersListings /> : null} */}
-
       <CardHeaderElement avatarUrl={ppUrl || test} altText={fullName} title={fullName} joined={created} forConnect={true} />
       <CardContentElement>
         <TypographyElement
-          // text={appCtx.user.friends.includes(_id) ? email : "Email: be a friend to see that"}
           text={friendAlready ? email : "Email: be a friend to see that"}
-          // text={friendOrRequestSentAlready ? email : "Email: be a friend to see that"}
           type={"p"}
           forConnect={true}
           styles={{ mb: 2 }}
@@ -117,46 +108,31 @@ let RenderUser = ({ userData }) => {
         />
         <StackElement className="af-wrapper">
           <MutualFriends friends={friends} />
-          {/* <BoxElement className="fc">
-            <TypographyElement text={"Friends: "} type={"h5"} />
-            <TypographyElement text={friends.length} type={"h5"} />
-          </BoxElement> */}
           <Stack sx={{ flexDirection: "row", gap: 1.3, alignItems: "baseline" }}>
             <TypographyElement text={"Friends "} type={"h5"} />
             <TypographyElement text={friends.length} type={"h6"} />
           </Stack>
         </StackElement>
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2, flexDirection: "column" }}>
-          {/* <TypographyElement
-              // text={appCtx.user.friends.includes(_id) ? "Friend Already" : "Friend Request"}
-              styles={{backgroundColor: friendAlready ? "chartreuse" : "lightskyblue", borderRadius: "20px"}}
-              text={friendAlready ? "Friend Already" : "Friend Request"}
-              type={"h5"} /> */}
           <Typography
             sx={{ m: 1.1, mb: friendAlready ? .6 : 1.1, mt: friendAlready ? .6 : 1.1, backgroundColor: friendAlready ? "chartreuse" : "lightskyblue", borderRadius: "20px" }}
-            // sx={{m: 1.1, mb: friendOrRequestSentAlready ? .6 : 1.1, mt: friendOrRequestSentAlready ? .6 : 1.1, backgroundColor: friendOrRequestSentAlready ? "chartreuse" : "lightskyblue", borderRadius: "20px"}}
-            variant='h5'>{friendAlready ? "Friend Already" : "Friend Request"}</Typography>
+            variant='h5'
+            >{friendAlready ? "Friend Already" : "Friend Request"}</Typography>
           {
             friendAlready
               ? null
               : <BoxElement className="all-btns">
                 <ButtonElement
-                  // text={appCtx.user.frSent.includes(_id) ? "Is Sent" : "Send"}
                   text={friendRequestSent ? "Is Sent" : "Send"}
-                  // text={friendOrRequestSentAlready ? "Is Sent" : "Send"}
                   type="contained"
                   action={handleSend}
                   disable={friendRequestSent || friendAlready}
-                // disable={appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id)}
-                // disable={friendOrRequestSentAlready}
                 />
                 <ButtonElement
                   text={"Undo"}
                   type="contained"
                   action={handleSend}
                   disable={!friendRequestSent || friendAlready}
-                // disable={!appCtx.user.frSent.includes(_id) || appCtx.user.friends.includes(_id)}
-                // disable={friendOrRequestSentAlready}
                 />
               </BoxElement>
           }

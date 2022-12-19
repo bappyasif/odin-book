@@ -84,7 +84,7 @@ let ShowAuthUserDropdowns = ({ closeDropdown }) => {
       ref={ref}
       sx={{
         position: "absolute", right: 0, top: "62px",
-        gap: "9px", backgroundColor: "gainsboro", p: 2
+        gap: "9px", backgroundColor: "gainsboro", p: 2, zIndex: 9
       }}
     >
       {renderOptions()}
@@ -110,12 +110,11 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
 
   let handleClick = () => {
     if (item.name === "Logout") {
-      closeDropdown()
       handleLogoutUser()
     } else if (item.name === "Edit Profile") {
-      closeDropdown()
       navigate(`/edit-user-profile`);
     }
+    closeDropdown()
   }
 
   return (

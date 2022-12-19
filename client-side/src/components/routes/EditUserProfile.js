@@ -130,11 +130,26 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
 
             // checking if "bio" key exists in dataset, otherwise inserting it manually, it will happen just once
             let allKeys = Object.keys(data);
+
             let findBioIdx = allKeys.findIndex(val => val === "bio")
             if (findBioIdx === -1) {
                 elem = "bio";
                 data["bio"] = ""
-                key = "bio"
+                // key = "bio"
+            }
+
+            let findCpurlIdx = allKeys.findIndex(val => val === "cpUrl")
+            if (findCpurlIdx === -1) {
+                elem = "cpUrl";
+                data["cpUrl"] = "https://picsum.photos/500/150"
+                // key = "bio"
+            }
+
+            let findPpurlIdx = allKeys.findIndex(val => val === "ppUrl")
+            if (findPpurlIdx === -1) {
+                elem = "ppUrl";
+                data["ppUrl"] = "https://picsum.photos/315/296"
+                // key = "bio"
             }
 
             if (elem === "frSent" || elem === "frRecieved" || elem === "friends") {
@@ -143,10 +158,12 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
             } else if (elem === "created") {
                 initialValue = moment(data[key]).format("DD-MM-YYYY")
             } else if (elem === "topics") {
-                console.log(key, data[key], "checkcheck!!")
                 initialValue = data[key]
             } else if (elem === "bio") {
-                console.log("elem?!", data[key], data[elem])
+                initialValue = data[key]
+            } else if (elem === "cpUrl") {
+                initialValue = data[key]
+            } else if (elem === "ppUrl") {
                 initialValue = data[key]
             }
 
