@@ -1,8 +1,7 @@
 import { CommentTwoTone } from '@mui/icons-material'
-import { Box, Button, IconButton, Modal, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Box, Button, IconButton, Modal, Stack, Tooltip, Typography } from '@mui/material'
+import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App'
-import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
 import { ButtonToIndicateHelp, HowToUsePostListItems } from './HowToUseApp'
 import { DislikeIconElement, LikeIconElement, LoveIconElement, ShareIconElement } from './MuiElements'
 import PostCommentModal from './PostCommentModal'
@@ -248,45 +247,15 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
             {counts[item.name] ? null : item.icon}
             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
           </Button>
-
-          {/* {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions promptLogin={promptLogin} setPromptLogin={setPromptLogin} itemName={item.name} /> : null} */}
         </IconButton>
       </Tooltip>
+
       {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions promptLogin={promptLogin} setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
     </>
   )
 }
 
 export const ShowUserAuthenticationOptions = ({ promptLogin, setPromptLogin, itemName, forComments }) => {
-  // let ref = useRef(null);
-
-  // useToCloseModalOnClickedOutside(ref, () => setPromptLogin(false))
-
-  let leftPlacement = () => {
-    let measurement = "";
-
-    // console.log(itemName, "itemName")
-
-    if (forComments) {
-      measurement = "-146px";
-    } else {
-      if (itemName === "Share") {
-        measurement = "-696px";
-      } else if (itemName === "Comment") {
-        measurement = "-317px";
-      } else if (itemName === "Like") {
-        measurement = "-407px";
-      } else if (itemName === "Dislike") {
-        measurement = "-501px";
-      } else if (itemName === "Love") {
-        measurement = "-598px";
-      } else if (itemName === "Create Post") {
-        measurement = "-63px";
-      }
-    }
-    return measurement
-  }
-
   const style = {
     position: 'absolute',
     top: '50%',
@@ -302,28 +271,14 @@ export const ShowUserAuthenticationOptions = ({ promptLogin, setPromptLogin, ite
 
   return (
     <Modal
-      // ref={ref}
       open={promptLogin}
       onClose={() => setPromptLogin(false)}
-      sx={{
-        // position: "absolute", bottom: "105px", left: leftPlacement(),
-        // zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
-      }}
     >
       <Box style={style}>
         <LoginForm />
         <Button fullWidth={true} variant='contained' onClick={() => setPromptLogin(false)}>Cancel</Button>
       </Box>
     </Modal>
-    // <Paper
-    //   ref={ref}
-    //   sx={{
-    //     position: "absolute", bottom: "105px", left: leftPlacement(),
-    //     zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
-    //   }}
-    // >
-    //   <LoginForm />
-    // </Paper>
   )
 }
 
