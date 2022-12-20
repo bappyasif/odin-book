@@ -4,8 +4,11 @@ import React, { useState } from 'react'
 
 function DropdownMenu({ options }) {
     let [openMenuOptions, setOpenMenuOptions] = useState(false);
+    
     const handleOpenMenuOptions = () => setOpenMenuOptions(true);
+    
     const handleCloseMenuOptions = () => setOpenMenuOptions(false);
+    
     let renderOptions = options?.map(item => <RenderMenuItem key={item.name} item={item} handleCloseMenuOptions={handleCloseMenuOptions} />);
 
     return (
