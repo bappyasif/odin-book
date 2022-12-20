@@ -52,7 +52,7 @@ export const RenderCardContent = ({ postId, body, preparingAdditionalsForRenderi
     const navigate = useNavigate()
 
     let handleShowThread = () => {
-        navigate(`posts/${postId}/comments/`)
+        navigate(`/posts/${postId}/comments/`)
     }
 
     return (

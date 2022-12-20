@@ -206,7 +206,7 @@ function App() {
           <Route path='/choose-topics/:category' element={<TopicCategory />} errorElement={<ErrorPage />} />
           <Route path='/connect' element={<ConnectUsers />} />
           <Route path='/news-feeds' element={<NewsFeeds />} />
-          <Route path='posts/:postId/comments' element={<PostCommentsThread />} />
+          <Route path='/posts/:postId/comments' element={<PostCommentsThread />} />
           <Route path='/edit-user-profile' element={<EditUserProfile />} />
           <Route path='/users/:userID/profile' element={<UserProfile />} />
           <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />

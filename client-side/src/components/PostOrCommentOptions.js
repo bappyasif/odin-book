@@ -115,7 +115,9 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 commenceDelete(url, data)
             } else {
                 console.log("thread", postId)
-                navigate(`posts/${postId}/comments/`)
+                // navigate(`posts/${postId}/comments/`)
+                navigate(`/posts/${postId}/comments/`, {replace: true})
+                // navigate(`/http://localhost:3001/posts/${postId}/comments/`)
             }
         }
     }

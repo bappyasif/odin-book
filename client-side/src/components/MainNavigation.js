@@ -5,7 +5,7 @@ import { MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppBar, Avatar, Button, ButtonGroup, FormControl, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Button, ButtonGroup, FormControl, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 
@@ -57,16 +57,22 @@ function MainNavigation() {
 const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   let [showDropdown, setShowDropdown] = useState(false)
 
-  let toggleDropdown = () => setShowDropdown(!showDropdown)
+  let ref = useRef();
+
+  let toggleDropdown = () => setShowDropdown(prev => !prev)
 
   let closeDropdown = () => setShowDropdown(false);
+
+  useToCloseModalOnClickedOutside(ref, closeDropdown)
 
   return (
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <AssistiveModeActivatingToggler />
       <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
-      <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
-      {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
+      <Box ref={ref}>
+        <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
+        {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
+      </Box>
     </Stack>
   )
 }
@@ -77,15 +83,15 @@ const AssistiveModeActivatingToggler = () => {
     <Stack>
       <FormControlLabel
         control={
-        <Switch 
-          checked={appCtx.assistiveMode}
-          onChange={appCtx.handleAssitiveModeToggle}
-          size='small' 
-          color="primary" 
-        />
-      }
+          <Switch
+            checked={appCtx.assistiveMode}
+            onChange={appCtx.handleAssitiveModeToggle}
+            size='small'
+            color="primary"
+          />
+        }
         label={`Turn ${appCtx.assistiveMode ? "Off" : "On"} Assitive Mode`}
-        // labelPlacement="top"
+      // labelPlacement="top"
       />
     </Stack>
   )
@@ -100,13 +106,13 @@ let ShowAuthUserDropdowns = ({ closeDropdown }) => {
 
   let renderOptions = () => options.map(item => <RenderDropDownOption key={item.name} item={item} closeDropdown={closeDropdown} />)
 
-  let ref = useRef();
+  // let ref = useRef();
 
-  useToCloseModalOnClickedOutside(ref, closeDropdown)
+  // useToCloseModalOnClickedOutside(ref, closeDropdown)
 
   return (
     <Stack
-      ref={ref}
+      // ref={ref}
       sx={{
         position: "absolute", right: 0, top: "62px",
         gap: "9px", backgroundColor: "gainsboro", p: 2, zIndex: 9
@@ -146,7 +152,7 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
 
   return (
     <Tooltip sx={{ mb: .2 }} title={item.name}>
-      <Button onClick={handleClick} startIcon={item.icon} sx={{ outline: "solid 2px red" }}>
+      <Button onClick={handleClick} startIcon={item.icon} sx={{ outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite" } }}>
         <Typography variant='subtitle2'>{item.name}</Typography>
       </Button>
     </Tooltip>

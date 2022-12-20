@@ -56,8 +56,6 @@ let RenderFriend = ({ friendID, baseUrl }) => {
     let [showActionOptions, setShowActionOptions] = useState(false);
     let [showMenu, setShowMenu] = useState(null)
 
-    let ref = useRef()
-
     const menuRef = useRef();
 
     const handleOpenMenu = (e) => {
@@ -71,8 +69,6 @@ let RenderFriend = ({ friendID, baseUrl }) => {
     }
 
     const appCtx = useContext(AppContexts)
-
-    useToCloseModalOnClickedOutside(ref, () => setShowActionOptions(false))
 
     let toggleShowActionOptions = () => setShowActionOptions(!showActionOptions);
 
@@ -93,7 +89,6 @@ let RenderFriend = ({ friendID, baseUrl }) => {
         data?.fullName
             ?
             <Stack
-                // ref={ref}
                 sx={{
                     outline: showActionOptions ? "none" : "solid .6px darkred",
                     borderRadius: 2
@@ -119,7 +114,6 @@ let RenderFriend = ({ friendID, baseUrl }) => {
                         <IconButton
                             ref={menuRef}
                             sx={{ position: "relative" }}
-                            // onClick={toggleShowActionOptions}
                             onClick={handleOpenMenu}
                         >
                             <MoreVertTwoTone />
@@ -176,18 +170,6 @@ let ActionListOptions = ({ toggleShowActionOptions, friendId, anchorEl, handleCl
                 </MenuList>
             </ClickAwayListener>
         </Popper>
-        // <List
-        //     sx={{
-        //         alignSelf: "flex-end",
-        //         position: "absolute",
-        //         mt: 5.8,
-        //         outline: "solid .6px darkred",
-        //         borderRadius: 2,
-        //         zIndex: 9
-        //     }}
-        // >
-        //     {renderOptions()}
-        // </List>
     )
 }
 
