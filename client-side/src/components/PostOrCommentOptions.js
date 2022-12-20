@@ -44,7 +44,6 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
             <Tooltip title="click to open menu">
                 <IconButton
                     id='lock-button'
-                    // ref={ref}
                     onClick={handleClick}>{postId ? <MoreVertTwoTone /> : <SettingsSuggestTwoTone />}</IconButton>
             </Tooltip>
 
@@ -105,7 +104,6 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 const data = { commentId: commentId }
                 commenceDelete(url, data)
             } else if (item.text === "Edit") {
-                console.log("Edit here!!")
                 showEditableText(true)
             }
         } else {
@@ -114,10 +112,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 const data = { postId: postId }
                 commenceDelete(url, data)
             } else {
-                console.log("thread", postId)
-                // navigate(`posts/${postId}/comments/`)
                 navigate(`/posts/${postId}/comments/`, {replace: true})
-                // navigate(`/http://localhost:3001/posts/${postId}/comments/`)
             }
         }
     }
@@ -135,7 +130,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
             optionsActions()
         }
 
-        console.log(postOwner && item.text === "Delete", postOwner, item.text)
+        // console.log(postOwner && item.text === "Delete", postOwner, item.text)
 
         openDropdown(false)
     }
@@ -150,9 +145,6 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 <Button
                     onClick={(!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
                     startIcon={item.icon}
-                    // sx={{
-                    //     position: "relative"
-                    // }}
                 >
                     <Typography>{item.text}</Typography>
                 </Button>

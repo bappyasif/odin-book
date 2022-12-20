@@ -106,13 +106,8 @@ let ShowAuthUserDropdowns = ({ closeDropdown }) => {
 
   let renderOptions = () => options.map(item => <RenderDropDownOption key={item.name} item={item} closeDropdown={closeDropdown} />)
 
-  // let ref = useRef();
-
-  // useToCloseModalOnClickedOutside(ref, closeDropdown)
-
   return (
     <Stack
-      // ref={ref}
       sx={{
         position: "absolute", right: 0, top: "62px",
         gap: "9px", backgroundColor: "gainsboro", p: 2, zIndex: 9

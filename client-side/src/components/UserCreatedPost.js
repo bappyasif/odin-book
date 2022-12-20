@@ -1,5 +1,5 @@
 import { CommentTwoTone } from '@mui/icons-material'
-import { Box, Button, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material'
+import { Box, Button, IconButton, Modal, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside'
@@ -236,28 +236,31 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
   // item.name === "Comment" && console.log(counts[item.name], item.name, counts)
 
   return (
-    <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id) ? `Login to ${item.name}` : item.name}>
-      <IconButton
-        onClick={handleClick}
-        sx={{
-          backgroundColor: flag ? "beige" : "lightgrey",
-          position: "relative"
-        }}>
-        <Button startIcon={counts[item.name] ? item.icon : null}>
-          {counts[item.name] ? null : item.icon}
-          <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-        </Button>
+    <>
+      <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id) ? `Login to ${item.name}` : item.name}>
+        <IconButton
+          onClick={handleClick}
+          sx={{
+            backgroundColor: flag ? "beige" : "lightgrey",
+            position: "relative"
+          }}>
+          <Button startIcon={counts[item.name] ? item.icon : null}>
+            {counts[item.name] ? null : item.icon}
+            <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
+          </Button>
 
-        {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
-      </IconButton>
-    </Tooltip>
+          {/* {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions promptLogin={promptLogin} setPromptLogin={setPromptLogin} itemName={item.name} /> : null} */}
+        </IconButton>
+      </Tooltip>
+      {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions promptLogin={promptLogin} setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
+    </>
   )
 }
 
-export const ShowUserAuthenticationOptions = ({ setPromptLogin, itemName, forComments }) => {
-  let ref = useRef(null);
+export const ShowUserAuthenticationOptions = ({ promptLogin, setPromptLogin, itemName, forComments }) => {
+  // let ref = useRef(null);
 
-  useToCloseModalOnClickedOutside(ref, () => setPromptLogin(false))
+  // useToCloseModalOnClickedOutside(ref, () => setPromptLogin(false))
 
   let leftPlacement = () => {
     let measurement = "";
@@ -284,16 +287,43 @@ export const ShowUserAuthenticationOptions = ({ setPromptLogin, itemName, forCom
     return measurement
   }
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: "max-content",
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    backgroundColor: "gainsboro"
+  };
+
   return (
-    <Paper
-      ref={ref}
+    <Modal
+      // ref={ref}
+      open={promptLogin}
+      onClose={() => setPromptLogin(false)}
       sx={{
-        position: "absolute", bottom: "105px", left: leftPlacement(),
-        zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
+        // position: "absolute", bottom: "105px", left: leftPlacement(),
+        // zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
       }}
     >
-      <LoginForm />
-    </Paper>
+      <Box style={style}>
+        <LoginForm />
+        <Button fullWidth={true} variant='contained' onClick={() => setPromptLogin(false)}>Cancel</Button>
+      </Box>
+    </Modal>
+    // <Paper
+    //   ref={ref}
+    //   sx={{
+    //     position: "absolute", bottom: "105px", left: leftPlacement(),
+    //     zIndex: 18, width: itemName === "Create Post" ? "fit-content" : "max-content", outline: "solid 4px darkred"
+    //   }}
+    // >
+    //   <LoginForm />
+    // </Paper>
   )
 }
 
