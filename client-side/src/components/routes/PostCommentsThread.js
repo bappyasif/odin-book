@@ -95,7 +95,7 @@ let RenderThisPostComments = (props) => {
     container?.addEventListener("scroll", handleScroll)
     // window.addEventListener("scroll", handleScroll)
 
-    let renderComments = () => props.commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => <RenderComment key={commentData._id} commentData={commentData} updateCommentTextFromThread={props.updateCommentTextFromThread} />)
+    let renderComments = () => props.commentsData.sort((a, b) => a.created < b.created ? 1 : -1)?.map((commentData, idx) => <RenderComment key={commentData._id} commentData={commentData} updateCommentTextFromThread={props.updateCommentTextFromThread} fromThread={true} />)
 
     return (
         <Stack

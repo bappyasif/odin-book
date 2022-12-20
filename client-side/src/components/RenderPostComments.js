@@ -59,7 +59,7 @@ function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, 
     )
 }
 
-export const RenderComment = ({ postOwner, commentData, deleteCommentFromDataset, updateCommentText, updateCommentTextFromThread }) => {
+export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommentFromDataset, updateCommentText, updateCommentTextFromThread }) => {
     let { body, created, _id, likesCount, dislikesCount, loveCount, userId } = { ...commentData }
 
     let [counts, setCounts] = useState({})
@@ -101,7 +101,7 @@ export const RenderComment = ({ postOwner, commentData, deleteCommentFromDataset
             !countsForCurrentUser[elem] && handleCountsForCurrentUser(elem)
             countsForCurrentUser[elem] && handleCountsForCurrentUser(elem, "deduct")
         } else {
-            setPromptLogin(!promptLogin);
+            !fromThread && setPromptLogin(!promptLogin);
             setCurrentlyClickedElement(elem);
         }
     }

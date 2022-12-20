@@ -1,5 +1,5 @@
 import { AccountCircleTwoTone, HowToRegRounded, MoreVertTwoTone, PersonOffRounded, PersonOffTwoTone } from '@mui/icons-material';
-import { Avatar, Box, Card, CardActions, CardContent, CardHeader, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Paper, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardActions, CardContent, CardHeader, ClickAwayListener, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../../App'
@@ -54,8 +54,21 @@ let ExistingFriendList = () => {
 let RenderFriend = ({ friendID, baseUrl }) => {
     let [data, setData] = useState();
     let [showActionOptions, setShowActionOptions] = useState(false);
+    let [showMenu, setShowMenu] = useState(null)
 
     let ref = useRef()
+
+    const menuRef = useRef();
+
+    const handleOpenMenu = (e) => {
+        setShowMenu(e.currentTarget)
+        setShowActionOptions(true)
+    }
+
+    const handleCloseMenu = (e) => {
+        setShowMenu(null)
+        setShowActionOptions(false)
+    }
 
     const appCtx = useContext(AppContexts)
 
@@ -80,7 +93,7 @@ let RenderFriend = ({ friendID, baseUrl }) => {
         data?.fullName
             ?
             <Stack
-                ref={ref}
+                // ref={ref}
                 sx={{
                     outline: showActionOptions ? "none" : "solid .6px darkred",
                     borderRadius: 2
@@ -92,26 +105,29 @@ let RenderFriend = ({ friendID, baseUrl }) => {
                         flexDirection: "row",
                         gap: 2,
                         alignItems: "flex-start",
-                        position: "relative"
+                        position: "relative",
+                        justifyContent: "space-between"
                     }}
                 >
                     <ButtonToIndicateHelp forWhichItem={"Existing Friends Listings"} />
                     {appCtx.dialogTextFor === "Existing Friends Listings" ? <HowToUseExistingFriendsListings /> : null}
                     <FriendCardHeader data={data} toggleShowActionOptions={toggleShowActionOptions} />
-                    <CardContent sx={{ alignSelf: "center" }}>
+                    <CardContent sx={{ alignSelf: "center", width: "29%" }}>
                         <MutualFriends friends={data.friends} variantType="subtitle2" />
                     </CardContent>
                     <CardActions>
                         <IconButton
+                            ref={menuRef}
                             sx={{ position: "relative" }}
-                            onClick={toggleShowActionOptions}
+                            // onClick={toggleShowActionOptions}
+                            onClick={handleOpenMenu}
                         >
                             <MoreVertTwoTone />
                         </IconButton>
                     </CardActions>
                 </Card>
 
-                {showActionOptions ? <ActionListOptions friendId={data._id} toggleShowActionOptions={toggleShowActionOptions} /> : null}
+                {showActionOptions ? <ActionListOptions handleClose={handleCloseMenu} anchorEl={showMenu} friendId={data._id} toggleShowActionOptions={toggleShowActionOptions} /> : null}
             </Stack>
             : null
     )
@@ -137,24 +153,41 @@ let FriendCardHeader = ({ data }) => {
     )
 }
 
-let ActionListOptions = ({ toggleShowActionOptions, friendId }) => {
+let ActionListOptions = ({ toggleShowActionOptions, friendId, anchorEl, handleClose }) => {
     let options = [{ name: "View Profile", icon: <AccountCircleTwoTone /> }, { name: "Remove From Friend List", icon: <PersonOffTwoTone /> }]
 
     let renderOptions = () => options.map(item => <RenderActionListOption key={item.name} item={item} toggleShowActionOptions={toggleShowActionOptions} friendId={friendId} />)
 
+    // making popper get appropriate mui props value to initiate menu opening or close sequence
+    const open = Boolean(anchorEl)
+
     return (
-        <List
-            sx={{
-                alignSelf: "flex-end",
-                position: "absolute",
-                mt: 5.8,
-                outline: "solid .6px darkred",
-                borderRadius: 2,
-                zIndex: 9
-            }}
+        <Popper
+            sx={{left: "-128px !important"}}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
         >
-            {renderOptions()}
-        </List>
+            <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                    sx={{p:0, outline: "solid .6px darkred"}}
+                >
+                    {renderOptions()}
+                </MenuList>
+            </ClickAwayListener>
+        </Popper>
+        // <List
+        //     sx={{
+        //         alignSelf: "flex-end",
+        //         position: "absolute",
+        //         mt: 5.8,
+        //         outline: "solid .6px darkred",
+        //         borderRadius: 2,
+        //         zIndex: 9
+        //     }}
+        // >
+        //     {renderOptions()}
+        // </List>
     )
 }
 
@@ -190,27 +223,32 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
     }
 
     return (
-        <ListItem
-            sx={{
-                mr: 4,
-                pr: 1.1,
-                backgroundColor: 'honeydew',
-                '&:hover': {
-                    color: "floralwhite",
-                    backgroundColor: 'lightskyblue',
-                },
-            }}
-            onClick={handleClick}
+        <MenuItem
+            sx={{p:0}}
         >
-            <ListItemAvatar>
-                <Avatar>
-                    {item.icon}
-                </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-                secondary={<Typography variant="h6">{item.name}</Typography>}
-            />
-        </ListItem>
+            <ListItem
+                sx={{
+                    mt: .11,
+                    mr: .11,
+                    pr: 1.1,
+                    backgroundColor: 'honeydew',
+                    '&:hover': {
+                        color: "floralwhite",
+                        backgroundColor: 'lightskyblue',
+                    },
+                }}
+                onClick={handleClick}
+            >
+                <ListItemAvatar>
+                    <Avatar>
+                        {item.icon}
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                    secondary={<Typography variant="h6">{item.name}</Typography>}
+                />
+            </ListItem>
+        </MenuItem>
     )
 }
 
@@ -250,7 +288,7 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
         <Stack sx={{ width: "100%", }}>
             <List sx={{ display: "flex", alignItems: "center", position: "relative" }}>
 
-                <ButtonToIndicateHelp alertPosition={{left: 0, top: 0}} forWhichItem={"Friends Requests Listings"} />
+                <ButtonToIndicateHelp alertPosition={{ left: 0, top: 0 }} forWhichItem={"Friends Requests Listings"} />
                 {appCtx.dialogTextFor === "Friends Requests Listings" ? <HowToUseFriendsRequestsListings /> : null}
 
                 <ListItem

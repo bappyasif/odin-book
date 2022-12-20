@@ -1,20 +1,15 @@
-import { DangerousTwoTone, DvrTwoTone, ModeEditTwoTone, MoreVertTwoTone, SettingsSuggestTwoTone, VerticalAlignTop } from '@mui/icons-material';
-import { Box, Button, ClickAwayListener, IconButton, Menu, MenuItem, MenuList, Popper, Stack, Tooltip, Typography } from '@mui/material';
+import { DangerousTwoTone, DvrTwoTone, ModeEditTwoTone, MoreVertTwoTone, SettingsSuggestTwoTone } from '@mui/icons-material';
+import { Box, Button, ClickAwayListener, IconButton, MenuItem, MenuList, Popper, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App';
-import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
 import { deleteResourceFromServer } from './utils';
 
 export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteCommentFromDataset, userId, showEditableText }) => {
-    // let [clickedOptions, setClickedOptions] = useState(false);
     let [showMenu, setShowMenu] = useState(false);
     let [anchorEl, setAnchorEl] = useState(null)
 
     let ref = useRef();
-
-    // useToCloseModalOnClickedOutside(ref, () => setClickedOptions(false))
-    // useToCloseModalOnClickedOutside(ref, () => setShowMenu(false))
 
     let options = [{ text: "Edit", icon: <ModeEditTwoTone /> }, { text: "Delete", icon: <DangerousTwoTone /> }, { text: "Thread", icon: <DvrTwoTone /> }]
 
@@ -24,10 +19,8 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
         options = options.filter(item => item.text !== "Edit");
     }
 
-    // let renderOptions = () => options.map(item => <RenderPostOption key={item.text} postOwner={postOwner} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setClickedOptions} userId={userId} showEditableText={showEditableText} />)
     let renderOptions = () => options.map(item => <RenderPostOption key={item.text} postOwner={postOwner} item={item} postId={postId} commentId={commentId} deleteCommentFromDataset={deleteCommentFromDataset} openDropdown={setShowMenu} userId={userId} showEditableText={showEditableText} />)
 
-    // let handleClick = () => setClickedOptions(!clickedOptions)
     let handleClick = (e) => {
         setShowMenu(!showMenu)
         setAnchorEl(e.currentTarget)
@@ -52,7 +45,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
                 <IconButton
                     id='lock-button'
                     // ref={ref}
-                    onClick={handleClick}>{postId ? <VerticalAlignTop /> : <SettingsSuggestTwoTone />}</IconButton>
+                    onClick={handleClick}>{postId ? <MoreVertTwoTone /> : <SettingsSuggestTwoTone />}</IconButton>
             </Tooltip>
 
             <Popper
@@ -71,71 +64,13 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
 
             >
                 <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList>
+                    <MenuList
+                        sx={{p: 0}}
+                    >
                         {renderOptions()}
                     </MenuList>
                 </ClickAwayListener>
             </Popper>
-
-            {/* <Menu
-                id="lock-menu"
-                anchorEl={anchorEl}
-                open={showMenu}
-                onClose={() => {
-                    setShowMenu(false)
-                    setAnchorEl(null)
-                }}
-                MenuListProps={{
-                    'aria-labelledby': 'lock-button',
-                    role: 'listbox',
-                }}
-                
-            >
-                {renderOptions()}
-            </Menu> */}
-
-            {/* <Menu>
-            {/* <Popper
-                open={showMenu}
-                anchorEl={ref.current}
-                transition
-            >
-                <MenuList
-                    sx={{
-                        position: "absolute",
-                        right: 0,
-                        top: 31,
-                        backgroundColor: "gainsboro",
-                        // p: 1.1,
-                        zIndex: 9,
-                        gap: .4
-                    }}
-                    // anchorEl={1}
-                    onClose={() => setShowMenu(false)}
-                    // open={showMenu}
-                    autoFocus={showMenu}
-                >
-                    {renderOptions()}
-                </MenuList>
-            </Popper> */}
-            {/* </Menu> */}
-
-            {/* {postId ? <MoreVertTwoTone sx={{backgroundColor: "darkred", borderRadius: "50%", p: .4, "&:hover": {backgroundColor: "red"}}} onClick={handleClick} />  : <SettingsSuggestTwoTone onClick={handleClick} />}
-            {
-                clickedOptions
-                    ? <Stack
-                        // ref={ref}
-                        sx={{
-                            position: "absolute",
-                            right: 0,
-                            top: 31,
-                            backgroundColor: "gainsboro",
-                            p: 1.1,
-                            zIndex: 9,
-                            gap: 1.1
-                        }}>{renderOptions()}</Stack>
-                    : null
-            } */}
         </Box>
     )
 }
@@ -204,7 +139,6 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
     }
 
     return (
-        // <Tooltip title={(!appCtx.user._id && item.text !== "Thread") ? `Login to ${item.text}` : item.text}>
         <MenuItem
             sx={{
                 p: 0
@@ -214,10 +148,9 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 <Button
                     onClick={(!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
                     startIcon={item.icon}
-                    sx={{
-                        // outline: "solid 2px red",
-                        position: "relative"
-                    }}
+                    // sx={{
+                    //     position: "relative"
+                    // }}
                 >
                     <Typography>{item.text}</Typography>
                 </Button>
