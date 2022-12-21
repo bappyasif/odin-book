@@ -69,7 +69,14 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <AssistiveModeActivatingToggler />
       <AppDarkModeToggler />
-      <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
+      <Typography 
+        sx={{
+          display: {xs: "none", lg: "block"}
+        }}
+        variant="h6"
+      >
+        Welcome, Dear {appCtx.user.fullName}
+      </Typography>
       <Box ref={ref}>
         <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
         {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
@@ -80,7 +87,11 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
 
 const ModeToggler = (props) => {
   return (
-    <Stack>
+    <Stack
+      sx={{
+        display: { xs: "none", lg: "flex" }
+      }}
+    >
       <FormControlLabel
         control={
           <Switch
@@ -246,23 +257,32 @@ const ButtonElement = ({ item }) => {
   }
 
   return (
-    <Button
-      onClick={handleClick}
-      variant={"text"}
-      color={"info"}
-      sx={{
-        height: "fit-content",
-        '&:hover': {
-          backgroundColor: 'primary.main',
-          opacity: .8,
-          borderRadius: "11px",
-          color: "gainsboro"
-        },
-      }}
-      startIcon={item.icon}
-    >
-      <Typography variant='h6'>{item.text}</Typography>
-    </Button>
+    <Tooltip title={item.text}>
+      <Button
+        onClick={handleClick}
+        variant={"text"}
+        color={"info"}
+        sx={{
+          height: "fit-content",
+          '&:hover': {
+            backgroundColor: 'primary.main',
+            opacity: .8,
+            borderRadius: "11px",
+            color: "gainsboro"
+          },
+        }}
+        startIcon={item.icon}
+      >
+        <Typography
+          sx={{
+            display: { xs: "none", md: "block" }
+          }}
+          variant='h6'
+        >
+          {item.text}
+        </Typography>
+      </Button>
+    </Tooltip>
   )
 }
 
@@ -302,7 +322,15 @@ let FloatingLogin = () => {
 
   return (
     <WrapperDiv className="fl-wrapper">
-      <Typography variant='h5'>Login to your profile from here</Typography>
+      <Typography
+        sx={{
+          display: { xs: "none", xl: "block" },
+          fontSize: { lg: "1.1rem", xl: "1.5rem" }
+        }}
+        variant='h5'
+      >
+        Login to your profile from here
+      </Typography>
       <form
         ref={ref} method={"post"} onSubmit={handleSubmit}
         style={{ position: "relative", marginLeft: "11px" }}
@@ -311,11 +339,14 @@ let FloatingLogin = () => {
 
         <Stack
           sx={{
+            display: { xs: "none", md: "flex" },
             flexDirection: "row",
             alignItems: "baseline"
           }}
         >
-          <FormControl>
+          <FormControl
+            sx={{}}
+          >
             <MuiInputElement
               type={"email"}
               id={"email"}
@@ -324,7 +355,8 @@ let FloatingLogin = () => {
               required={true}
               color={errors?.length ? "error" : "success"}
               error={errors?.length ? true : false}
-              fontSize={"1.3em"}
+              // fontSize={"1.3em"}
+              fontSize={{ xs: ".6em", md: ".9em", lg: "1.1em", xl: "1.3em" }}
             />
           </FormControl>
           <FormControl>
@@ -336,7 +368,7 @@ let FloatingLogin = () => {
               required={true}
               color={errors?.length ? "error" : "success"}
               error={errors?.length ? true : false}
-              fontSize={"1.3em"}
+              fontSize={{ xs: ".6em", md: ".9em", lg: "1.1em", xl: "1.3em" }}
             />
           </FormControl>
           <Button
@@ -345,7 +377,14 @@ let FloatingLogin = () => {
             sx={{ height: "fit-content" }}
             type={"submit"}
           >
-            <Typography variant='h6'>Login</Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: ".6em", md: ".9em", lg: "1.1em", xl: "1.3em" }
+              }}
+              variant='h6'
+            >
+              Login
+            </Typography>
           </Button>
         </Stack>
       </form>

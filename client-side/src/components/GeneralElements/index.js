@@ -10,7 +10,7 @@ let DivElement = ({className, value}) => {
 }
 
 let H1Element = ({value}) => {
-    return <h1>{value}</h1>
+    return <h1 style={{marginRight: value==="OdBo" ? "11px" : "auto"}}>{value}</h1>
 }
 
 let H2Element = ({value}) => {
