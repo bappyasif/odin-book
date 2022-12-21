@@ -23,6 +23,8 @@ import LoggedIn from './misc/loggedIn';
 import { AbbreviateNumbers } from './misc';
 import VisitAnotherUserProfile from './components/routes/VisitAnotherUserProfile';
 import ContentsFromNyTimes from './components/ContentsFromNyTimes';
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material';
 
 export const AppContexts = createContext()
 
@@ -34,8 +36,11 @@ function App() {
   let [dialogTextFor, setDialogTextFor] = useState(null);
   let [showDialogModal, setShowDialogModal] = useState(false);
   let [assistiveMode, setAssistiveMode] = useState(false);
+  let [darkMode, setDarkMode] = useState(false);
 
   const location = useLocation()
+
+  const handleToggleDarkMode = () => setDarkMode(prev => !prev)
 
   const handleAssitiveModeToggle = () => setAssistiveMode(!assistiveMode)
 
@@ -54,7 +59,7 @@ function App() {
       let trimTopic = () => foundTopics[rndNum].split(" ").join("")
 
       console.log(chkIdx, trimTopic(), "TOPIC")
-      
+
       return chkIdx === -1 ? [...prev, trimTopic()] : prev
       // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
     })
@@ -68,7 +73,7 @@ function App() {
   let updateData = (key, value) => setUser(prev => {
     // checking if data is already in list
     let fIdx = prev[key].findIndex(val => val === value);
-    if(fIdx === -1 && key !== "frRecieved") {
+    if (fIdx === -1 && key !== "frRecieved") {
       // adding to array list
       return ({ ...prev, [key]: [...prev[key], value] })
     } else {
@@ -80,31 +85,31 @@ function App() {
 
   const acceptOrRejectFriendRequestUpdater = (action, friendId) => {
     // console.log(friendId, action, "appStateUpdate!!")
-    setUser(prev => {      
-      if(action === "accept") {
+    setUser(prev => {
+      if (action === "accept") {
         prev.friends.push(friendId)
       }
 
       let filtered = prev.frRecieved.filter(id => id !== friendId);
 
-      return ({...prev, frRecieved: filtered})
+      return ({ ...prev, frRecieved: filtered })
     })
   }
 
   const updateUserProfileDataInApp = (propName, propValue) => {
-    setUser(prev => ({...prev, [propName]: propValue}))
+    setUser(prev => ({ ...prev, [propName]: propValue }))
   }
 
   const removeUserIdFromCurrentUserFriendsList = (friendId) => {
     let filteredFriendsList = user.friends.filter(val => val !== friendId)
-    setUser(prev => ({...prev, friends: filteredFriendsList}))
+    setUser(prev => ({ ...prev, friends: filteredFriendsList }))
   }
 
   // let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
   let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(dataset)
-  
+
   let updateAvailablePostsFeeds = data => setUserAccessiblePostsDataset(prev => [...prev, data])
-  
+
   const deletePostFromAvailablePostsFeeds = (postId) => {
     let filteredPosts = userAccessiblePostsDataset.filter(item => item._id !== postId)
     // console.log(filteredPosts, "filteredPosts!!")
@@ -146,7 +151,9 @@ function App() {
     dialogTextFor: dialogTextFor,
     showDialogModal: showDialogModal,
     handleAssitiveModeToggle: handleAssitiveModeToggle,
-    assistiveMode: assistiveMode
+    assistiveMode: assistiveMode,
+    handleToggleDarkMode: handleToggleDarkMode,
+    darkMode: darkMode
   }
 
   useEffect(() => {
@@ -160,25 +167,31 @@ function App() {
   }, [jwtUser])
 
   useEffect(() => {
-    if(topics.length && topics.length < 4 && user?._id) {
+    if (topics.length && topics.length < 4 && user?._id) {
       randomlySelectSixTopics()
     }
   }, [topics])
-  
+
   useEffect(() => {
-    if(user._id && user.topics) {
+    if (user._id && user.topics) {
       setTopics([])
     }
   }, [user._id])
 
   useEffect(() => {
-    if(user?._id) {
+    if (user?._id) {
       setTopics([])
     } else {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
       setTopics(fakeTopics)
     }
   }, [])
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light"
+    }
+  })
 
   user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 
@@ -192,26 +205,28 @@ function App() {
         {/* <LoggedIn loggedIn={true} /> */}
         {/* <LoggedIn loggedIn={false} /> */}
         {/* <AbbreviateNumbers /> */}
-        
+
         {/* <ContentsFromNyTimes /> */}
-        
-        <Routes>
-          <Route path='/' element={<UserSpecificNewsFeeds />} />
-          <Route path='/login' element={<LoginForm handleData={handleData} />} />
-          <Route path='/login/success' element={<LoginSuccess />} />
-          <Route path='/register' element={<RegisterUser handleData={handleData} />} />
-          {/* <Route path='/friend-requests' element={<FriendsRequests />} /> */}
-          <Route path='/user-friendships' element={<UserFriendships />} />
-          <Route path='/choose-topics' element={<ChooseTopics />} />
-          <Route path='/choose-topics/:category' element={<TopicCategory />} errorElement={<ErrorPage />} />
-          <Route path='/connect' element={<ConnectUsers />} />
-          <Route path='/news-feeds' element={<NewsFeeds />} />
-          <Route path='/posts/:postId/comments' element={<PostCommentsThread />} />
-          <Route path='/edit-user-profile' element={<EditUserProfile />} />
-          <Route path='/users/:userID/profile' element={<UserProfile />} />
-          <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />
-          <Route path='*' element={<ErrorPage />} />
-        </Routes>
+
+        <ThemeProvider theme={theme}>
+          <Routes>
+            <Route path='/' element={<UserSpecificNewsFeeds />} />
+            <Route path='/login' element={<LoginForm handleData={handleData} />} />
+            <Route path='/login/success' element={<LoginSuccess />} />
+            <Route path='/register' element={<RegisterUser handleData={handleData} />} />
+            {/* <Route path='/friend-requests' element={<FriendsRequests />} /> */}
+            <Route path='/user-friendships' element={<UserFriendships />} />
+            <Route path='/choose-topics' element={<ChooseTopics />} />
+            <Route path='/choose-topics/:category' element={<TopicCategory />} errorElement={<ErrorPage />} />
+            <Route path='/connect' element={<ConnectUsers />} />
+            <Route path='/news-feeds' element={<NewsFeeds />} />
+            <Route path='/posts/:postId/comments' element={<PostCommentsThread />} />
+            <Route path='/edit-user-profile' element={<EditUserProfile />} />
+            <Route path='/users/:userID/profile' element={<UserProfile />} />
+            <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />
+            <Route path='*' element={<ErrorPage />} />
+          </Routes>
+        </ThemeProvider>
       </div>
     </AppContexts.Provider>
   );

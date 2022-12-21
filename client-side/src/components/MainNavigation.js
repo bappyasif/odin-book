@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone } from "@mui/icons-material";
+import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone } from "@mui/icons-material";
 import { H1Element, NavElement, WrapperDiv } from './GeneralElements'
 import { MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
@@ -68,6 +68,7 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   return (
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <AssistiveModeActivatingToggler />
+      <AppDarkModeToggler />
       <Typography variant="h6">Welcome, Dear {appCtx.user.fullName}</Typography>
       <Box ref={ref}>
         <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
@@ -77,29 +78,50 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   )
 }
 
-const AssistiveModeActivatingToggler = () => {
-  const appCtx = useContext(AppContexts);
+const ModeToggler = (props) => {
   return (
     <Stack>
       <FormControlLabel
         control={
           <Switch
-            checked={appCtx.assistiveMode}
-            onChange={appCtx.handleAssitiveModeToggle}
+            checked={props.checked}
+            onChange={props.changeHandler}
             size='small'
             color="primary"
           />
         }
-        label={`Turn ${appCtx.assistiveMode ? "Off" : "On"} Assitive Mode`}
-      // labelPlacement="top"
+        label={props.label}
       />
     </Stack>
+  )
+}
+
+const AppDarkModeToggler = () => {
+  const appCtx = useContext(AppContexts);
+  return (
+    <ModeToggler
+      checked={appCtx.darkMode}
+      changeHandler={appCtx.handleToggleDarkMode}
+      label={`Turn ${appCtx.darkMode ? "Off" : "On"} Dark Mode`}
+    />
+  )
+}
+
+const AssistiveModeActivatingToggler = () => {
+  const appCtx = useContext(AppContexts);
+  return (
+    <ModeToggler
+      checked={appCtx.assistiveMode}
+      changeHandler={appCtx.handleAssitiveModeToggle}
+      label={`Turn ${appCtx.assistiveMode ? "Off" : "On"} Assitive Mode`}
+    />
   )
 }
 
 let ShowAuthUserDropdowns = ({ closeDropdown }) => {
   let options = [
     { name: "Assistive Mode", icon: <InfoTwoTone /> },
+    { name: "Dark Mode", icon: <DarkModeTwoTone /> },
     { name: "Edit Profile", icon: <ManageAccountsTwoTone /> },
     { name: "Logout", icon: <LogoutTwoTone /> }
   ]
@@ -141,13 +163,15 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
       navigate(`/edit-user-profile`);
     } else if (item.name === "Assistive Mode") {
       appCtx.handleAssitiveModeToggle()
+    } else if (item.name === "Dark Mode") {
+      appCtx.handleToggleDarkMode()
     }
     closeDropdown()
   }
 
   return (
     <Tooltip sx={{ mb: .2 }} title={item.name}>
-      <Button onClick={handleClick} startIcon={item.icon} sx={{ outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite" } }}>
+      <Button onClick={handleClick} startIcon={item.icon} sx={{ justifyContent: "space-between", outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite" } }}>
         <Typography variant='subtitle2'>{item.name}</Typography>
       </Button>
     </Tooltip>
