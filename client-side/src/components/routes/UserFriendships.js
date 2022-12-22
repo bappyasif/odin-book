@@ -14,10 +14,12 @@ let UserFriendships = () => {
             <Typography>User Friendships</Typography>
             <Stack
                 sx={{
-                    flexDirection: "row",
+                    // flexDirection: "row",
+                    flexDirection: {md: "column", lg: "row"},
                     justifyContent: "center",
                     alignItems: "flex-start",
-                    gap: 9
+                    // gap: 9
+                    gap: {xs: 1.1, md: 2.2, lg: 6}
                 }}
             >
                 <ExistingFriendList />
@@ -41,7 +43,10 @@ let ExistingFriendList = () => {
                     ?
                     <Typography
                         variant="h6"
-                        sx={{ outline: "solid .6px darkred", borderRadius: 2, mt: 4, p: 1.1 }}
+                        sx={{ 
+                            outline: "solid .6px darkred", 
+                            borderRadius: 2, mt: 4, p: 1.1 
+                        }}
                     >
                         Friends list is empty, add some :)
                     </Typography>
@@ -98,6 +103,7 @@ let RenderFriend = ({ friendID, baseUrl }) => {
                     sx={{
                         display: "flex",
                         flexDirection: "row",
+                        // flexDirection: {xs: "column", lg: "row"},
                         gap: 2,
                         alignItems: "flex-start",
                         position: "relative",

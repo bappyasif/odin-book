@@ -1,4 +1,4 @@
-import { MenuItem, Select } from '@mui/material'
+import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { BoxElement, EverybodyElement, FormControlElement, FriendsElement, InputLabelElement, MuiBoxElement, StackElement, TypographyElement } from './MuiElements'
 
@@ -12,10 +12,10 @@ function ChoosePrivacy({ handleValue, currentElement }) {
     let renderSettings = () => privacyIcons.map(item => <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>)
 
     let updatePrivacy = () => {
-         // uploading value into state
-         handleValue(null, currentElement, settingSelected);
-         // changing current elemnt to something which has no actionable components attached to it
-         handleValue(null, "choose again", "");
+        // uploading value into state
+        handleValue(null, currentElement, settingSelected);
+        // changing current elemnt to something which has no actionable components attached to it
+        handleValue(null, "choose again", "");
     }
 
     useEffect(() => {
@@ -57,12 +57,26 @@ export let ShowRespectiveIcon = ({ privacy, order }) => {
     }
 
     return (
-        <BoxElement order={order}>
-            <TypographyElement text={"Privacy : "} type={"h4"} />
-            <MuiBoxElement direction={"row"}>
-                <TypographyElement text={text || "Everybody"} type={"h6"} /> <span>{icon}</span>
-            </MuiBoxElement>
-        </BoxElement>
+        <Stack 
+            sx={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "baseline",
+                gap: 2,
+                mt: .9,
+                outline: "solid .6px red"
+            }}
+            order={order}
+        >
+            <Typography sx={{ fontSize: { xs: "20px", md: "36px" } }} variant='h4'>{"Privacy "}</Typography>
+            <Typography sx={{ fontSize: { xs: "11px", md: "29px" }, display: "flex", alignItems: "center", gap: .9 }} variant='h6'>{text || "Everybody"} <span style={{fontSize: { xs: "11px", md: "22px" }}}>{icon}</span></Typography>
+        </Stack>
+        // <BoxElement order={order}>
+        //     <TypographyElement text={"Privacy : "} type={"h4"} />
+        //     <MuiBoxElement direction={"row"}>
+        //         <TypographyElement text={text || "Everybody"} type={"h6"} /> <span>{icon}</span>
+        //     </MuiBoxElement>
+        // </BoxElement>
     )
 }
 

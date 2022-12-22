@@ -132,7 +132,11 @@ const BoxElement = (props) => {
 
 const StackElement = (props) => <Stack className={props.className}>{props.children}</Stack>
 
-const MasonryElement = props => <Masonry columns={3} spacing={2} className={props.className}>{props.children}</Masonry>
+const MasonryElement = props => <Masonry 
+    // sx={{columns: {xs: 1, md: 2, lg: 3}}} 
+    // columns={3} 
+    columns={{ xs: 1, md: 2, lg: 3 }}
+    spacing={2} className={props.className}>{props.children}</Masonry>
 
 const SkeletonBasicElement = ({ height, width, animation, variant }) => <Skeleton variant={variant || "circular"} animation={animation || "wave"} height={height || 10} width={width || "80%"} />
 

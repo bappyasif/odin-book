@@ -154,7 +154,8 @@ export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommen
         <Box
             sx={{
                 position: "relative",
-                width: "650px",
+                // width: "650px",
+                width: {xs: 411, sm: 620, md: 780},
                 outline: "solid .29px red",
                 borderRadius: .2,
                 mb: .29
@@ -167,7 +168,7 @@ export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommen
 
             <RenderCardHeader userData={userData} forComment={true} />
 
-            <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
+            <Typography sx={{ display: {xs: "none", sm: "block"}, color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
             {
                 editCommentFlag
                     ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />

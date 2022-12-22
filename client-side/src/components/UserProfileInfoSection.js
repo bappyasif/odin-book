@@ -39,7 +39,12 @@ function UserProfileInfoSection({ appCtx, userId }) {
             <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
 
             <Box
-                sx={{ minWidth: "920px", maxWidth: "fit-content", margin: "auto", bgcolor: "gainsboro", pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2 }}
+                sx={{
+                    width: { xs: 450, sm: 620, md: 920 },
+                    // minWidth: "920px", maxWidth: "fit-content", 
+                    margin: "auto", bgcolor: "gainsboro",
+                    pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2
+                }}
             >
                 {
                     userProfileData._id
@@ -209,7 +214,13 @@ let SomeUserSpecificInfo = ({ userData, forCurrentUserProfile }) => {
         <Stack sx={{ textAlign: "justify", mt: 2 }}>
             {renderBio()}
 
-            <Stack sx={{ flexDirection: "row", justifyContent: "space-between", mt: 2 }}>
+            <Stack
+                sx={{
+                    // flexDirection: "row",
+                    flexDirection: {xs: "column", md: "row"},
+                    justifyContent: "space-between", mt: 2
+                }}
+            >
                 {renderOtherItems()}
                 {
                     forCurrentUserProfile
@@ -231,7 +242,13 @@ let UserFriendsAndInfo = ({ userData }) => {
     let renderItems = () => items.map(item => <RenderUserProfileData key={item.name} item={item} styles={innerStackStyles} />)
 
     return (
-        <Stack sx={{ flexDirection: "row", justifyContent: "space-between", mt: 2, mb: 2 }}>
+        <Stack 
+            sx={{ 
+                // flexDirection: "row", 
+                flexDirection: {xs: "column", md: "row"},
+                justifyContent: "space-between", mt: 2, mb: 2 
+            }}
+        >
             {renderItems()}
         </Stack>
     )
@@ -245,6 +262,7 @@ let UserNameAndInfo = ({ userData, userId }) => {
     let navigate = useNavigate();
 
     let styles = {
+        // flexDirection: {xs: "column", md: "row"},
         flexDirection: "row",
         gap: 2,
         mt: .6,
@@ -267,22 +285,30 @@ let UserNameAndInfo = ({ userData, userId }) => {
             <RenderUserProfilePhoto userData={userData} fromPP={true} />
             <Stack
                 sx={{
-                    flexDirection: "row",
-                    gap: 6,
+                    // flexDirection: "row",
+                    flexDirection: { xs: "column", md: "row" },
+                    // gap: 6,
+                    gap: { xs: .9, md: 2, lg: 6 },
                     mt: .6,
                     alignItems: "baseline",
                     justifyContent: "space-around",
                     position: "relative"
                 }}
             >
-                <ButtonToIndicateHelp alertPosition={{left: 0}} forWhichItem={"User Profile Page"} />
+                <ButtonToIndicateHelp alertPosition={{ left: 0 }} forWhichItem={"User Profile Page"} />
                 {appCtx.dialogTextFor === "User Profile Page" ? <HowToUseUserProfilePage /> : null}
 
                 {renderItems()}
                 {
                     !userId
                         ?
-                        <Fab onClick={handleClick} variant="extended" color="primary" aria-label="add">
+                        <Fab 
+                            sx={{
+                                position: {sm: "absolute", md: "relative"},
+                                right: {sm: 0}
+                            }}
+                            onClick={handleClick} variant="extended" color="primary" aria-label="add"
+                        >
                             <Edit sx={{ mr: 1 }} />
                             Edit Info
                         </Fab>
@@ -300,7 +326,7 @@ let RenderUserProfileData = ({ item, styles }) => {
 
     return (
         <Stack
-            sx={styles}
+            sx={{ ...styles }}
         >
             <Typography variant={assignNameVariant()}>{item.name}: </Typography>
             <Typography variant={assignValueVariant()}>{item.value}</Typography>

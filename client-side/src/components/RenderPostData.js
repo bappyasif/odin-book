@@ -38,7 +38,7 @@ function RenderPostDataEssentials({ postData, shareMode }) {
             <Card>
                 <RenderCardHeader userData={userData} />
 
-                {shareMode ? null : <Typography sx={{ color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
+                {shareMode ? null : <Typography sx={{ display: {xs: "none", sm: "block"}, color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
 
                 <RenderCardContent postId={postData._id} body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
             </Card>

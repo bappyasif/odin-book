@@ -101,8 +101,8 @@ function UserSpecificNewsFeeds(props) {
     console.log(showPostsUntilIndex, "untilIndex", appCtx.availablePostsFeeds.length)
 
     return (
-        <Paper>
-            <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography>
+        <Paper id="top-marker">
+            {/* <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography> */}
 
             {showCreatePost ? <CreatePost /> : null}
 
@@ -123,7 +123,7 @@ function UserSpecificNewsFeeds(props) {
             {
                 toggle
                     ?
-                    <ShowPostsFromThirdPartyApisTopBunk />
+                    <ShowPostsFromThirdPartyApisBottomBunk />
                     : null
             }
 

@@ -30,7 +30,10 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
 
   return (
     <Box
-      width={990}
+      sx={{
+        width: {xs: 450, sm: 690, md: 990}
+      }}
+      // width={990}
       margin="auto"
       border={"dotted .4px blue"}
       marginBottom={1.5}
@@ -241,7 +244,9 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
           onClick={handleClick}
           sx={{
             backgroundColor: flag ? "beige" : "lightgrey",
-            position: "relative"
+            position: "relative",
+            width: {xs: 51, md: 69},
+            // fontSize: {xs: "11px", sm: "20px"}
           }}>
           <Button startIcon={counts[item.name] ? item.icon : null}>
             {counts[item.name] ? null : item.icon}

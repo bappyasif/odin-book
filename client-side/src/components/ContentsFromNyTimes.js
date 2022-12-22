@@ -125,10 +125,15 @@ const RenderData = ({ data }) => {
     return (
         data.abstract
             ?
-            <Card sx={{ mb: 1.1, mt: 1.1, outline: "solid 1.1px red", maxWidth: "989px", margin: "auto", position: "relative" }}>
+            <Card
+                sx={{
+                    mb: 1.1, mt: 1.1, outline: "solid 1.1px red", 
+                    maxWidth: "989px", margin: "auto", position: "relative"
+                }}
+            >
                 <ButtonToIndicateHelp forWhichItem={"Api Content Listings"} />
                 {appCtx.dialogTextFor === "Api Content Listings" ? <HowToUseThirdPartyApiContentsListItems /> : null}
-                
+
                 <RenderPostHeaderView data={data} />
                 {data?.leadParagraph ? null : <RenderPostMediaView data={data} />}
                 <RenderPostContentView data={data} />
@@ -174,7 +179,7 @@ const RenderPostHeaderView = ({ data }) => {
             sx={{
                 textAlign: "right"
             }}
-            title={<Typography variant='h2' textAlign={"justify"}>{data.title}</Typography>}
+            title={<Typography sx={{fontSize: {xs: "24px", md: "36px", lg: "3.75rem"}}} variant='h2' textAlign={"justify"}>{data.title}</Typography>}
             subheader={
                 <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "center", justifyContent: "center" }}>
                     <Typography variant='p'>Source: {data.source}</Typography>
