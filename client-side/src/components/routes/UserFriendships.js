@@ -15,11 +15,12 @@ let UserFriendships = () => {
             <Stack
                 sx={{
                     // flexDirection: "row",
-                    flexDirection: {md: "column", lg: "row"},
+                    flexDirection: { md: "column", lg: "row" },
                     justifyContent: "center",
                     alignItems: "flex-start",
                     // gap: 9
-                    gap: {xs: 1.1, md: 2.2, lg: 6}
+                    gap: { xs: 1.1, md: 2.2, lg: 6 },
+                    padding: "0 65px"
                 }}
             >
                 <ExistingFriendList />
@@ -35,7 +36,7 @@ let ExistingFriendList = () => {
     let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} baseUrl={appCtx.baseUrl} />)
 
     return (
-        <Paper sx={{ backgroundColor: "lightsteelblue" }}>
+        <Paper sx={{ backgroundColor: "lightsteelblue", width: {xs: "100%", lg: "50%"} }}>
             <Typography variant="h4">Friend Listings:</Typography>
             {renderFriends()}
             {
@@ -43,9 +44,9 @@ let ExistingFriendList = () => {
                     ?
                     <Typography
                         variant="h6"
-                        sx={{ 
-                            outline: "solid .6px darkred", 
-                            borderRadius: 2, mt: 4, p: 1.1 
+                        sx={{
+                            outline: "solid .6px darkred",
+                            borderRadius: 2, mt: 4, p: 1.1
                         }}
                     >
                         Friends list is empty, add some :)
@@ -139,7 +140,11 @@ let FriendCardHeader = ({ data }) => {
 
     return (
         <CardHeader
-            sx={{ width: "20vw", position: "relative" }}
+            sx={{
+                width: "20vw", position: "relative",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: { xs: "baseline", md: "center" }
+            }}
             avatar={
                 <Avatar
                     src={imgUrl}
@@ -163,14 +168,14 @@ let ActionListOptions = ({ toggleShowActionOptions, friendId, anchorEl, handleCl
 
     return (
         <Popper
-            sx={{left: "-128px !important"}}
+            sx={{ left: "-128px !important" }}
             open={open}
             anchorEl={anchorEl}
             onClose={handleClose}
         >
             <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
-                    sx={{p:0, outline: "solid .6px darkred"}}
+                    sx={{ p: 0, outline: "solid .6px darkred" }}
                 >
                     {renderOptions()}
                 </MenuList>
@@ -212,7 +217,7 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
 
     return (
         <MenuItem
-            sx={{p:0}}
+            sx={{ p: 0 }}
         >
             <ListItem
                 sx={{
@@ -246,12 +251,19 @@ function FriendsRequests() {
     let renderFriendRequests = () => appCtx?.user?.frRecieved?.map(friendId => <ShowFriendRequest key={friendId} friendId={friendId} baseUrl={appCtx.baseUrl} />)
 
     return (
-        <Paper sx={{ width: "29vw", backgroundColor: "lightsteelblue" }}>
+        <Paper sx={{ minWidth: "29vw", width: {xs: "100%", lg: "50%"}, backgroundColor: "lightsteelblue" }}>
             <Typography variant={'h4'}>Friend Requests</Typography>
             <Box
                 sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
             >
-                {renderFriendRequests()}
+                {
+                    appCtx?.user?.frRecieved.length
+                        ?
+                        renderFriendRequests()
+                        :
+                        <Typography variant='h6'>All Requests been caught up!!</Typography>
+                }
+                {/* {renderFriendRequests()} */}
             </Box>
         </Paper>
     )
@@ -280,7 +292,10 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
                 {appCtx.dialogTextFor === "Friends Requests Listings" ? <HowToUseFriendsRequestsListings /> : null}
 
                 <ListItem
-                    sx={{ outline: "solid .6px red", borderRadius: 2, justifyContent: "space-around" }}
+                    sx={{
+                        outline: "solid .6px red", borderRadius: 2, justifyContent: "space-around",
+                        flexDirection: {xs: "column", md: "row"}
+                    }}
                 >
                     <Avatar
                         alt='user profile picture'
@@ -290,7 +305,15 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
 
                     <Typography sx={{ ml: 2, mr: 2 }} variant="h4">{data.fullName}</Typography>
                     <MutualFriends friends={data.friends} variantType="p" />
-                    {renderListAssets()}
+                    <Stack
+                        sx={{
+                            flexDirection: "row",
+                            ml: 2,
+                            mt: {xs: 2, md: 0}
+                        }}
+                    >
+                        {renderListAssets()}
+                    </Stack>
                 </ListItem>
             </List>
         </Stack>

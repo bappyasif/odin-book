@@ -328,7 +328,7 @@ let RenderUserProfileData = ({ item, styles }) => {
         <Stack
             sx={{ ...styles }}
         >
-            <Typography variant={assignNameVariant()}>{item.name}: </Typography>
+            <Typography fontWeight={"bold"} variant={assignNameVariant()}>{item.name}: </Typography>
             <Typography variant={assignValueVariant()}>{item.value}</Typography>
         </Stack>
     )
