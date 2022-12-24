@@ -172,7 +172,7 @@ export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommen
             {
                 editCommentFlag
                     ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />
-                    : <Typography variant='body1' sx={{ fontWeight: "bolder", color: "info.dark", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+                    : <Typography variant='body1' sx={{ fontWeight: "bolder", color: "info.dark", p: .1, textAlign: "justify", margin: "0 36px 0 91.1px"}} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             }
             <ShowPostUserEngagementsDetails currentUser={appCtx.user._id} counts={counts} countsForCurrentUser={countsForCurrentUser} forComment={true} clickHandler={clickHandler} />
             {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={currentlyClickedElement} forComments={true} /> : null}

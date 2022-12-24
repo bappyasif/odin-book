@@ -67,7 +67,7 @@ export const RenderCardContent = ({ postId, body, preparingAdditionalsForRenderi
             }}
             onClick={handleShowThread}
         >
-            <Typography variant='h4' sx={{ color: "primary.dark", p: .2, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+            <Typography variant='h4' sx={{ color: "primary.dark", p: .2, textAlign: "justify", margin: "0 20px 0 108px" }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             <ShowUserPostMedias mediaContents={preparingAdditionalsForRendering} />
         </CardContent>
     )

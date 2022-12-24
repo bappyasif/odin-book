@@ -12,7 +12,9 @@ function UserProfile() {
     let appCtx = useContext(AppContexts);
 
     return (
-        <Paper>
+        <Paper
+            sx={{ backgroundColor: "info.light", color: "info.contrastText", fontSize: { xs: "small", md: "large", lg: "larger" }, }}
+        >
             <UserProfileInfoSection appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
             <UserProfileTabs />
@@ -37,6 +39,7 @@ let UserProfileTabs = () => {
                         aria-label="lab API tabs example"
                         variant='fullWidth'
                         indicatorColor="secondary"
+                        sx={{backgroundColor: "info.light", color: "info.contrastText", fontWeight: "bold"}}
                     >
                         <Tab label="All Posts" value="1" />
                         <Tab label="Liked Posts" value="2" />
@@ -87,16 +90,16 @@ export let RenderAllPostsTab = () => {
     let renderAllPosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={() => null} />)
 
     return (
-        <Paper>
+        <Paper sx={{backgroundColor: "primary.dark", color: "info.contrastText"}}>
             <Typography variant="h3">All Posts!!</Typography>
-            <Container>
+            {/* <Container> */}
                 {postsData?.length ? renderAllPosts() : null}
-            </Container>
+            {/* </Container> */}
         </Paper>
     )
 }
 
-let RenderActionSpecificPosts = ({actionType}) => {
+let RenderActionSpecificPosts = ({ actionType }) => {
     let appCtx = useContext(AppContexts);
 
     let { postsData } = useToFetchUserActionSpecificPostData(appCtx, actionType)
@@ -108,9 +111,9 @@ let RenderActionSpecificPosts = ({actionType}) => {
     return (
         <Paper>
             <Typography variant="h3">{actionType}d Posts!!</Typography>
-            <Container>
+            {/* <Container> */}
                 {postsData?.length ? renderAllPosts() : null}
-            </Container>
+            {/* </Container> */}
         </Paper>
     )
 }

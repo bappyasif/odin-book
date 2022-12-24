@@ -38,12 +38,12 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
                 position: "absolute",
                 right: 0,
                 top: 0,
-                pr: .9,
+                pr: .9
             }}
         >
             <Tooltip title="click to open menu">
                 <IconButton
-                    sx={{color: "info.contrastText"}}
+                    sx={{ color: "info.contrastText" }}
                     id='lock-button'
                     onClick={handleClick}>{postId ? <MoreVertTwoTone /> : <SettingsSuggestTwoTone />}</IconButton>
             </Tooltip>
@@ -51,7 +51,7 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
             <Popper
                 sx={{
                     backgroundColor: "gainsboro",
-                    left: "-29px !important"
+                    left: "-33px !important"
                 }}
                 id="lock-menu"
                 anchorEl={anchorEl}
@@ -65,7 +65,11 @@ export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteComme
             >
                 <ClickAwayListener onClickAway={handleClose}>
                     <MenuList
-                        sx={{p: 0}}
+                        sx={{
+                            p: 0, backgroundColor: "info.dark",
+                            color: "info.contrastText",
+                            fontWeight: "bold"
+                        }}
                     >
                         {renderOptions()}
                     </MenuList>
@@ -113,7 +117,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                 const data = { postId: postId }
                 commenceDelete(url, data)
             } else {
-                navigate(`/posts/${postId}/comments/`, {replace: true})
+                navigate(`/posts/${postId}/comments/`, { replace: true })
             }
         }
     }
@@ -147,7 +151,7 @@ let RenderPostOption = ({ postOwner, item, postId, commentId, deleteCommentFromD
                     onClick={(!appCtx.user._id && item.text === "Thread") ? handleClick : (appCtx.user._id) ? handleClick : null}
                     startIcon={item.icon}
                 >
-                    <Typography>{item.text}</Typography>
+                    <Typography variant='h6' sx={{fontWeight: "bold"}}>{item.text}</Typography>
                 </Button>
             </Tooltip>
         </MenuItem>

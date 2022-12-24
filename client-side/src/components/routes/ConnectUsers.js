@@ -1,8 +1,7 @@
-import { Box, Stack, Typography } from '@mui/material'
+import { Box, Paper, Stack, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
-import { WrapperDiv } from '../GeneralElements'
 import { ButtonToIndicateHelp, HowToUseConnectUsersListings } from '../HowToUseApp'
 import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderElement, MasonryElement, SkeletonBasicElement, StackElement, TypographyElement } from '../MuiElements'
 import { readDataFromServer, updateUserInDatabase } from '../utils'
@@ -33,7 +32,7 @@ function ConnectUsers() {
   let renderUsers = () => data?.data?.data.map(user => appCtx.user._id.toString() !== user._id && <RenderUser key={user._id} userData={user} />)
 
   return (
-    <WrapperDiv className="cards-wrapper">
+    <Paper className="cards-wrapper" sx={{backgroundColor: "info.dark", color: "info.contrastText"}}>
       <Stack sx={{ position: "relative" }}>
         <Typography variant='h1'>Connect With Other User</Typography>
         <ButtonToIndicateHelp alertPosition={{ left: "13px", top: 2 }} forWhichItem={"Connect Users Listings"} />
@@ -52,7 +51,7 @@ function ConnectUsers() {
           :
           null
       }
-    </WrapperDiv>
+    </Paper>
   )
 }
 
@@ -90,32 +89,35 @@ let RenderUser = ({ userData }) => {
   return (
     <CardElement
       className="card-wrapper"
-      styles={{ backgroundColor: "text.secondary", position: "relative" }}
+      styles={{ backgroundColor: "primary.main", position: "relative" }}
     >
-      <CardHeaderElement avatarUrl={ppUrl || test} altText={fullName} title={fullName} joined={created} forConnect={true} />
+      <CardHeaderElement styles={{backgroundColor: "primary.dark", color: "info.contrastText"}} avatarUrl={ppUrl || test} altText={fullName} title={fullName} joined={created} forConnect={true} />
       <CardContentElement>
         <TypographyElement
           text={friendAlready ? email : "Email: be a friend to see that"}
           type={"p"}
           forConnect={true}
-          styles={{ mb: 2 }}
+          styles={{ mb: 2, color: "info.contrastText", fontSize: "20px" }}
         />
         <TypographyElement
           text={bio ? bio : "This user has yet to write a bio"}
           type={"h6"}
           forConnect={true}
-          styles={{ textAlign: "justify", backgroundColor: "lightyellow", p: 1.1, borderRadius: 1.1 }}
+          styles={{ textAlign: "justify", backgroundColor: "info.dark", color: "info.contrastText", p: 1.1, borderRadius: 1.1 }}
         />
-        <StackElement className="af-wrapper">
+        <StackElement 
+          styles={{ backgroundColor: "info.dark", color: "info.contrastText" }}
+          className="af-wrapper"
+        >
           <MutualFriends friends={friends} />
           <Stack sx={{ flexDirection: "row", gap: 1.3, alignItems: "baseline" }}>
             <TypographyElement text={"Friends "} type={"h5"} />
             <TypographyElement text={friends.length} type={"h6"} />
           </Stack>
         </StackElement>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, flexDirection: "column" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, flexDirection: "column", color: "info.contrastText" }}>
           <Typography
-            sx={{ m: 1.1, mb: friendAlready ? .6 : 1.1, mt: friendAlready ? .6 : 1.1, backgroundColor: friendAlready ? "chartreuse" : "lightskyblue", borderRadius: "20px" }}
+            sx={{ m: 1.1, mb: friendAlready ? .6 : 1.1, mt: friendAlready ? .6 : 1.1, color: "info.contrastText", backgroundColor: friendAlready ? "info.dark" : "primary.dark", borderRadius: "20px" }}
             variant='h5'
             >{friendAlready ? "Friend Already" : "Friend Request"}</Typography>
           {

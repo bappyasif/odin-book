@@ -11,13 +11,15 @@ import { MutualFriends } from './ConnectUsers';
 let UserFriendships = () => {
     return (
         <>
-            <Typography>User Friendships</Typography>
+            {/* <Typography>User Friendships</Typography> */}
             <Stack
                 sx={{
                     // flexDirection: "row",
                     flexDirection: { md: "column", lg: "row" },
                     justifyContent: "center",
                     alignItems: "flex-start",
+                    backgroundColor: "info.dark",
+                    color: "info.contrastText",
                     // gap: 9
                     gap: { xs: 1.1, md: 2.2, lg: 6 },
                     padding: "0 65px"
@@ -36,16 +38,18 @@ let ExistingFriendList = () => {
     let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} baseUrl={appCtx.baseUrl} />)
 
     return (
-        <Paper sx={{ backgroundColor: "lightsteelblue", width: {xs: "100%", lg: "50%"} }}>
+        <Paper sx={{ backgroundColor: "info.light", color: "info.contrastText", width: { xs: "100%", lg: "50%" } }}>
             <Typography variant="h4">Friend Listings:</Typography>
-            {renderFriends()}
+            <Stack sx={{gap: 1.1}}>
+                {renderFriends()}
+            </Stack>
             {
                 appCtx.user.friends.length === 0
                     ?
                     <Typography
                         variant="h6"
                         sx={{
-                            outline: "solid .6px darkred",
+                            outline: "solid .6px lightskyblue",
                             borderRadius: 2, mt: 4, p: 1.1
                         }}
                     >
@@ -96,8 +100,8 @@ let RenderFriend = ({ friendID, baseUrl }) => {
             ?
             <Stack
                 sx={{
-                    outline: showActionOptions ? "none" : "solid .6px darkred",
-                    borderRadius: 2
+                    outline: showActionOptions ? "none" : "solid .6px lightskyblue",
+                    borderRadius: 2,
                 }}
             >
                 <Card
@@ -108,7 +112,8 @@ let RenderFriend = ({ friendID, baseUrl }) => {
                         gap: 2,
                         alignItems: "flex-start",
                         position: "relative",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        backgroundColor: "info.light", color: "info.contrastText"
                     }}
                 >
                     <ButtonToIndicateHelp forWhichItem={"Existing Friends Listings"} />
@@ -143,15 +148,17 @@ let FriendCardHeader = ({ data }) => {
             sx={{
                 width: "20vw", position: "relative",
                 flexDirection: { xs: "column", md: "row" },
-                alignItems: { xs: "baseline", md: "center" }
+                alignItems: { xs: "baseline", md: "center" },
+                backgroundColor: "info.dark",
+                color: "info.contrastText"
             }}
             avatar={
                 <Avatar
                     src={imgUrl}
-                    sx={{ width: "92px", height: "62px" }}
+                    sx={{ width: {xs: "42px", lg: "92px"}, height: {xs: "42px", lg: "62px"} }}
                 />
             }
-            title={data.fullName}
+            title={<Typography sx={{fontSize: {xs: "small", md: "large", lg: "larger"}}} variant='h5'>{data.fullName}</Typography>}
             subheader={"Friend Since!!"}
         >
         </CardHeader>
@@ -175,7 +182,7 @@ let ActionListOptions = ({ toggleShowActionOptions, friendId, anchorEl, handleCl
         >
             <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
-                    sx={{ p: 0, outline: "solid .6px darkred" }}
+                    sx={{ p: 0, outline: "solid .6px lightskyblue" }}
                 >
                     {renderOptions()}
                 </MenuList>
@@ -224,7 +231,8 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
                     mt: .11,
                     mr: .11,
                     pr: 1.1,
-                    backgroundColor: 'honeydew',
+                    backgroundColor: 'info.main',
+                    color: "info.contrastText",
                     '&:hover': {
                         color: "floralwhite",
                         backgroundColor: 'lightskyblue',
@@ -238,7 +246,7 @@ let RenderActionListOption = ({ item, toggleShowActionOptions, friendId }) => {
                     </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                    secondary={<Typography variant="h6">{item.name}</Typography>}
+                    secondary={<Typography sx={{fontSize: {xs: "small", md: "large", lg: "larger"}, fontWeight: "bolder"}} variant="h6">{item.name}</Typography>}
                 />
             </ListItem>
         </MenuItem>
@@ -251,7 +259,7 @@ function FriendsRequests() {
     let renderFriendRequests = () => appCtx?.user?.frRecieved?.map(friendId => <ShowFriendRequest key={friendId} friendId={friendId} baseUrl={appCtx.baseUrl} />)
 
     return (
-        <Paper sx={{ minWidth: "29vw", width: {xs: "100%", lg: "50%"}, backgroundColor: "lightsteelblue" }}>
+        <Paper sx={{ minWidth: "29vw", width: { xs: "100%", lg: "50%" }, backgroundColor: "lightsteelblue" }}>
             <Typography variant={'h4'}>Friend Requests</Typography>
             <Box
                 sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
@@ -294,7 +302,7 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
                 <ListItem
                     sx={{
                         outline: "solid .6px red", borderRadius: 2, justifyContent: "space-around",
-                        flexDirection: {xs: "column", md: "row"}
+                        flexDirection: { xs: "column", md: "row" }
                     }}
                 >
                     <Avatar
@@ -309,7 +317,7 @@ let ShowFriendRequest = ({ friendId, baseUrl }) => {
                         sx={{
                             flexDirection: "row",
                             ml: 2,
-                            mt: {xs: 2, md: 0}
+                            mt: { xs: 2, md: 0 }
                         }}
                     >
                         {renderListAssets()}

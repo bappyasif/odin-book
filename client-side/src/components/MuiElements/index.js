@@ -83,14 +83,14 @@ const AvatarElement = ({ url, altText, forPost, forComment, forConnect }) => {
     )
 }
 
-const CardHeaderElement = ({ avatarUrl, title, joined, altText, forPost, forComment, forConnect }) => {
+const CardHeaderElement = ({ styles, avatarUrl, title, joined, altText, forPost, forComment, forConnect }) => {
     return (
         <CardHeader
             avatar={<AvatarElement url={avatarUrl} altText={altText} forPost={forPost} forComment={forComment} forConnect={forConnect} />}
             title={<Typography marginLeft={forPost ? 0 : forConnect ? 0 : 2} textAlign={"left"} variant={forPost ? "h4" : forComment ? "subtitle2" : forConnect ? "h5" : "h2"}>{title}</Typography>}
-            subheader={<Typography sx={{ color: "text.secondary", textAlign: "left" }} variant={forPost ? "subtitle1" : forComment ? "subtitle2" : forConnect ? "p" : "h6"}>{`Member Since: ${moment(joined).fromNow()}`}</Typography>}
+            subheader={<Typography sx={{ textAlign: "left" }} variant={forPost ? "subtitle1" : forComment ? "subtitle2" : forConnect ? "p" : "h6"}>{`Member Since: ${moment(joined).fromNow()}`}</Typography>}
         // sx={{fontSize: "33px"}}
-            sx={{backgroundColor: forConnect ? "lightskyblue" : "inherit", borderRadius: 2, p: 0}}
+            sx={{...styles, backgroundColor: forConnect ? "info.dark" : "inherit",  borderRadius: 2, p: 0}}
         />
     )
 }
@@ -110,12 +110,13 @@ const ButtonElement = ({ text, type, fontSize, action, disable, variant }) => {
                     fontSize: fontSize || "20px",
                     borderRadius: 4,
                     width: "100%",
-                    backgroundColor: disable ? "lightgray" : "lightskyblue",
+                    backgroundColor: disable ? "info.light" : "info.dark",
+                    color: "info.contrastText",
                     pointerEvents: disable ? "none" : "auto",
                     '&:hover': {
-                        backgroundColor: 'primary.main',
-                        color: "white",
-                        opacity: [0.9, 0.8, 0.7],
+                        backgroundColor: 'secondary.main',
+                        color: "primary.contrastText",
+                        opacity: 0.9,
                     },
                 }}
                 variant={variant}
@@ -130,11 +131,12 @@ const BoxElement = (props) => {
     return <Box sx={{ width: "100%", order: props.order, display: "flex", gap: 2, justifyContent: "center", mt: 2 }} className={props.className}>{props.children}</Box>
 }
 
-const StackElement = (props) => <Stack className={props.className}>{props.children}</Stack>
+const StackElement = (props) => <Stack sx={{...props.styles}} className={props.className}>{props.children}</Stack>
 
 const MasonryElement = props => <Masonry 
     // sx={{columns: {xs: 1, md: 2, lg: 3}}} 
     // columns={3} 
+    // sx={{backgroundColor: "info.dark"}}
     columns={{ xs: 1, md: 2, lg: 3 }}
     spacing={2} className={props.className}>{props.children}</Masonry>
 

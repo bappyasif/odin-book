@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 let WrapperDiv = (props) => {
-    return <div className={`wrapper-div ${props.className}`}>{props.children}</div>
+    return <div style={{...props.styles}} className={`wrapper-div ${props.className}`}>{props.children}</div>
 }
 
 let DivElement = ({className, value}) => {

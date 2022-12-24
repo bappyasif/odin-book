@@ -31,7 +31,7 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   return (
     <Box
       sx={{
-        width: {xs: 450, sm: 690, md: 990},
+        width: {xs: 450, sm: 690, md: 990, lg: 1340},
         // backgroundColor: "info.light"
       }}
       // width={990}

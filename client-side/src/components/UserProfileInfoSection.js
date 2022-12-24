@@ -35,7 +35,7 @@ function UserProfileInfoSection({ appCtx, userId }) {
     console.log(userProfileData, "userProfileData")
 
     return (
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2, backgroundColor: "primary.dark" }}>
             <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
 
             <Box
@@ -49,12 +49,14 @@ function UserProfileInfoSection({ appCtx, userId }) {
                 {
                     userProfileData._id
                         ?
-                        <>
+                        <Stack
+                            sx={{backgroundColor: "info.light", color: "info.contrastColor"}}
+                        >
                             <UserNameAndInfo userData={userProfileData} userId={userId} />
                             <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
                             <SomeUserSpecificInfo userData={userProfileData} forCurrentUserProfile={userId === appCtx.user._id ? true : userId ? false : true} />
                             <UserFriendsAndInfo userData={userProfileData} />
-                        </>
+                        </Stack>
                         : null
                 }
             </Box>

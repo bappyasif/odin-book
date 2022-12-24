@@ -17,7 +17,7 @@ function ShowUserPostMedias({ mediaContents }) {
                 // content.push(<video controls><source src={mediaContents[key]} /></video>)
                 // content.push(<iframe src={mediaContents[key]} controls></iframe>)
             } else if (key === "Gif" && mediaContents[key]) {
-                content.push(<Gif key={"Gif"} gif={mediaContents[key]} height={200} width={"100%"}  style={{order: 3}} />)
+                content.push(<Gif key={"Gif"} gif={mediaContents[key]} height={{lg: "100%"}} width={"100%"}  style={{order: 3}} />)
             } else if (key === "Poll" && mediaContents[key]) {
                 content.push(<ShowPoll key={"Poll"} pollData={mediaContents[key]} order={4} />)
             } else if (key === "Privacy") {
