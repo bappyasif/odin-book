@@ -35,10 +35,14 @@ function RenderPostDataEssentials({ postData, shareMode }) {
 
     return (
         <>
-            <Card>
+            <Card
+                sx={{
+                    // backgroundColor: "info.light"
+                }}
+            >
                 <RenderCardHeader userData={userData} />
 
-                {shareMode ? null : <Typography sx={{ display: {xs: "none", sm: "block"}, color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
+                {shareMode ? null : <Typography sx={{ display: {xs: "none", sm: "block"}, color: "info.contrastText", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
 
                 <RenderCardContent postId={postData._id} body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
             </Card>
@@ -63,7 +67,7 @@ export const RenderCardContent = ({ postId, body, preparingAdditionalsForRenderi
             }}
             onClick={handleShowThread}
         >
-            <Typography variant='h4' sx={{ backgroundColor: "honeydew", p: .2, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+            <Typography variant='h4' sx={{ color: "primary.dark", p: .2, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             <ShowUserPostMedias mediaContents={preparingAdditionalsForRendering} />
         </CardContent>
     )
@@ -74,6 +78,9 @@ export const RenderCardHeader = ({ userData, forComment }) => {
 
     return (
         <CardHeader
+            sx={{
+                backgroundColor: forComment ? "primary.light" : "info.light"
+            }}
             avatar={
                 <Link className='posted-by' style={{ textDecoration: "none" }} to={appCtx.user._id ? `/users/${userData._id}/visit/profile` : '/'}>
                     <Avatar
@@ -92,12 +99,12 @@ export const RenderCardHeader = ({ userData, forComment }) => {
             // }
             title={
                 <Link className='posted-by' style={{ textDecoration: "none" }} to={appCtx.user._id ? `/users/${userData._id}/visit/profile` : '/'}>
-                    <Typography variant={forComment ? "h6" : "h4"}>{userData.fullName || "User Name"}</Typography>
+                    <Typography sx={{color: "info.contrastText"}} variant={forComment ? "h6" : "h4"}>{userData.fullName || "User Name"}</Typography>
                     <p className='posted-by-tooltip-text'>{appCtx.user._id ? "Visit Profile" : "Login To Visit Profile"}</p>
                 </Link>
             }
             subheader={
-                <Typography sx={{ color: "text.secondary", fontSize: forComment ? "smaller" : "auto" }} variant={forComment ? "p" : "subtitle2"}>{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
+                <Typography sx={{ color: "info.contrastText", fontSize: forComment ? "smaller" : "auto" }} variant={forComment ? "p" : "subtitle2"}>{`Member Since: ${moment(userData.created).fromNow()}`}</Typography>
             }
         />
     )

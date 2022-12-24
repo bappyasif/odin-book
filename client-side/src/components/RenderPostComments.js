@@ -52,9 +52,9 @@ function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, 
 
     return (
         <Stack sx={{ alignItems: "center", gap: .6 }}>
-            <Typography variant="h6">Post Comments</Typography>
+            <Typography sx={{color: "info.dark"}} variant="h5">Post Comments</Typography>
             {commentsData ? renderComments() : null}
-            <Button onClick={handleShowThread}>Show Thread</Button>
+            <Button fullWidth={true} sx={{backgroundColor: "info.light", color: "info.contrastText", fontWeight: "bold", "&:hover": {backgroundColor: "primary.dark", }}} onClick={handleShowThread}>Show Thread</Button>
         </Stack>
     )
 }
@@ -156,9 +156,9 @@ export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommen
                 position: "relative",
                 // width: "650px",
                 width: {xs: 411, sm: 620, md: 780},
-                outline: "solid .29px red",
+                outline: "solid .29px lightskyblue",
                 borderRadius: .2,
-                mb: .29
+                mb: .29,
             }}
         >
             <ButtonToIndicateHelp forWhichItem={"Comment Listings"} />
@@ -168,11 +168,11 @@ export const RenderComment = ({ fromThread, postOwner, commentData, deleteCommen
 
             <RenderCardHeader userData={userData} forComment={true} />
 
-            <Typography sx={{ display: {xs: "none", sm: "block"}, color: "text.secondary", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
+            <Typography sx={{ display: {xs: "none", sm: "block"}, color: "info.contrastText", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>
             {
                 editCommentFlag
                     ? <EditComment body={body} commentId={commentData._id} doneEditing={() => setEditCommentFlag(false)} updateCommentText={updateCommentText} updateCommentTextFromThread={updateCommentTextFromThread} />
-                    : <Typography variant='subtitle1' sx={{ backgroundColor: "honeydew", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+                    : <Typography variant='body1' sx={{ fontWeight: "bolder", color: "info.dark", p: .1, mr: 6, ml: 15 }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             }
             <ShowPostUserEngagementsDetails currentUser={appCtx.user._id} counts={counts} countsForCurrentUser={countsForCurrentUser} forComment={true} clickHandler={clickHandler} />
             {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName={currentlyClickedElement} forComments={true} /> : null}

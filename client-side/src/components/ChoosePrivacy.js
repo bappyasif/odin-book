@@ -64,7 +64,8 @@ export let ShowRespectiveIcon = ({ privacy, order }) => {
                 alignItems: "baseline",
                 gap: 2,
                 mt: .9,
-                outline: "solid .6px red"
+                outline: "solid .6px lightskyblue",
+                color: "primary.light"
             }}
             order={order}
         >

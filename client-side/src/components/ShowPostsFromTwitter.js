@@ -7,7 +7,7 @@ import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
 function ShowPostsFromTwitter({topics}) {
-  console.log(topics, "TOPICS!!")
+  // console.log(topics, "TOPICS!!")
 
   let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 

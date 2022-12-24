@@ -77,19 +77,20 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler,
     return (
         <Stack
             className="post-actions-icons"
-            sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "lightblue", gap: 2, position: "relative" }}
+            sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "primary.light", color: "info.contrastText", gap: 2, position: "relative" }}
         >
             {actions.map(item => !((item.name === "Comment" || item.name === "Share") && forComment) && (
                 <Tooltip key={item.name} sx={{ cursor: "help" }} title={(!currentUser) ? `Login to ${item.name}` : `${item.name}d by`}>
                     <IconButton
                         onClick={() => forComment ? clickHandler(item.name) : null}
                         sx={{
-                            backgroundColor: counts[item.name] ? "beige" : "lightgrey",
+                            backgroundColor: counts[item.name] ? "primary.dark" : "info.dark",
                             cursor: forComment ? "pointer" : "auto",
-                            p: forComment && 0
+                            p: forComment && 0,
+                            
                         }}>
                         <Button
-                            sx={{ cursor: "auto" }}
+                            sx={{ cursor: "auto", color: "info.contrastText" }}
                             startIcon={counts[item.name] ? item.icon : null}
                         >
                             {counts[item.name] ? null : item.icon}

@@ -31,7 +31,8 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   return (
     <Box
       sx={{
-        width: {xs: 450, sm: 690, md: 990}
+        width: {xs: 450, sm: 690, md: 990},
+        // backgroundColor: "info.light"
       }}
       // width={990}
       margin="auto"
@@ -192,7 +193,7 @@ export let UserEngagementWithPost = ({ postData, appCtx, setShowCreatePost, hand
   return (
     <Stack
       className="post-actions-icons"
-      sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "lightblue", gap: 2, position: "relative" }}
+      sx={{ flexDirection: "row", justifyContent: "center", backgroundColor: "primary.light", gap: 2, position: "relative" }}
     >
       {counts?.engaggedUser && actions.map(item => (
         <RenderActionableIcon key={item.name} appCtx={appCtx} handleShowCommentModal={handleShowCommentModal} setShowModal={setShowModal} item={item} counts={counts} handleCounts={handleCounts} setShowCreatePost={setShowCreatePost} />
@@ -243,12 +244,12 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
         <IconButton
           onClick={handleClick}
           sx={{
-            backgroundColor: flag ? "beige" : "lightgrey",
+            backgroundColor: flag ? "primary.dark" : "info.dark",
             position: "relative",
             width: {xs: 51, md: 69},
             // fontSize: {xs: "11px", sm: "20px"}
           }}>
-          <Button startIcon={counts[item.name] ? item.icon : null}>
+          <Button sx={{color: "info.contrastText"}} startIcon={counts[item.name] ? item.icon : null}>
             {counts[item.name] ? null : item.icon}
             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
           </Button>
@@ -324,7 +325,7 @@ export let ShowIncludedSharedPost = ({ includedPostId, appCtx }) => {
     >
       <Typography>Shared Post</Typography>
       {_id ? <RenderPostDataEssentials postData={sharedPostData} shareMode={true} /> : null}
-      {_id ? <ShowPostUserEngagementsDetails counts={counts} /> : null}
+      {_id ? <ShowPostUserEngagementsDetails counts={counts} currentUser={appCtx.user._id} /> : null}
     </Box>
   )
 }
