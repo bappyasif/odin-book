@@ -127,8 +127,9 @@ const RenderData = ({ data }) => {
             ?
             <Card
                 sx={{
-                    mb: 1.1, mt: 1.1, outline: "solid 1.1px red", 
-                    maxWidth: "989px", margin: "auto", position: "relative"
+                    mb: 1.1, mt: 1.1, outline: "solid 1.1px info.main", 
+                    maxWidth: "989px", margin: "auto", position: "relative",
+                    backgroundColor: "info.dark", color: "info.contrastText"
                 }}
             >
                 <ButtonToIndicateHelp forWhichItem={"Api Content Listings"} />
@@ -181,7 +182,7 @@ const RenderPostHeaderView = ({ data }) => {
             }}
             title={<Typography sx={{fontSize: {xs: "24px", md: "36px", lg: "3.75rem"}}} variant='h2' textAlign={"justify"}>{data.title}</Typography>}
             subheader={
-                <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "center", justifyContent: "center" }}>
+                <Stack sx={{ flexDirection: "row", gap: 2, alignItems: "center", justifyContent: "center", color: "info.contrastText" }}>
                     <Typography variant='p'>Source: {data.source}</Typography>
                     <Typography variant='body1'>Section: {data.section}</Typography>
                     <Typography variant='subtitle2'>{data.byline}</Typography>

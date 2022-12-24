@@ -7,7 +7,7 @@ import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
 import { readDataFromServer } from './utils';
 
 function ShowPostsFromTwitter({topics}) {
-  // console.log(topics, "TOPICS!!")
+  console.log(topics, "TOPICS!!")
 
   let renderDataset = () => topics.map(name => <ShowSearchTermData key={name} searchTerm={name} />)
 
@@ -74,7 +74,7 @@ export let RenderPost = ({ item, baseUrl, attachments }) => {
       ?
       <Card
         sx={{
-          m: 1.5, p: 1.5, outline: "dashed", bgcolor: "secondary.text",
+          mt: 1.5, marginBottom: "9px !important", p: 1.5, bgcolor: "info.light",
           maxWidth: "940px",
           margin: "auto"
         }}
@@ -89,7 +89,9 @@ export let RenderPost = ({ item, baseUrl, attachments }) => {
 
 const TweetCardMedia = ({ item, attachments }) => {
   return (
-    <CardMedia>
+    <CardMedia
+      sx={{color: "info.contrastText"}}
+    >
       <ShowTweetMediaResources item={item} attachments={attachments} />
     </CardMedia>
   )
@@ -106,6 +108,9 @@ const TweetCardContent = ({ item }) => {
 const TweetCardHeader = ({ userData, tweetUrl }) => {
   return (
     <CardHeader
+      sx={{
+        backgroundColor: "info.dark", color: "info.contrastText"
+      }}
       avatar={
         <Avatar sx={{ width: "110px", height: "110px", objectFit: "contain" }}>
           <img width={110} height={110} src={userData?.data?.data.profile_image_url} />
@@ -120,7 +125,7 @@ const TweetCardHeader = ({ userData, tweetUrl }) => {
       }
 
       subheader={
-        <Stack sx={{ flexDirection: "row", gap: 1.1, alignItems: "baseline" }}>
+        <Stack sx={{ flexDirection: "row", gap: 1.1, alignItems: "baseline", color: "info.contrastText" }}>
           <Typography variant='body1'>Joined Since: {moment(userData?.data?.data.created_at).format("MM-DD-YYYY")}</Typography>
           <Typography variant='body1' sx={{ p: 2 }}>Followers: {userData?.data?.data.public_metrics.followers_count}</Typography>
           <Typography variant='body1' sx={{ p: 2 }}>Following: {userData?.data?.data.public_metrics.following_count}</Typography>
@@ -131,7 +136,7 @@ const TweetCardHeader = ({ userData, tweetUrl }) => {
         <Tooltip title="see this post in twitter">
           <IconButton>
             <Link href={tweetUrl} target={"_blank"}>
-              <Twitter />
+              <Twitter sx={{color: "info.contrastText"}} />
             </Link>
           </IconButton>
         </Tooltip>

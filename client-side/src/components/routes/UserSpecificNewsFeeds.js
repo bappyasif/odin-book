@@ -83,6 +83,8 @@ function UserSpecificNewsFeeds(props) {
     // making sure each time route changes existing posts gets removed so that state variable changes dont become unstable
     useEffect(() => appCtx.handleAvailablePostsFeeds([]), [location.pathname])
 
+    useEffect(() => appCtx?.user?._id && appCtx.randomlySelectSixTopics(), [])
+
     // console.log(userPostsDataset, "postsDataset!!", allAccessiblePosts)
     // console.log("postsDataset!!", allAccessiblePosts)
 
@@ -101,12 +103,12 @@ function UserSpecificNewsFeeds(props) {
     console.log(showPostsUntilIndex, "untilIndex", appCtx.availablePostsFeeds.length)
 
     return (
-        <Paper id="top-marker">
+        <Paper>
             {/* <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography> */}
 
             {showCreatePost ? <CreatePost /> : null}
 
-            <Stack sx={{ position: "relative" }}>
+            <Stack id="top-marker" sx={{ position: "relative" }}>
                 <ShowApiContentsToggler handleToggle={handleToggle} toggle={toggle} dataReady={false} />
             </Stack>
             {
@@ -116,7 +118,7 @@ function UserSpecificNewsFeeds(props) {
                     : null
             }
 
-            {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
+            {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
 
             {/* <TweetEmbed tweetsDataset={tweetPostsDataset} /> */}
 
@@ -134,6 +136,7 @@ function UserSpecificNewsFeeds(props) {
                     width: "fit-content",
                     margin: "auto",
                     position: "relative",
+                    backgroundColor: "primary.light"
                 }}
             >
                 <Typography
@@ -189,8 +192,8 @@ const ShowPostsFromThirdPartyApisBottomBunk = () => {
     return (
         <>
             <RenderMostSharedPostsFromNyTimes />
-            <CurateKeywordBasedPostsFromNyTimes topics={topics} />
-            <ShowPostsFromTwitter topics={topics} />
+            <CurateKeywordBasedPostsFromNyTimes topics={topics?.length ? topics : []} />
+            <ShowPostsFromTwitter topics={topics?.length ? topics : []} />
         </>
     )
 }
@@ -200,11 +203,13 @@ const ShowPostsFromThirdPartyApisTopBunk = () => {
 
     let topics = appCtx.randomizedTopics.slice(0, 2)
 
+    console.log(topics, "topics!!")
+
     return (
         <>
-            <CurateKeywordBasedPostsFromNyTimes topics={topics} />
+            <CurateKeywordBasedPostsFromNyTimes topics={topics?.length ? topics : []} />
             <RenderPopularPostsFromNyTimes />
-            <ShowPostsFromTwitter topics={topics} />
+            <ShowPostsFromTwitter topics={topics?.length ? topics : []} />
         </>
     )
 }

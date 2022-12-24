@@ -33,7 +33,7 @@ function MainNavigation() {
       sx={{
         flexDirection: "row",
         justifyContent: "space-around",
-        backgroundColor: "darkgrey"
+        backgroundColor: "info.light"
       }}
     >
       <H1Element value={"OdBo"} />
@@ -261,9 +261,9 @@ const ButtonElement = ({ item }) => {
       <Button
         onClick={handleClick}
         variant={"text"}
-        color={"info"}
         sx={{
           height: "fit-content",
+          color: "text.primary",
           '&:hover': {
             backgroundColor: 'primary.main',
             opacity: .8,

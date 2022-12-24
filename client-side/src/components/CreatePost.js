@@ -111,7 +111,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
             sx={{ position: "relative" }}
             onClick={createPost}
           >
-            <Button variant='contained' endIcon={<PostAddTwoTone />}>
+            <Button sx={{backgroundColor: "info.light"}} variant='contained' endIcon={<PostAddTwoTone />}>
               <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
             </Button>
 
@@ -300,7 +300,7 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
 let ShowIconBtns = ({ item, handleAddedOptions }) => {
   return (
     <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0 }}>
-      <TypographyElement text={item.name} type={"span"} />
+      <TypographyElement styles={{color: "info.light"}} text={item.name} type={"span"} />
     </Button>
   )
 }

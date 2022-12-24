@@ -153,13 +153,17 @@ function App() {
     handleAssitiveModeToggle: handleAssitiveModeToggle,
     assistiveMode: assistiveMode,
     handleToggleDarkMode: handleToggleDarkMode,
-    darkMode: darkMode
+    darkMode: darkMode,
+    randomlySelectSixTopics: randomlySelectSixTopics
   }
 
   useEffect(() => {
     // also making sure if oauth is not used and jwtToken is used then dont fetch data from server again on route changes
     // Object.keys(jwtUser).length === 0 && location.pathname === "/" && getUser()
-  }, [location.pathname === "/"])
+
+    // making topics get refreshed before user comes back to news feeds
+    user._id && topics.length && setTopics([])
+  }, [location.pathname !== "/"])
 
   useEffect(() => {
     // when jwtUser data is present we'll deal with this, and for simplicity making userData empty
@@ -167,7 +171,7 @@ function App() {
   }, [jwtUser])
 
   useEffect(() => {
-    if (topics.length && topics.length < 4 && user?._id) {
+    if (location.pathname === "/" && topics?.length !== -1 && topics?.length < 4 && user?._id) {
       randomlySelectSixTopics()
     }
   }, [topics])
@@ -179,13 +183,20 @@ function App() {
   }, [user._id])
 
   useEffect(() => {
-    if (user?._id) {
-      setTopics([])
-    } else {
+    if (!user?._id) {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
       setTopics(fakeTopics)
     }
   }, [])
+
+  // useEffect(() => {
+  //   if (user?._id) {
+  //     setTopics([])
+  //   } else {
+  //     const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
+  //     setTopics(fakeTopics)
+  //   }
+  // }, [])
 
   const theme = createTheme({
     palette: {
@@ -197,7 +208,7 @@ function App() {
 
   return (
     <AppContexts.Provider value={contexts}>
-      <div className="App" style={{ backgroundColor: "honeydew" }}>
+      <div className="App" style={{ backgroundColor: "grey[400]" }}>
         <MainNavigation />
         {/* <TryoutContainer /> */}
         {/* <BasicsUsage /> */}
