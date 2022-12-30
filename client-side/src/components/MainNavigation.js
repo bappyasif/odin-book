@@ -97,11 +97,11 @@ const ModeToggler = (props) => {
           <Switch
             checked={props.checked}
             onChange={props.changeHandler}
-            size='small'
+            size='medium'
             color="primary"
           />
         }
-        label={props.label}
+        label={<Typography variant='h6'>{props.label}</Typography>}
       />
     </Stack>
   )
@@ -182,7 +182,7 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
 
   return (
     <Tooltip sx={{ mb: .2 }} title={item.name}>
-      <Button onClick={handleClick} startIcon={item.icon} sx={{ justifyContent: "space-between", outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite" } }}>
+      <Button onClick={handleClick} startIcon={item.icon} sx={{ justifyContent: "space-between", fontWeight: "bold", outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite", color: "darkslategray" } }}>
         <Typography variant='subtitle2'>{item.name}</Typography>
       </Button>
     </Tooltip>

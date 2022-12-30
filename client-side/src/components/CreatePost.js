@@ -111,7 +111,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
             sx={{ position: "relative" }}
             onClick={createPost}
           >
-            <Button sx={{backgroundColor: "info.light"}} variant='contained' endIcon={<PostAddTwoTone />}>
+            <Button sx={{backgroundColor: "primary.light"}} variant='contained' endIcon={<PostAddTwoTone />}>
               <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
             </Button>
 

@@ -1,5 +1,5 @@
 import { ArrowBackIosTwoTone, ArrowForwardIosTwoTone, HighlightOffTwoTone } from '@mui/icons-material';
-import { Alert, AlertTitle, Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText, Typography } from '@mui/material'
+import { Alert, AlertTitle, Button, ButtonGroup, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { Stack } from '@mui/system';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
@@ -312,7 +312,7 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem, hoverPositio
                     padding: "2px",
                     fontSize: "2em",
                     pl: "15px",
-                    opacity: .6,
+                    opacity: .9,
                     outline: "solid .8px aqua",
                     '&:hover': {
                         backgroundColor: 'rgba(255,255,255,.9)',
@@ -321,6 +321,16 @@ export const ButtonToIndicateHelp = ({ alertPosition, forWhichItem, hoverPositio
                     ...alertPosition
                 }}
                 severity='info'
+            />
+            <CircularProgress
+                color='error' 
+                sx={{
+                    position: "absolute",
+                    left: 0,
+                    width: "22px !important",
+                    height: "22px !important",
+                    zIndex: "8"
+                }}
             />
             {showMoreInfo ? <MoreInfoOnHover hoverPosition={hoverPosition} /> : null}
         </>

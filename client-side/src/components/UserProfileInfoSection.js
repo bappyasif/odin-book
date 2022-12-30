@@ -32,10 +32,10 @@ function UserProfileInfoSection({ appCtx, userId }) {
         userId && getDataForUserProfile()
     }, [userId])
 
-    console.log(userProfileData, "userProfileData")
+    // console.log(userProfileData, "userProfileData")
 
     return (
-        <Box sx={{ mb: 2, backgroundColor: "primary.dark" }}>
+        <Box sx={{ mb: 2, backgroundColor: "primary.light" }}>
             <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
 
             <Box
@@ -43,14 +43,18 @@ function UserProfileInfoSection({ appCtx, userId }) {
                     width: { xs: 450, sm: 620, md: 920 },
                     // minWidth: "920px", maxWidth: "fit-content", 
                     margin: "auto", bgcolor: "gainsboro",
-                    pl: 2, pt: .4, pr: 2, pb: .1, borderRadius: 2
+                    pl: 2, pr: 2, pb: .1, borderRadius: 2
                 }}
             >
                 {
                     userProfileData._id
                         ?
                         <Stack
-                            sx={{backgroundColor: "info.light", color: "info.contrastColor"}}
+                            sx={{
+                                backgroundColor: "primary.light", 
+                                color: "info.contrastColor",
+                                px: 1.1
+                            }}
                         >
                             <UserNameAndInfo userData={userProfileData} userId={userId} />
                             <Divider variant="fullWidth" sx={{ mt: 1.1 }} />
@@ -290,7 +294,7 @@ let UserNameAndInfo = ({ userData, userId }) => {
                     // flexDirection: "row",
                     flexDirection: { xs: "column", md: "row" },
                     // gap: 6,
-                    gap: { xs: .9, md: 2, lg: 6 },
+                    gap: { xs: .9, md: 2, lg: 4 },
                     mt: .6,
                     alignItems: "baseline",
                     justifyContent: "space-around",

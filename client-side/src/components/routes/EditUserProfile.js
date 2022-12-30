@@ -114,7 +114,7 @@ let RenderActionButton = ({ item, userData, appCtx }) => {
 
     return (
         <Button fullWidth={true} onClick={handleClick} size='large' startIcon={item.icon} variant="outlined" sx={{ verticalAlign: "middle" }}>
-            <Typography variant='h6' fontWeight={"bold"}>{item.name}</Typography>
+            <Typography color={"info.contrastText"} variant='h6' fontWeight={"bold"}>{item.name}</Typography>
         </Button>
     )
 }

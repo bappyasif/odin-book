@@ -24,7 +24,8 @@ import { AbbreviateNumbers } from './misc';
 import VisitAnotherUserProfile from './components/routes/VisitAnotherUserProfile';
 import ContentsFromNyTimes from './components/ContentsFromNyTimes';
 import { ThemeProvider } from '@emotion/react';
-import { createTheme } from '@mui/material';
+import { createTheme, Paper } from '@mui/material';
+import { amber, blueGrey, deepOrange, grey } from '@mui/material/colors';
 
 export const AppContexts = createContext()
 
@@ -197,14 +198,73 @@ function App() {
   //     setTopics(fakeTopics)
   //   }
   // }, [])
-
-  const theme = createTheme({
+  const getDesignTokens = (mode) => ({
     palette: {
-      mode: darkMode ? "dark" : "light"
-    }
-  })
+      mode,
+      primary: {
+        // ...amber,
+        ...(mode === 'dark' && {
+          main: "#22223B",
+        }),
+        ...(mode === 'light' && {
+          main: "#4A4E69",
+          main: "#001845"
+        }),
+      },
+      secondary: {
+        // ...amber,
+        ...(mode === 'dark' && {
+          main: "#4A4E69",
+        }),
+        ...(mode === 'light' && {
+          main: "#C9ADA7",
+        }),
+      },
+      ...(mode === 'dark' && {
+        background: {
+          default: "#4A4E69",
+          paper: "#22223B",
+        },
+        info: {
+          main: "#001845"
+        }
+      }),
+      ...(mode === 'light' && {
+        background: {
+          default: "#F2E9E4",
+          // paper: "#6D6875",
+        },
+        info: {
+          // main: "#6D6875"
+          main: "#FEFAE0"
+        }
+      }),
+      text: {
+        ...(mode === 'light'
+          ? {
+              primary: grey[900],
+              secondary: grey[800],
+            }
+          : {
+              primary: grey[400],
+              secondary: grey[200],
+              // info: {
+              //   contrastText: grey[200]
+              // }
+            }),
+      },
+    },
+  });
 
-  user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
+  const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"))
+
+  // const theme = createTheme({
+  //   palette: {
+  //     mode: darkMode ? "dark" : "light",
+  //   }
+  // })
+
+  // user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 
   return (
     <AppContexts.Provider value={contexts}>
@@ -220,23 +280,24 @@ function App() {
         {/* <ContentsFromNyTimes /> */}
 
         <ThemeProvider theme={theme}>
-          <Routes>
-            <Route path='/' element={<UserSpecificNewsFeeds />} />
-            <Route path='/login' element={<LoginForm handleData={handleData} />} />
-            <Route path='/login/success' element={<LoginSuccess />} />
-            <Route path='/register' element={<RegisterUser handleData={handleData} />} />
-            {/* <Route path='/friend-requests' element={<FriendsRequests />} /> */}
-            <Route path='/user-friendships' element={<UserFriendships />} />
-            <Route path='/choose-topics' element={<ChooseTopics />} />
-            <Route path='/choose-topics/:category' element={<TopicCategory />} errorElement={<ErrorPage />} />
-            <Route path='/connect' element={<ConnectUsers />} />
-            <Route path='/news-feeds' element={<NewsFeeds />} />
-            <Route path='/posts/:postId/comments' element={<PostCommentsThread />} />
-            <Route path='/edit-user-profile' element={<EditUserProfile />} />
-            <Route path='/users/:userID/profile' element={<UserProfile />} />
-            <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />
-            <Route path='*' element={<ErrorPage />} />
-          </Routes>
+          <Paper>
+            <Routes>
+              <Route path='/' element={<UserSpecificNewsFeeds />} />
+              <Route path='/login' element={<LoginForm handleData={handleData} />} />
+              <Route path='/login/success' element={<LoginSuccess />} />
+              <Route path='/register' element={<RegisterUser handleData={handleData} />} />
+              <Route path='/user-friendships' element={<UserFriendships />} />
+              <Route path='/choose-topics' element={<ChooseTopics />} />
+              <Route path='/choose-topics/:category' element={<TopicCategory />} errorElement={<ErrorPage />} />
+              <Route path='/connect' element={<ConnectUsers />} />
+              <Route path='/news-feeds' element={<NewsFeeds />} />
+              <Route path='/posts/:postId/comments' element={<PostCommentsThread />} />
+              <Route path='/edit-user-profile' element={<EditUserProfile />} />
+              <Route path='/users/:userID/profile' element={<UserProfile />} />
+              <Route path='/users/:userID/visit/profile' element={<VisitAnotherUserProfile />} />
+              <Route path='*' element={<ErrorPage />} />
+            </Routes>
+          </Paper>
         </ThemeProvider>
       </div>
     </AppContexts.Provider>

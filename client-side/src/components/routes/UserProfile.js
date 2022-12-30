@@ -13,7 +13,7 @@ function UserProfile() {
 
     return (
         <Paper
-            sx={{ backgroundColor: "info.light", color: "info.contrastText", fontSize: { xs: "small", md: "large", lg: "larger" }, }}
+            sx={{ backgroundColor: "secondary", color: "info", fontSize: { xs: "small", md: "large", lg: "larger" }, }}
         >
             <UserProfileInfoSection appCtx={appCtx} />
             <Typography variant="h2">User Profile</Typography>
@@ -39,7 +39,12 @@ let UserProfileTabs = () => {
                         aria-label="lab API tabs example"
                         variant='fullWidth'
                         indicatorColor="secondary"
-                        sx={{backgroundColor: "info.light", color: "info.contrastText", fontWeight: "bold"}}
+                        textColor='secondary'
+                        sx={{
+                            // backgroundColor: "info.light", 
+                            // color: "primary.light", 
+                            fontWeight: "bold"
+                        }}
                     >
                         <Tab label="All Posts" value="1" />
                         <Tab label="Liked Posts" value="2" />
@@ -90,7 +95,12 @@ export let RenderAllPostsTab = () => {
     let renderAllPosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={() => null} />)
 
     return (
-        <Paper sx={{backgroundColor: "primary.dark", color: "info.contrastText"}}>
+        <Paper 
+        sx={{
+            // backgroundColor: "primary.dark", 
+            // color: "info.contrastText"
+        }}
+        >
             <Typography variant="h3">All Posts!!</Typography>
             {/* <Container> */}
                 {postsData?.length ? renderAllPosts() : null}

@@ -42,7 +42,7 @@ function RenderPostDataEssentials({ postData, shareMode }) {
             >
                 <RenderCardHeader userData={userData} />
 
-                {shareMode ? null : <Typography sx={{ display: {xs: "none", sm: "block"}, color: "info.contrastText", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
+                {shareMode ? null : <Typography sx={{ display: {xs: "none", sm: "block"}, color: "info", position: "absolute", top: 29, right: 20 }} variant="subtitle2">{`Live Since: ${moment(created).fromNow()}`}</Typography>}
 
                 <RenderCardContent postId={postData._id} body={body} preparingAdditionalsForRendering={preparingAdditionalsForRendering} />
             </Card>
@@ -67,7 +67,7 @@ export const RenderCardContent = ({ postId, body, preparingAdditionalsForRenderi
             }}
             onClick={handleShowThread}
         >
-            <Typography variant='h4' sx={{ color: "primary.dark", p: .2, textAlign: "justify", margin: "0 20px 0 108px" }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
+            <Typography variant='h4' sx={{ color: "primary.light", p: .2, textAlign: "justify", margin: "0 20px 0 108px" }} dangerouslySetInnerHTML={{ __html: body }}></Typography>
             <ShowUserPostMedias mediaContents={preparingAdditionalsForRendering} />
         </CardContent>
     )
