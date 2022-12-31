@@ -77,6 +77,9 @@ let RenderUser = ({ userData }) => {
     // when sending, data will be added and when undoing existing data will be removed
     updatingUserDataInDatabase({ frSent: userData._id }, appCtx.user._id)
     updatingUserDataInDatabase({ frRecieved: appCtx.user._id }, userData._id)
+    // also updating falgged state so that DOM reacts and responds appropriately instantaneously
+    // as this gets run both for SEND and UNDO, so simply toggling will give us expected result on DOM
+    setFriendRequestSentAlready(prev => !prev)
   }
 
   useEffect(() => {

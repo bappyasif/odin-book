@@ -8,7 +8,7 @@ import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderE
 import ChoosePrivacy from './ChoosePrivacy'
 import CreatePoll from './CreatePoll'
 import ShowUserPostMedias from './ShowUserPostMedias'
-import { Box, Button, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
@@ -72,6 +72,8 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   // console.log(addedOptions, "addedOptions!!", errors, postData, postText)
 
+  console.log(addedOptions, "addedOptions!!")
+
   // console.log(appCtx.dialogTextFor, "dialogTextFor")
 
   return (
@@ -80,30 +82,92 @@ function CreatePost({ handleSuccessfullPostShared }) {
         <ButtonToIndicateHelp forWhichItem={"Create Post"} />
         {appCtx.dialogTextFor === "Create Post" ? <HowToUseCreatePostComponent /> : null}
         <CardElement>
-          <CardHeaderElement
+          {/* <CardHeaderElement
             avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
             altText={"fullname"}
             title={appCtx.user?.fullName || "User Name"}
             joined={appCtx.user?.created || Date.now()}
-          />
+          /> */}
+
+          <Stack
+            sx={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              // gap: 4,
+              px: .6
+            }}
+          >
+            <Avatar
+              sx={{ width: 211, height: 251, m: .6, p: 0, alignSelf: "center", objectFit: "fill" }}
+              alt={"fullname" || appCtx.user?.fullName}
+              src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
+            />
+            <Stack
+              sx={{
+                // mr: .9
+              }}
+            >
+              <form ref={ref} style={{ position: "relative", width: "100%" }}>
+                <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
+                <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
+              </form>
+              <Stack
+                sx={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  mt: .6
+                }}
+              >
+                {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
+              </Stack>
+              {
+                !(addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
+                  ?
+                  <Stack
+                    sx={{ position: "relative" }}
+                    onClick={createPost}
+                  >
+                    <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
+                      <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
+                    </Button>
+                  </Stack>
+                  : null
+              }
+            </Stack>
+          </Stack>
 
           <CardContentElement>
-            <form ref={ref} style={{position: "relative"}}>
+            {/* <form ref={ref} style={{position: "relative"}}>
               <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
               <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
-            </form>
+            </form> */}
             {/* showing user selected medias in post */}
             <ShowUserPostMedias mediaContents={addedOptions} />
           </CardContentElement>
 
-          <Stack
+          {
+            (addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
+              ?
+              <Stack
+                sx={{ position: "relative" }}
+                onClick={createPost}
+              >
+                <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
+                  <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
+                </Button>
+              </Stack>
+              : null
+          }
+
+          {/* <Stack
             flexDirection={"row"}
             alignItems={"baseline"}
             justifyContent={"center"}
             marginTop="2"
           >
             {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
-          </Stack>
+          </Stack> */}
 
           <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
 
@@ -111,9 +175,9 @@ function CreatePost({ handleSuccessfullPostShared }) {
             sx={{ position: "relative" }}
             onClick={createPost}
           >
-            <Button sx={{backgroundColor: "primary.light"}} variant='contained' endIcon={<PostAddTwoTone />}>
+            {/* <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
               <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
-            </Button>
+            </Button> */}
 
             {/* for some reason there is a "ref" inteference with this and Authentication Prompt component "ref" */}
             {/* thats rather making user re route to "login" page with user consent through a prompt dialog box */}
@@ -126,11 +190,11 @@ function CreatePost({ handleSuccessfullPostShared }) {
   )
 }
 
-export const VisualizeWordCountProgress = ({forRegister, forLogin, textContent, maxLimit, smallerSize, topPlacingUnits}) => {
+export const VisualizeWordCountProgress = ({ forRegister, forLogin, textContent, maxLimit, smallerSize, topPlacingUnits }) => {
   let [progress, setProgress] = useState(0);
-  
+
   let handleProgress = () => {
-    let countPercentile = Math.round((textContent?.length/maxLimit)*100)
+    let countPercentile = Math.round((textContent?.length / maxLimit) * 100)
     if (textContent?.length <= maxLimit) {
       setProgress(countPercentile)
     } else {
@@ -144,7 +208,7 @@ export const VisualizeWordCountProgress = ({forRegister, forLogin, textContent, 
   }, [textContent])
 
   return (
-    <CircularProgress 
+    <CircularProgress
       sx={{
         position: "absolute",
         right: (!forLogin || !forRegister) ? "4px" : "auto",
@@ -155,9 +219,9 @@ export const VisualizeWordCountProgress = ({forRegister, forLogin, textContent, 
         width: smallerSize ? "29px !important" : "auto",
         color: progress === 100 ? "red" : "auto"
       }}
-      variant="determinate" 
+      variant="determinate"
       value={progress}
-      // size="xs" 
+    // size="xs" 
     />
   )
 }
@@ -299,8 +363,8 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
 
 let ShowIconBtns = ({ item, handleAddedOptions }) => {
   return (
-    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0 }}>
-      <TypographyElement styles={{color: "info.light"}} text={item.name} type={"span"} />
+    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light" }}>
+      <TypographyElement styles={{ color: "text.primary" }} text={item.name} type={"span"} />
     </Button>
   )
 }

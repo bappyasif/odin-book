@@ -32,11 +32,16 @@ function UserProfileInfoSection({ appCtx, userId }) {
         userId && getDataForUserProfile()
     }, [userId])
 
-    // console.log(userProfileData, "userProfileData")
+    useEffect(() => {
+        !userId && setUserProfileData(appCtx.user)
+        userId && console.log("why its not running!!")
+    }, [appCtx.user])
+
+    console.log(userProfileData, "userProfileData", appCtx.user)
 
     return (
         <Box sx={{ mb: 2, backgroundColor: "primary.light" }}>
-            <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} />
+            <RenderUserProfilePhoto userData={userProfileData._id ? userProfileData : appCtx.user} fromPP={false} forVisitingProfile={userId} />
 
             <Box
                 sx={{
@@ -51,7 +56,7 @@ function UserProfileInfoSection({ appCtx, userId }) {
                         ?
                         <Stack
                             sx={{
-                                backgroundColor: "primary.light", 
+                                backgroundColor: "primary.light",
                                 color: "info.contrastColor",
                                 px: 1.1
                             }}
@@ -68,7 +73,7 @@ function UserProfileInfoSection({ appCtx, userId }) {
     )
 }
 
-let RenderUserProfilePhoto = ({ userData, fromPP }) => {
+let RenderUserProfilePhoto = ({ userData, fromPP, forVisitingProfile }) => {
     let { ppUrl, cpUrl, fullName } = { ...userData }
 
     let [showModal, setShowModal] = useState(false);
@@ -114,24 +119,28 @@ let RenderUserProfilePhoto = ({ userData, fromPP }) => {
                     alt={`user ${fullName ? fullName : "X"} profile display`}
                     loading='lazy'
                 />
-                <ImageListItemBar
-                    sx={{
-                        justifyContent: "center",
-                    }}
+                {
+                    forVisitingProfile
+                        ? null
+                        : <ImageListItemBar
+                            sx={{
+                                justifyContent: "center",
+                            }}
 
-                    title={<Typography variant="h6">{fromPP ? "Profile" : "Cover"} Photo</Typography>}
+                            title={<Typography variant="h6">{fromPP ? "Profile" : "Cover"} Photo</Typography>}
 
-                    onClick={toggleShowModal}
+                            onClick={toggleShowModal}
 
-                    actionIcon={
-                        <IconButton
-                        >
-                            <WallpaperRounded
-                                sx={{ color: "floralwhite" }}
-                            />
-                        </IconButton>
-                    }
-                />
+                            actionIcon={
+                                <IconButton
+                                >
+                                    <WallpaperRounded
+                                        sx={{ color: "floralwhite" }}
+                                    />
+                                </IconButton>
+                            }
+                        />
+                }
             </ImageListItem>
 
             {showModal ? <ShowUrlGrabbingModal closeModal={closeShowModal} fromPP={fromPP} /> : null}
@@ -153,7 +162,7 @@ let ShowUrlGrabbingModal = ({ closeModal, fromPP }) => {
 
     let handlPhotoUrlUpload = () => {
         let data = { [fromPP ? "ppUrl" : "cpUrl"]: urlText }
-        // console.log(data, "data!!", url)
+        console.log(data, "data!!", url)
         updateDataInDatabase(url, data, afterUpdateIsSuccessfull)
     }
     let handleClick = () => {
@@ -223,7 +232,7 @@ let SomeUserSpecificInfo = ({ userData, forCurrentUserProfile }) => {
             <Stack
                 sx={{
                     // flexDirection: "row",
-                    flexDirection: {xs: "column", md: "row"},
+                    flexDirection: { xs: "column", md: "row" },
                     justifyContent: "space-between", mt: 2
                 }}
             >
@@ -248,11 +257,11 @@ let UserFriendsAndInfo = ({ userData }) => {
     let renderItems = () => items.map(item => <RenderUserProfileData key={item.name} item={item} styles={innerStackStyles} />)
 
     return (
-        <Stack 
-            sx={{ 
+        <Stack
+            sx={{
                 // flexDirection: "row", 
-                flexDirection: {xs: "column", md: "row"},
-                justifyContent: "space-between", mt: 2, mb: 2 
+                flexDirection: { xs: "column", md: "row" },
+                justifyContent: "space-between", mt: 2, mb: 2
             }}
         >
             {renderItems()}
@@ -288,7 +297,7 @@ let UserNameAndInfo = ({ userData, userId }) => {
         <Stack
             sx={{ flexDirection: "column", gap: .6, mt: .6 }}
         >
-            <RenderUserProfilePhoto userData={userData} fromPP={true} />
+            <RenderUserProfilePhoto userData={userData} fromPP={true} forVisitingProfile={userId} />
             <Stack
                 sx={{
                     // flexDirection: "row",
@@ -308,10 +317,10 @@ let UserNameAndInfo = ({ userData, userId }) => {
                 {
                     !userId
                         ?
-                        <Fab 
+                        <Fab
                             sx={{
-                                position: {sm: "absolute", md: "relative"},
-                                right: {sm: 0}
+                                position: { sm: "absolute", md: "relative" },
+                                right: { sm: 0 }
                             }}
                             onClick={handleClick} variant="extended" color="primary" aria-label="add"
                         >

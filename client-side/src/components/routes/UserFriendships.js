@@ -1,5 +1,5 @@
 import { AccountCircleTwoTone, HowToRegRounded, MoreVertTwoTone, PersonOffRounded, PersonOffTwoTone } from '@mui/icons-material';
-import { Avatar, Box, Card, CardActions, CardContent, CardHeader, ClickAwayListener, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../../App'
@@ -39,7 +39,7 @@ let ExistingFriendList = () => {
 
     return (
         <Paper sx={{ backgroundColor: "info.light", color: "info.contrastText", width: { xs: "100%", lg: "50%" } }}>
-            <Typography variant="h4">Friend Listings:</Typography>
+            <Typography variant="h4">Friends Listings:</Typography>
             <Stack sx={{ gap: 1.1 }}>
                 {renderFriends()}
             </Stack>
@@ -267,7 +267,8 @@ function FriendsRequests() {
                 color: "primary.light"
             }}
         >
-            <Typography variant={'h4'}>Friend Requests</Typography>
+            <Typography variant={'h4'}>Friend Requests Recieved</Typography>
+            <Divider />
             <Box
                 sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
             >
