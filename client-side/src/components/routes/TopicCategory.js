@@ -27,12 +27,13 @@ function TopicCategory() {
     let handleClickAndSave = () => {
         let url = `${appCtx.baseUrl}/users/${appCtx.user._id}`
         // updateUserInDatabase(url, {topics: selectedTopics}, appCtx.updateData, navigate)
+        // console.log(selectedTopics, "seletedTopics!!")
         updateUserInDatabase(url, {topics: selectedTopics}, updateDataInApp, navigate, "edit-user-profile")
     }
 
     let renderTopics = () => topics[0]?.map(name => <RenderTopic key={name} topic={name} setSelectedTopics={setSelectedTopics} list={selectedTopics} />)
 
-    useEffect(() => handleTopics, [category])
+    useEffect(() => handleTopics(), [category])
 
     useEffect(() => {
         if(appCtx.user?.topics) {

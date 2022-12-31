@@ -28,7 +28,8 @@ function ChooseTopics({closeTopicChooserModal}) {
             updateUserInDatabase(url, {topics: selectedTopics}, dataUpdateForUserEditModule, closeTopicChooserModal)
             // updateUserInDatabase(url, {topics: selectedTopics}, dataUpdateForUserEditModule, () => null)
         } else {
-            updateUserInDatabase(url, {topics: selectedTopics}, appCtx.updateData, navigate)
+            updateUserInDatabase(url, {topics: selectedTopics}, dataUpdateForUserEditModule, navigate, "edit-user-profile")
+            // updateUserInDatabase(url, {topics: selectedTopics}, appCtx.updateData, navigate)
         }
     }
 

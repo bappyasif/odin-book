@@ -2,6 +2,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { AppBar, Box, Container, Paper, Tab, Tabs, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 import { AppContexts } from '../../App';
 import useToFetchUserActionSpecificPostData from '../hooks/useToFetchData';
 import ShowUserCreatedPost from '../UserCreatedPost';
@@ -95,17 +96,27 @@ export let RenderAllPostsTab = () => {
     let renderAllPosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={() => null} />)
 
     return (
-        <Paper 
-        sx={{
-            // backgroundColor: "primary.dark", 
-            // color: "info.contrastText"
-        }}
+        <Paper
+            sx={{
+                // backgroundColor: "primary.dark", 
+                // color: "info.contrastText"
+            }}
         >
-            <Typography variant="h3">All Posts!!</Typography>
+            <Typography variant="h3">All Posts</Typography>
             {/* <Container> */}
-                {postsData?.length ? renderAllPosts() : null}
+            {postsData?.length ? renderAllPosts() : <ShowUserToVisitNewsFeeds text={"Created yet"} />}
+
             {/* </Container> */}
         </Paper>
+    )
+}
+
+const ShowUserToVisitNewsFeeds = ({ text }) => {
+    return (
+        <>
+            <Typography variant='h2'>No Posts are {text}</Typography>
+            <Typography variant="h4">Perhaps consder visting and playing around from <Link to={"/"}>Timeline Feeds</Link> would help!! Try now :)</Typography>
+        </>
     )
 }
 
@@ -120,9 +131,9 @@ let RenderActionSpecificPosts = ({ actionType }) => {
 
     return (
         <Paper>
-            <Typography variant="h3">{actionType}d Posts!!</Typography>
+            <Typography variant="h3">All {actionType}d Posts</Typography>
             {/* <Container> */}
-                {postsData?.length ? renderAllPosts() : null}
+            {postsData?.length ? renderAllPosts() : <ShowUserToVisitNewsFeeds text={`${actionType}d`} />}
             {/* </Container> */}
         </Paper>
     )
