@@ -8,7 +8,7 @@ import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderE
 import ChoosePrivacy from './ChoosePrivacy'
 import CreatePoll from './CreatePoll'
 import ShowUserPostMedias from './ShowUserPostMedias'
-import { Avatar, Box, Button, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, CardContent, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
@@ -31,7 +31,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
   let handlePostData = result => {
     setAddedOptions({})
     appCtx.updateAvailablePostsFeeds(result.post)
-    ref.current.reset()
+    // ref.current.reset()
     handleSuccessfullPostShared && handleSuccessfullPostShared(result.post._id)
   }
 
@@ -72,7 +72,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   // console.log(addedOptions, "addedOptions!!", errors, postData, postText)
 
-  console.log(addedOptions, "addedOptions!!")
+  // console.log(addedOptions, "addedOptions!!")
 
   // console.log(appCtx.dialogTextFor, "dialogTextFor")
 
@@ -81,112 +81,95 @@ function CreatePost({ handleSuccessfullPostShared }) {
       <PaperElement position="relative">
         <ButtonToIndicateHelp forWhichItem={"Create Post"} />
         {appCtx.dialogTextFor === "Create Post" ? <HowToUseCreatePostComponent /> : null}
-        <CardElement>
-          {/* <CardHeaderElement
-            avatarUrl={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
-            altText={"fullname"}
-            title={appCtx.user?.fullName || "User Name"}
-            joined={appCtx.user?.created || Date.now()}
-          /> */}
-
-          <Stack
-            sx={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              // gap: 4,
-              px: .6
-            }}
-          >
-            <Avatar
-              sx={{ width: 211, height: 251, m: .6, p: 0, alignSelf: "center", objectFit: "fill" }}
-              alt={"fullname" || appCtx.user?.fullName}
-              src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
-            />
-            <Stack
-              sx={{
-                // mr: .9
-              }}
-            >
-              <form ref={ref} style={{ position: "relative", width: "100%" }}>
-                <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
-                <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
-              </form>
-              <Stack
-                sx={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  mt: .6
-                }}
-              >
-                {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
-              </Stack>
-              {
-                !(addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
-                  ?
-                  <Stack
-                    sx={{ position: "relative" }}
-                    onClick={createPost}
-                  >
-                    <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
-                      <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
-                    </Button>
-                  </Stack>
-                  : null
-              }
-            </Stack>
-          </Stack>
-
-          <CardContentElement>
-            {/* <form ref={ref} style={{position: "relative"}}>
-              <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
-              <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
-            </form> */}
-            {/* showing user selected medias in post */}
-            <ShowUserPostMedias mediaContents={addedOptions} />
-          </CardContentElement>
-
-          {
-            (addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
-              ?
-              <Stack
-                sx={{ position: "relative" }}
-                onClick={createPost}
-              >
-                <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
-                  <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
-                </Button>
-              </Stack>
-              : null
-          }
-
-          {/* <Stack
-            flexDirection={"row"}
-            alignItems={"baseline"}
-            justifyContent={"center"}
-            marginTop="2"
-          >
-            {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
-          </Stack> */}
-
-          <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
-
-          <Stack
-            sx={{ position: "relative" }}
-            onClick={createPost}
-          >
-            {/* <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
-              <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
-            </Button> */}
-
-            {/* for some reason there is a "ref" inteference with this and Authentication Prompt component "ref" */}
-            {/* thats rather making user re route to "login" page with user consent through a prompt dialog box */}
-            {/* {!appCtx.user._id && promptLogin ? <ShowUserAuthenticationOptions setPromptLogin={setPromptLogin} itemName="Create Post" /> : null} */}
-          </Stack>
-
-        </CardElement>
+        <PostCreatingModalUi
+          appCtx={appCtx}
+          handleAddedOptions={handleAddedOptions}
+          addedOptions={addedOptions}
+          postText={postText}
+          setPostText={setPostText}
+          createPost={createPost}
+        />
       </PaperElement>
     </ContainerElement>
+  )
+}
+
+const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText, addedOptions, createPost }) => {
+  let ref = useRef();
+  const handleCreatePost = () => {
+    ref.current.reset()
+    createPost()
+  }
+  return (
+    <CardElement>
+      <CardContent>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            px: .6
+          }}
+        >
+          <Avatar
+            sx={{ width: 211, height: 251, m: .6, p: 0, alignSelf: "center", objectFit: "fill" }}
+            alt={"fullname" || appCtx.user?.fullName}
+            src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
+          />
+          <Stack>
+            <form ref={ref} style={{ position: "relative", width: "100%" }}>
+              <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
+              <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
+            </form>
+            <Stack
+              sx={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                mt: .6
+              }}
+            >
+              {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
+            </Stack>
+            {
+              !(addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
+                ? <CreatePostButton handleCreatePost={handleCreatePost} appCtx={appCtx} />
+                : null
+            }
+          </Stack>
+        </Stack>
+
+        <ShowUserPostMedias mediaContents={addedOptions} />
+
+        <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
+      </CardContent>
+
+
+      {/* <CardContentElement> */}
+        {/* showing user selected medias in post */}
+        {/* <ShowUserPostMedias mediaContents={addedOptions} /> */}
+      {/* </CardContentElement> */}
+
+      {
+        (addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
+          ? <CreatePostButton handleCreatePost={handleCreatePost} appCtx={appCtx} />
+          : null
+      }
+
+      {/* <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} /> */}
+    </CardElement>
+  )
+}
+
+const CreatePostButton = ({ handleCreatePost, appCtx }) => {
+  return (
+    <Stack
+      sx={{ position: "relative" }}
+      onClick={handleCreatePost}
+    >
+      <Button sx={{ backgroundColor: "primary.light" }} variant='contained' endIcon={<PostAddTwoTone />}>
+        <Typography variant={"h6"}>{!appCtx.user._id ? "Login to " : ""}Create Post</Typography>
+      </Button>
+    </Stack>
   )
 }
 
