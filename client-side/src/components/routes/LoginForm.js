@@ -172,7 +172,7 @@ let RenderLoader = ({ icon, announcement }) => {
     let [bgColor, setBgColor] = useState(null);
     
     useEffect(() => {
-        setBgColor(announcement === "Authentication Error" ? "maroon" : announcement === "Authentication Successfull" ? "aquamarine" : "auto")
+        setBgColor(announcement === "Authentication Error" ? "error" : announcement === "Authentication Successfull" ? "primary.light" : "auto")
     }, [announcement])
 
     return (

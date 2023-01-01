@@ -1,10 +1,11 @@
-import { NotInterestedTwoTone, SaveAltTwoTone, WallpaperRounded } from '@mui/icons-material'
-import { TextField, Box, Button, FormControl, IconButton, ImageListItem, ImageListItemBar, Input, InputLabel, Paper, Stack, TextareaAutosize, Typography } from '@mui/material'
+import { CloseTwoTone, NotInterestedTwoTone, SaveAltTwoTone, WallpaperRounded } from '@mui/icons-material'
+import { TextField, Box, Button, FormControl, IconButton, ImageListItem, ImageListItemBar, Input, InputLabel, Paper, Stack, TextareaAutosize, Typography, Tooltip } from '@mui/material'
 import moment from 'moment'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContexts } from '../../App'
 import { VisualizeWordCountProgress } from '../CreatePost'
+import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside'
 import { ButtonToIndicateHelp, HowToUseEditUserProfilePage } from '../HowToUseApp'
 import { fakeDataModel } from '../UserProfileInfoSection'
 import { updateDataInDatabase } from '../utils'
@@ -54,12 +55,12 @@ function EditUserProfile() {
 
     return (
         <Box
-            
+
         >
             <Typography sx={{ position: "relative" }} variant='h1'>Edit User Profile</Typography>
             <ButtonToIndicateHelp alertPosition={{ left: 0 }} forWhichItem={"Edit User Profile Page"} />
             {appCtx.dialogTextFor === "Edit User Profile Page" ? <HowToUseEditUserProfilePage /> : null}
-            
+
             {userData.created ? <RenderPhoto cpUrl={userData.cpUrl || fakeDataModel[0].coverPhotoUrl} fullName={userData.fullName} /> : null}
             {userData.created ? <RenderFormWithData handleData={handleData} data={userData} updateTopicsDataFromChooser={updateUserEditTopicsDataFromChooser} /> : null}
             {userData.created ? <RenderFormActionButtons userData={userData} appCtx={appCtx} /> : null}
@@ -248,8 +249,8 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
     let showClickableIframeLink = () => {
         let btn = null;
         if (elem === "topics") {
-            btn = <Button onClick={toggleShowModal}>
-                <Typography variant="subtitle1">Open Choose Topics</Typography>
+            btn = <Button sx={{ color: "text.secondary", bgcolor: "secondary" }} onClick={toggleShowModal}>
+                <Typography variant="subtitle1">Open To Choose Topics</Typography>
             </Button>
         }
         return btn;
@@ -281,7 +282,7 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
                         <Input required={true} sx={{ fontSize: 29, pl: 2 }} type={elem === "email" ? "email" : "text"} defaultValue={dataVal} onChange={handleEditableText} />
                     </>
             }
-            <Typography variant="subtitle1" sx={{ color: "darkgrey", textAlign: "left", pl: 2, position: "relative" }}>{showHelperText()} {showClickableIframeLink()}</Typography>
+            <Typography variant="subtitle1" sx={{ color: "text", textAlign: "left", pl: 2, position: "relative" }}>{showHelperText()} {showClickableIframeLink()}</Typography>
 
             {showModal ? <OpenTopicsChooserModal closeModal={closeModal} /> : null}
         </FormControl>
@@ -291,11 +292,16 @@ let RenderFormControlItem = ({ handleData, dataVal, elem, updateTopicsDataFromCh
 let OpenTopicsChooserModal = ({ closeModal }) => {
     let url = "/choose-topics"
 
+    const ref = useRef();
+
+    useToCloseModalOnClickedOutside(ref, closeModal)
+
     return (
         <Paper
+            ref={ref}
             style={{
                 position: "absolute",
-                border: "solid 6px darkred",
+                border: "solid 4px",
                 borderRadius: "20px 8px 8px 20px",
                 bottom: "29%",
                 right: "31%",
@@ -305,8 +311,27 @@ let OpenTopicsChooserModal = ({ closeModal }) => {
                 overflowY: "scroll"
             }}
         >
+            <CloseButton closeModal={closeModal} />
             <ChooseTopics closeTopicChooserModal={closeModal} />
         </Paper>
+    )
+}
+
+const CloseButton = ({ closeModal }) => {
+    return (
+        <Tooltip title={"Close Topics Chooing Modal"}>
+            <Button
+                onClick={closeModal}
+                variant='contained'
+                sx={{
+                    position: "absolute",
+                    right: 2,
+                    top: 2
+                }}
+            >
+                <CloseTwoTone fontSize='large' />
+            </Button>
+        </Tooltip>
     )
 }
 

@@ -8,7 +8,7 @@ import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderE
 import ChoosePrivacy from './ChoosePrivacy'
 import CreatePoll from './CreatePoll'
 import ShowUserPostMedias from './ShowUserPostMedias'
-import { Avatar, Box, Button, CardContent, CircularProgress, IconButton, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, CardContent, CircularProgress, IconButton, Paper, Stack, Typography } from '@mui/material'
 import { PostAddTwoTone } from '@mui/icons-material'
 import { sendDataToServer } from './utils'
 import { AppContexts } from '../App'
@@ -30,6 +30,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
   let handlePostData = result => {
     setAddedOptions({})
+    setPostText(null)
     appCtx.updateAvailablePostsFeeds(result.post)
     // ref.current.reset()
     handleSuccessfullPostShared && handleSuccessfullPostShared(result.post._id)
@@ -39,7 +40,12 @@ function CreatePost({ handleSuccessfullPostShared }) {
     if (elm !== "body") {
       val
         ? setAddedOptions(prev => ({ ...prev, [elm]: val, current: elm }))
-        : setAddedOptions(prev => ({ ...prev, current: elm }))
+        : setAddedOptions(prev => {
+          // checking if same element actionable component is Open already, if so then we will toggle it by changing its value something which does not have any Component tied to it
+          const chk = prev["current"] === elm
+          
+          return ({ ...prev, current: chk ? "Choose Again" : elm })
+        })
     } else {
       setAddedOptions(prev => ({ ...prev, [elm]: evt.target.getContent(), current: elm }))
     }
@@ -49,7 +55,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
     if (appCtx.user._id) {
       if (addedOptions.body) {
         if (addedOptions.body.length < 220) {
-          console.log("create post")
+          // console.log("create post")
           let url = `${appCtx.baseUrl}/posts/post/create/${appCtx.user._id}`
           sendDataToServer(url, addedOptions, handleErrors, handlePostData)
         } else {
@@ -96,12 +102,12 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
 const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText, addedOptions, createPost }) => {
   let ref = useRef();
-  
+
   const handleCreatePost = () => {
     ref.current.reset()
     createPost()
   }
-  
+
   return (
     <CardElement>
       <CardContent>
@@ -133,17 +139,19 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
             >
               {iconsBtns.map(item => <ShowIconBtns key={item.name} item={item} handleAddedOptions={handleAddedOptions} />)}
             </Stack>
+
             {
               !(addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
                 ? <CreatePostButton handleCreatePost={handleCreatePost} appCtx={appCtx} />
                 : null
             }
+
           </Stack>
         </Stack>
 
-        <ShowUserPostMedias mediaContents={addedOptions} />
-
         <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
+
+        <ShowUserPostMedias mediaContents={addedOptions} />
       </CardContent>
 
       {
@@ -219,7 +227,7 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
               setPostText(editor.getContent().replace(regExp, ''))
             });
           },
-          height: 200,
+          height: 161,
           branding: false,
           menubar: false,
           preview_styles: false,
@@ -237,7 +245,7 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
 let ShowClickActionsFunctionality = ({ currentElement, handleValue }) => {
   let renderFunctionality = null;
 
-  if (currentElement === "Image" || currentElement === "Video") {
+  if ((currentElement === "Image" || currentElement === "Video")) {
     renderFunctionality = <ShowUrlGrabbingForm handleValue={handleValue} currentElement={currentElement} />
   } else if (currentElement === "Gif") {
     renderFunctionality = <ShowGifSelectingElement handleValue={handleValue} currentElement={currentElement} />
@@ -250,7 +258,9 @@ let ShowClickActionsFunctionality = ({ currentElement, handleValue }) => {
   }
 
   return (
-    renderFunctionality
+    <Paper>
+      {renderFunctionality}
+    </Paper>
   )
 }
 
@@ -326,6 +336,10 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
     // ref.current.reset();
   }
 
+  const handleCancelClick = evt => {
+    handleValue(evt, "choose again", "");
+  }
+
   return (
     <Box sx={{ m: 2 }}>
       <FormElement handleSubmit={handleSubmit}>
@@ -334,13 +348,21 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
           <UserInputElement id={"url"} helperId="url-helper-text" type={"text"} handleChange={handleChange} />
           <HelperTextElement id={"url-helper-text"} text={"Enter a valid a url of your media resource"} />
         </FormControlElement>
-        <ButtonElement type={"submit"} text="Upload" variant={"contained"} />
+        <Stack
+          sx={{
+            flexDirection: "row", justifyContent: "space-between", px: .9
+          }}
+        >
+          <ButtonElement type={"submit"} text="Upload" variant={"contained"} />
+          <ButtonElement text="Cancel" variant={"contained"} action={handleCancelClick} />
+        </Stack>
       </FormElement>
     </Box>
   )
 }
 
 let ShowIconBtns = ({ item, handleAddedOptions }) => {
+
   return (
     <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light" }}>
       <TypographyElement styles={{ color: "text.primary" }} text={item.name} type={"span"} />

@@ -1,5 +1,5 @@
 import { AddCircleRounded, RemoveCircleRounded } from '@mui/icons-material'
-import { Box, Button, FormControl, Input, InputLabel, Stack, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, FormControl, Input, InputLabel, Stack, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 function CreatePoll({ handleValue, currentElement }) {
@@ -32,6 +32,8 @@ let ShowPollUI = ({ handleValue, currentElement }) => {
         }
     }
 
+    const handleCancelClick = (evt) => handleValue(evt, "choose again", "");
+
     useEffect(() => setOptions(2), [])
 
     let renderOptions = () => Array.from({ length: options }).map((_, n) => <ShowOption handleChange={handleChange} key={n} n={n} />)
@@ -48,13 +50,19 @@ let ShowPollUI = ({ handleValue, currentElement }) => {
                 {renderOptions()}
             </Box>
             <ActionButtons options={options} setOptions={setOptions} />
-            <Button
-                variant='contained'
-                sx={{ fontSize: 29, alignItems: "center", pt: .71, mt: 2 }}
-                onClick={handleClick}
+            <ButtonGroup
+                sx={{ fontSize: 29, alignItems: "center", pt: .71, mt: 2, justifyContent: "space-between", gap: 2 }}
             >
-                <span>Poll Away!!</span>
-            </Button>
+                <Button
+                    fullWidth={true}
+                    variant='contained'
+                    // sx={{ fontSize: 29, alignItems: "center", pt: .71, mt: 2 }}
+                    onClick={handleClick}
+                >
+                    <span>Poll Away!!</span>
+                </Button>
+                <Button fullWidth={true} variant='contained' onClick={handleCancelClick}>Cancel</Button>
+            </ButtonGroup>
         </Stack>
     )
 }

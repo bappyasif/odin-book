@@ -55,9 +55,9 @@ export let ButtonIconElement = ({ list, handleClick }) => {
     return (
         <Button
             onClick={handleClick}
-            sx={{ borderRadius: 4, outline: "solid", visibility: list.length >= 4 ? "visible" : "hidden" }}
+            sx={{ my: 1.1, borderRadius: 4, outline: "solid", visibility: list.length >= 4 ? "visible" : "hidden" }}
         >
-            <Typography variant='h4'>Save And Continue</Typography>
+            <Typography variant='h4' color={"text.secondary"}>Save And Continue</Typography>
             <IconButton
                 sx={{ p: 2 }}
             >
@@ -241,7 +241,7 @@ export let RenderTopic = ({ topic, list, setSelectedTopics }) => {
         // console.log(list, topic, "outside", idx)
         if(idx !== -1 && !clicked) {
             setClicked(true)
-            console.log("here here", topic, "inside", list)
+            // console.log("here here", topic, "inside", list)
         } 
     }, [list])
 
@@ -254,12 +254,12 @@ export let RenderTopic = ({ topic, list, setSelectedTopics }) => {
                 gap: 4,
                 m: 1,
                 p: 1,
-                backgroundColor: "lightgray",
+                backgroundColor: "primary.light",
                 borderRadius: 2,
                 alignItems: "center"
             }}
         >
-            <Typography variant='h6' component={"p"} sx={{ pl: 1 }}>{topic}</Typography>
+            <Typography variant='h6' component={"p"} sx={{ pl: 1, color: "text" }}>{topic}</Typography>
 
             <IconButton>
                 {

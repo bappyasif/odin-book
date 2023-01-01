@@ -57,56 +57,68 @@ function MainNavigation() {
 const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
   let [showDropdown, setShowDropdown] = useState(false)
 
-  let ref = useRef();
-
   let toggleDropdown = () => setShowDropdown(prev => !prev)
 
   let closeDropdown = () => setShowDropdown(false);
 
-  useToCloseModalOnClickedOutside(ref, closeDropdown)
-
   return (
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <AssistiveModeActivatingToggler />
-      <AppDarkModeToggler />
       
-      <Typography 
+      <AppDarkModeToggler />
+
+      <Typography
         sx={{
-          display: {xs: "none", lg: "block"}
+          display: { xs: "none", lg: "block" }
         }}
         variant="h6"
       >
         Welcome, Dear {appCtx.user.fullName}
       </Typography>
-      <UserProfileNavigationIcon appCtx={appCtx} />
 
-      <Box ref={ref}>
-        <Button
-          sx={{            
-            borderRadius: "50%",
-            bgcolor: "primary",
-            outline: "solid darkblue .2px",
-            "&:hover": {
-              bgcolor: "primary.dark",
-              color: "text"
-            }
-          }} 
-          onClick={toggleDropdown}
-        >
-          <Settings fontSize='large' />
-        </Button>
-        {/* <Avatar alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} /> */}
-        {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
-      </Box>
+      <UserProfileNavigationIcon appCtx={appCtx} />
+      
+      <DropdownMenu closeDropdown={closeDropdown} toggleDropdown={toggleDropdown} showDropdown={showDropdown} />
     </Stack>
   )
 }
 
-const UserProfileNavigationIcon = ({appCtx}) => {
+const DropdownMenu = ({ closeDropdown, toggleDropdown, showDropdown }) => {
+  let ref = useRef();
+
+  useToCloseModalOnClickedOutside(ref, closeDropdown)
+
   return (
-    <Link to={`/users/${appCtx.user?._id}/profile`}>
-      <Avatar sx={{ width: 65, height: 51 }} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
-    </Link>
+    <Box ref={ref}>
+      <Button
+        sx={{
+          borderRadius: "50%",
+          bgcolor: "primary",
+          outline: "solid darkblue .2px",
+          "&:hover": {
+            bgcolor: "primary.dark",
+            color: "text"
+          }
+        }}
+        onClick={toggleDropdown}
+      >
+        <Tooltip title={ showDropdown ? "" : "More Options"}>
+          <Settings fontSize='large' />
+        </Tooltip>
+      </Button>
+
+      {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
+    </Box>
+  )
+}
+
+const UserProfileNavigationIcon = ({ appCtx }) => {
+  return (
+    <Tooltip title={"Visit Your User Profile"}>
+      <Link to={`/users/${appCtx.user?._id}/profile`}>
+        <Avatar sx={{ width: 65, height: 51 }} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
+      </Link>
+    </Tooltip>
   )
 }
 
