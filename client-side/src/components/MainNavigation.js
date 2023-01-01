@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone } from "@mui/icons-material";
+import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone, SettingsSuggestTwoTone, Settings } from "@mui/icons-material";
 import { H1Element, NavElement, WrapperDiv } from './GeneralElements'
 import { MuiInputElement, TabElement } from './MuiElements';
 import { logoutUserFromApp, sendDataToServer } from './utils';
 import { AppContexts } from '../App';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Avatar, Box, Button, ButtonGroup, FormControl, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
@@ -69,6 +69,7 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
     <Stack sx={{ flexDirection: "row", gap: 4, position: "relative", alignItems: "center" }}>
       <AssistiveModeActivatingToggler />
       <AppDarkModeToggler />
+      
       <Typography 
         sx={{
           display: {xs: "none", lg: "block"}
@@ -77,11 +78,35 @@ const FloatingAuthenticatedUserFunctionality = ({ appCtx }) => {
       >
         Welcome, Dear {appCtx.user.fullName}
       </Typography>
+      <UserProfileNavigationIcon appCtx={appCtx} />
+
       <Box ref={ref}>
-        <Avatar onClick={toggleDropdown} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
+        <Button
+          sx={{            
+            borderRadius: "50%",
+            bgcolor: "primary",
+            outline: "solid darkblue .2px",
+            "&:hover": {
+              bgcolor: "primary.dark",
+              color: "text"
+            }
+          }} 
+          onClick={toggleDropdown}
+        >
+          <Settings fontSize='large' />
+        </Button>
+        {/* <Avatar alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} /> */}
         {showDropdown ? <ShowAuthUserDropdowns closeDropdown={closeDropdown} /> : null}
       </Box>
     </Stack>
+  )
+}
+
+const UserProfileNavigationIcon = ({appCtx}) => {
+  return (
+    <Link to={`/users/${appCtx.user?._id}/profile`}>
+      <Avatar sx={{ width: 65, height: 51 }} alt={`profile picture of ${appCtx.user.fullName}`} src={appCtx.user.ppUrl || "https://random.imagecdn.app/500/150"} />
+    </Link>
   )
 }
 
@@ -142,7 +167,7 @@ let ShowAuthUserDropdowns = ({ closeDropdown }) => {
   return (
     <Stack
       sx={{
-        position: "absolute", right: 0, top: "62px",
+        position: "absolute", right: 0, top: "65px", borderRadius: 4,
         gap: "9px", backgroundColor: "gainsboro", p: 2, zIndex: 9
       }}
     >
@@ -182,7 +207,7 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
 
   return (
     <Tooltip sx={{ mb: .2 }} title={item.name}>
-      <Button onClick={handleClick} startIcon={item.icon} sx={{ justifyContent: "space-between", fontWeight: "bold", outline: "solid 2px darkred", "&:hover": { outline: "solid 2px floralwhite", color: "darkslategray" } }}>
+      <Button onClick={handleClick} startIcon={item.icon} sx={{ justifyContent: "space-between", fontWeight: "bold", outline: "solid 2px darkslategray", "&:hover": { outline: "solid 2px floralwhite", color: "darkslategray" } }}>
         <Typography variant='subtitle2'>{item.name}</Typography>
       </Button>
     </Tooltip>
@@ -231,7 +256,7 @@ let NavsWhenUserAuthenticated = ({ appCtx }) => {
     { text: "Feeds", route: "/", icon: <DynamicFeedTwoTone /> },
     { text: "Connect", route: "connect", icon: <VerifiedUserSharp /> },
     { text: "Friendships", route: "user-friendships", icon: <PeopleTwoTone /> },
-    { text: "Profile", route: `users/${appCtx.user?._id}/profile`, icon: <PersonTwoTone /> },
+    // { text: "Profile", route: `users/${appCtx.user?._id}/profile`, icon: <PersonTwoTone /> },
   ]
 
   let renderButtons = () => buttonsProps.map(item => <ButtonElement key={item.text} item={item} />)

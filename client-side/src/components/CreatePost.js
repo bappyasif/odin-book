@@ -96,10 +96,12 @@ function CreatePost({ handleSuccessfullPostShared }) {
 
 const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText, addedOptions, createPost }) => {
   let ref = useRef();
+  
   const handleCreatePost = () => {
     ref.current.reset()
     createPost()
   }
+  
   return (
     <CardElement>
       <CardContent>
@@ -108,11 +110,12 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            px: .6
+            px: .2,
+            pr: 1.1
           }}
         >
           <Avatar
-            sx={{ width: 211, height: 251, m: .6, p: 0, alignSelf: "center", objectFit: "fill" }}
+            sx={{ width: 211, height: 251, mr: 1.5, p: .4, alignSelf: "center", objectFit: "fill" }}
             alt={"fullname" || appCtx.user?.fullName}
             src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
           />
@@ -143,19 +146,12 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
         <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} />
       </CardContent>
 
-
-      {/* <CardContentElement> */}
-        {/* showing user selected medias in post */}
-        {/* <ShowUserPostMedias mediaContents={addedOptions} /> */}
-      {/* </CardContentElement> */}
-
       {
         (addedOptions.Image || addedOptions.Video || addedOptions.Gif || addedOptions.Privacy || addedOptions.Poll)
           ? <CreatePostButton handleCreatePost={handleCreatePost} appCtx={appCtx} />
           : null
       }
 
-      {/* <ShowClickActionsFunctionality currentElement={addedOptions.current} handleValue={handleAddedOptions} /> */}
     </CardElement>
   )
 }
