@@ -116,8 +116,8 @@ const logoutUserFromApp = (url, clearOutUserData) => {
         .then(data => {
             console.log("logged out!!", data.success)
             // localStorage.removeItem("uid")
-            // localStorage.removeItem("token")
-            // localStorage.removeItem("expires")
+            localStorage.removeItem("token")
+            localStorage.removeItem("expires")
             clearOutUserData && clearOutUserData()
         })
         .catch(err => console.error(err))

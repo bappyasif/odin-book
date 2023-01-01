@@ -4,7 +4,9 @@ const { registerUser, loginUser, logoutUser, returnAuthenticatedUser, loginWithO
 const authRoutes = express();
 
 let isAuthenticated = (req, res, next) => {
-    if (req.user) {
+    // console.log(req?.session?.passport?.user, "session user!!", req.user, req.isAuthenticated())
+    // console.log(passport.authenticate("jwt", {session: false}))
+    if (req.user || req?.session?.passport?.user) {
         console.log("user authenticated!!", req?.jwt)
         next()
     } else {
@@ -15,6 +17,7 @@ let isAuthenticated = (req, res, next) => {
 
 authRoutes.post("/register", registerUser)
 authRoutes.post("/login", loginUser)
+// authRoutes.post("/login", passport.authenticate("jwt", {session: false}), loginUser)
 
 // authRoutes.get("/auth/:outlet", loginWithOauthProvider)
 authRoutes.get("/auth/google", passport.authenticate("google", {

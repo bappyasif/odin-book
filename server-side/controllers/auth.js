@@ -102,9 +102,16 @@ const loginUser = [
                         // issuing jwt signed token for authentication
                         const jwt = issueJWT(user);
 
+                        // console.log(jwt, "showJWT!!")
+
+                        // if(jwt?.token) {
+                        //     user.userJwt = { token: jwt.token, expiresIn: jwt.expires }
+                        // }
+
                         // successfully verified and commencing user authentication with json web token
                         // returning response object with signed token for client to use as a valid user
-                        res.status(200).json({ success: true, user: user, token: jwt.token, expiresIn: jwt.expires })
+                        // res.status(200).json({ success: true, user: user })
+                        res.status(200).json({ success: true, user: user, userJwt: { token: jwt.token, expiresIn: jwt.expires } })
 
                     } else {
                         // if token does not match then we;re sending back a 401 error saying password does nto match
@@ -133,7 +140,10 @@ let loginOauthProviderCallback = (req, res) => {
 
 const returnAuthenticatedUser = (req, res, next) => {
     if (req.user) {
-        res.status(200).json({ success: true, data: req.user, cookies: req.cookies, jwt: req?.jwt })
+        // issuing jwt signed token for authentication
+        const jwt = issueJWT(req.user);
+
+        res.status(200).json({ success: true, data: req.user, cookies: req.cookies, jwt: req?.jwt, userJwt: { token: jwt.token, expiresIn: jwt.expires } })
     } else {
         res.status(401).json({ success: false, msg: "user not logged in" })
     }

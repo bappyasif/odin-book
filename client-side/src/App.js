@@ -53,22 +53,40 @@ function App() {
 
   const randomlySelectSixTopics = () => {
     let foundTopics = user.topics;
+
     let rndNum = Math.floor(Math.random() * foundTopics.length);
+
     setTopics(prev => {
       let chkIdx = prev.findIndex(topic => topic === foundTopics[rndNum])
 
       let trimTopic = () => foundTopics[rndNum].split(" ").join("")
 
-      console.log(chkIdx, trimTopic(), "TOPIC")
-
       return chkIdx === -1 ? [...prev, trimTopic()] : prev
-      // return chkIdx === -1 ? [...prev, foundTopics[rndNum]] : prev
     })
   }
 
+  const saveJwtTokensInLocalStorage = (jwtData) => {
+    localStorage.setItem("token", jwtData.token)
+    localStorage.setItem("expires", jwtData.expiresIn)
+    // console.log(jwtData, "!!jwtData!!")
+  }
+
   let handleData = result => {
-    // console.log(result, "result!!")
+    // console.log(result, "result!!", jwtUser)
     result?.user ? setJwtUser(result?.user) : setUser(result?.data?.data)
+
+    // this is for user authentication via third party passwport jwt startegy
+    if (result?.data?.userJwt) {
+      setUser(prev => ({ ...prev, userJwt: result.data.userJwt }))
+      saveJwtTokensInLocalStorage(result.data.userJwt)
+    } 
+
+    // this is for jwt based passport authentication
+    if (result?.userJwt) {
+      setJwtUser(prev => ({ ...prev, userJwt: result.userJwt }))
+      saveJwtTokensInLocalStorage(result.userJwt)
+    }
+
   }
 
   let updateData = (key, value) => setUser(prev => {
@@ -85,7 +103,6 @@ function App() {
   })
 
   const acceptOrRejectFriendRequestUpdater = (action, friendId) => {
-    // console.log(friendId, action, "appStateUpdate!!")
     setUser(prev => {
       if (action === "accept") {
         prev.friends.push(friendId)
@@ -106,18 +123,17 @@ function App() {
     setUser(prev => ({ ...prev, friends: filteredFriendsList }))
   }
 
-  // let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(prev => [...prev, dataset])
   let handleAvailablePostsFeeds = dataset => setUserAccessiblePostsDataset(dataset)
 
   let updateAvailablePostsFeeds = data => setUserAccessiblePostsDataset(prev => [...prev, data])
 
   const deletePostFromAvailablePostsFeeds = (postId) => {
     let filteredPosts = userAccessiblePostsDataset.filter(item => item._id !== postId)
-    // console.log(filteredPosts, "filteredPosts!!")
+
     setUserAccessiblePostsDataset(filteredPosts)
   }
 
-  console.log(userAccessiblePostsDataset, "userPostsDataset!!")
+  // console.log(userAccessiblePostsDataset, "userPostsDataset!!")
 
   const clearCurrentUserData = () => {
     setUser({})
@@ -172,7 +188,7 @@ function App() {
   }, [jwtUser])
 
   useEffect(() => {
-    if (location.pathname === "/" && topics?.length !== -1 && topics?.length < 4 && user?._id) {
+    if (location.pathname === "/" && topics?.length > 0 && topics?.length < 4 && user?._id) {
       randomlySelectSixTopics()
     }
   }, [topics])
@@ -242,16 +258,16 @@ function App() {
       text: {
         ...(mode === 'light'
           ? {
-              primary: grey[900],
-              secondary: grey[800],
-            }
+            primary: grey[900],
+            secondary: grey[800],
+          }
           : {
-              primary: grey[400],
-              secondary: grey[200],
-              // info: {
-              //   contrastText: grey[200]
-              // }
-            }),
+            primary: grey[400],
+            secondary: grey[200],
+            // info: {
+            //   contrastText: grey[200]
+            // }
+          }),
       },
     },
   });
