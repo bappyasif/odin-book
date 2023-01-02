@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom"
 // import TryoutContainer from './trying-out-mui-materials/TryoutContainer';
 import './App.css';
 import MainNavigation from './components/MainNavigation';
@@ -13,7 +13,7 @@ import BasicsUsage from './trying-out-twitter-api/basics';
 import EditUserProfile from './components/routes/EditUserProfile';
 import TopicCategory from './components/routes/TopicCategory';
 import LoginSuccess from './components/routes/LoginSuccess';
-import { getAuthenticatedUserDataFromServer } from './components/utils';
+import { getAuthenticatedUserDataFromServer, getUserDataAfterJwtVerification, removeJwtDataFromLocalStorage, storeJwtAuthDataInLocalstorage, userStillLoggedIn } from './components/utils';
 import UserSpecificNewsFeeds from './components/routes/UserSpecificNewsFeeds';
 import UserFriendships from './components/routes/UserFriendships';
 import PostCommentsThread from './components/routes/PostCommentsThread';
@@ -38,6 +38,7 @@ function App() {
   let [showDialogModal, setShowDialogModal] = useState(false);
   let [assistiveMode, setAssistiveMode] = useState(false);
   let [darkMode, setDarkMode] = useState(false);
+  let [jwtExists, setJwtExists] = useState(false);
 
   const location = useLocation()
 
@@ -65,11 +66,11 @@ function App() {
     })
   }
 
-  const saveJwtTokensInLocalStorage = (jwtData) => {
-    localStorage.setItem("token", jwtData.token)
-    localStorage.setItem("expires", jwtData.expiresIn)
-    // console.log(jwtData, "!!jwtData!!")
-  }
+  // const saveJwtTokensInLocalStorage = (jwtData) => {
+  //   localStorage.setItem("token", jwtData.token)
+  //   localStorage.setItem("expires", jwtData.expiresIn)
+  //   // console.log(jwtData, "!!jwtData!!")
+  // }
 
   let handleData = result => {
     // console.log(result, "result!!", jwtUser)
@@ -78,18 +79,24 @@ function App() {
     // this is for user authentication via third party passwport jwt startegy
     if (result?.data?.userJwt) {
       setUser(prev => ({ ...prev, userJwt: result.data.userJwt }))
-      saveJwtTokensInLocalStorage(result.data.userJwt)
-    } 
+      // saveJwtTokensInLocalStorage(result.data.userJwt)
+      const data = result.data.userJwt;
+      storeJwtAuthDataInLocalstorage(data.token, data.expiresIn)
+    }
 
     // this is for jwt based passport authentication
     if (result?.userJwt) {
       setJwtUser(prev => ({ ...prev, userJwt: result.userJwt }))
-      saveJwtTokensInLocalStorage(result.userJwt)
+      // saveJwtTokensInLocalStorage(result.userJwt)
+      const data = result.userJwt;
+      storeJwtAuthDataInLocalstorage(data.token, data.expiresIn)
     }
 
   }
 
   let updateData = (key, value) => setUser(prev => {
+    // console.log(userStillLoggedIn(), "IS LOGGED -- UPDATE DATA!!")
+
     // checking if data is already in list
     let fIdx = prev[key].findIndex(val => val === value);
     if (fIdx === -1 && key !== "frRecieved") {
@@ -103,6 +110,7 @@ function App() {
   })
 
   const acceptOrRejectFriendRequestUpdater = (action, friendId) => {
+    // console.log(userStillLoggedIn(), "IS LOGGED -- User Friends!!")
     setUser(prev => {
       if (action === "accept") {
         prev.friends.push(friendId)
@@ -115,10 +123,14 @@ function App() {
   }
 
   const updateUserProfileDataInApp = (propName, propValue) => {
+    // console.log(userStillLoggedIn(), "IS LOGGED -- UPDATE PROFILE!!")
+
     setUser(prev => ({ ...prev, [propName]: propValue }))
   }
 
   const removeUserIdFromCurrentUserFriendsList = (friendId) => {
+    // console.log(userStillLoggedIn(), "IS LOGGED -- remove friend!!")
+
     let filteredFriendsList = user.friends.filter(val => val !== friendId)
     setUser(prev => ({ ...prev, friends: filteredFriendsList }))
   }
@@ -128,6 +140,8 @@ function App() {
   let updateAvailablePostsFeeds = data => setUserAccessiblePostsDataset(prev => [...prev, data])
 
   const deletePostFromAvailablePostsFeeds = (postId) => {
+    // console.log(userStillLoggedIn(), "IS LOGGED -- DELETE POST DATA!!")
+
     let filteredPosts = userAccessiblePostsDataset.filter(item => item._id !== postId)
 
     setUserAccessiblePostsDataset(filteredPosts)
@@ -145,6 +159,27 @@ function App() {
     let url = `http://localhost:3000/login/success`
     getAuthenticatedUserDataFromServer(url, handleData)
     console.log("running from app scope!!")
+  }
+
+  const demoHandler = result => console.log(result)
+  const navigate = useNavigate()
+
+  const getUserDataFromJwtTokenStoredInLocalStorage = () => {
+    const token = localStorage.getItem("token");
+    const url = `http://localhost:3000/protected`
+    // getUserDataAfterJwtVerification(url, token, demoHandler)
+    if (userStillLoggedIn() && token) {
+      getUserDataAfterJwtVerification(url, token, handleData)
+      setJwtExists(true);
+    } else if (!userStillLoggedIn() && token) {
+      alert("your're login has expired, you will be redirected to login page")
+      clearCurrentUserData();
+      removeJwtDataFromLocalStorage()
+      setJwtExists(false);
+      navigate("/login")
+    }
+
+    // userStillLoggedIn() && token && getUserDataAfterJwtVerification(url, token, handleData)
   }
 
   const contexts = {
@@ -171,7 +206,9 @@ function App() {
     assistiveMode: assistiveMode,
     handleToggleDarkMode: handleToggleDarkMode,
     darkMode: darkMode,
-    randomlySelectSixTopics: randomlySelectSixTopics
+    randomlySelectSixTopics: randomlySelectSixTopics,
+    isUserLoggedIn: userStillLoggedIn,
+    getUserDataFromJwtTokenStoredInLocalStorage: getUserDataFromJwtTokenStoredInLocalStorage
   }
 
   useEffect(() => {
@@ -197,14 +234,21 @@ function App() {
     if (user._id && user.topics) {
       setTopics([])
     }
-  }, [user._id])
+  }, [user?._id])
 
   useEffect(() => {
     if (!user?._id) {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
       setTopics(fakeTopics)
+
+      // get user data from stored jwt token, if any
+      // !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
     }
   }, [])
+
+  useEffect(() => {
+    !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
+  }, [jwtExists])
 
   // useEffect(() => {
   //   if (user?._id) {

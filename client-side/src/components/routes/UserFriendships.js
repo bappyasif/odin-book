@@ -35,7 +35,7 @@ let UserFriendships = () => {
 let ExistingFriendList = () => {
     let appCtx = useContext(AppContexts);
 
-    let renderFriends = () => appCtx.user.friends.map(frnd => <RenderFriend key={frnd} friendID={frnd} baseUrl={appCtx.baseUrl} />)
+    let renderFriends = () => appCtx?.user?.friends?.map(frnd => <RenderFriend key={frnd} friendID={frnd} baseUrl={appCtx.baseUrl} />)
 
     return (
         <Paper sx={{ backgroundColor: "info.light", color: "info.contrastText", width: { xs: "100%", lg: "50%" } }}>
@@ -44,7 +44,7 @@ let ExistingFriendList = () => {
                 {renderFriends()}
             </Stack>
             {
-                appCtx.user.friends.length === 0
+                appCtx?.user?.friends?.length === 0
                     ?
                     <Typography
                         variant="h6"
@@ -273,7 +273,7 @@ function FriendsRequests() {
                 sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
             >
                 {
-                    appCtx?.user?.frRecieved.length
+                    appCtx?.user?.frRecieved?.length
                         ?
                         renderFriendRequests()
                         :

@@ -122,8 +122,7 @@ const logoutUserFromApp = (url, clearOutUserData) => {
         .then(data => {
             console.log("logged out!!", data.success)
             // localStorage.removeItem("uid")
-            localStorage.removeItem("token")
-            localStorage.removeItem("expires")
+            removeJwtDataFromLocalStorage()
             clearOutUserData && clearOutUserData()
         })
         .catch(err => console.error(err))
@@ -152,28 +151,82 @@ const deleteResourceFromServer = (endpoint, dataObj, dataUpdater) => {
     .catch(err => console.error(err))
 }
 
+const getUserDataAfterJwtVerification = (url, accessToken, dataUpdater) => {
+    fetch(url,
+        {
+            method: "GET",
+            credentials: 'include',
+            headers: {
+                "Authorization": `${accessToken}`,
+                "Accept": 'application/json',
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Credentials": true
+            }
+        }
+    ).then(resp => {
+        if(resp.status >= 200) {
+            return resp.json()
+        }
+    })
+    .catch(err => console.log(err, "response error!!"))
+    .then(result => {
+        console.log("data deleted", result);
+        dataUpdater && dataUpdater(result)
+    })
+    .catch(err => console.error(err))
+}
+
+// const storeJwtAuthDataInLocalstorage = (token, expiresIn) => {
+//     // const expires = moment().add(expiresIn, "days").toISOString()
+//     // const expires = moment(expiresIn).toISOString()
+//     // const expires = moment().add(expiresIn.split(" ")[0]).toISOString()
+//     // console.log(expiresIn, expires, moment.duration().add(expiresIn.split(" ")[0], "s"))
+
+//     console.log(expiresIn)
+
+//     const expires = moment().add(expiresIn);
+//     console.log(expires, JSON.stringify(expires.valueOf()))
+//     localStorage.setItem("expires", JSON.stringify(expires.valueOf()));
+//     localStorage.setItem("token", token);
+// }
+
 const storeJwtAuthDataInLocalstorage = (token, expiresIn) => {
-    const expires = moment().add(expiresIn).toISOString()
-    // const expires = moment(expiresIn).toISOString()
+    // setting 5 min token validation window
+    const expires = Date.now() + (300 * 1000);
     localStorage.setItem("expires", expires);
     localStorage.setItem("token", token);
 }
 
+export const getExpiration = () => {
+    const expiration = localStorage.getItem("expires");
+    const expiresAt = JSON.parse(expiration);
+    // return moment(expiresAt)
+    return expiresAt
+}
+
 const userStillLoggedIn = () => {
     const expiresIn = localStorage.getItem("expires");
-    const loginStatus = moment().isBefore(expiresIn);
-    console.log(expiresIn, loginStatus, moment().isBefore(expiresIn), new Date().getUTCMilliseconds() < new Date(expiresIn).getMilliseconds(), new Date(expiresIn).getMilliseconds(), new Date(expiresIn).getMilliseconds())
+    // const loginStatus = moment().isBefore(expiresIn);
+    const loginStatus = moment().isBefore(getExpiration());
+    
     return loginStatus
+}
+
+const removeJwtDataFromLocalStorage = () => {
+    localStorage.removeItem("expires")
+    localStorage.removeItem("token")
 }
 
 export {
     sendDataToServer,
     readDataFromServer,
     getAuthenticatedUserDataFromServer,
+    getUserDataAfterJwtVerification,
     updateUserInDatabase,
     updateDataInDatabase,
     logoutUserFromApp,
     deleteResourceFromServer,
     storeJwtAuthDataInLocalstorage,
+    removeJwtDataFromLocalStorage,
     userStillLoggedIn
 }
