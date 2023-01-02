@@ -1,4 +1,7 @@
+import moment from "moment";
+
 const sendDataToServer = (endpoint, dataObj, errorHandler, handleData) => {
+    console.log(userStillLoggedIn(), "send DATa")
     fetch(endpoint, {
         method: "post",
         headers: {
@@ -29,6 +32,7 @@ const sendDataToServer = (endpoint, dataObj, errorHandler, handleData) => {
 }
 
 const updateUserInDatabase = (endpoint, dataObj, dataUpdater, navigate, navigateTo) => {
+    console.log(userStillLoggedIn(), "update User")
     fetch(endpoint, {
         method: "put",
         headers: {
@@ -56,6 +60,7 @@ const updateUserInDatabase = (endpoint, dataObj, dataUpdater, navigate, navigate
 // }
 
 const updateDataInDatabase = (endpoint, dataObj, dataUpdater) => {
+    console.log(userStillLoggedIn(), "update Data")
     // console.log(dataObj, "dataObj")
     fetch(endpoint, {
         method: "put",
@@ -74,6 +79,7 @@ const updateDataInDatabase = (endpoint, dataObj, dataUpdater) => {
 }
 
 const readDataFromServer = (endpoint, dataUpdater) => {
+    console.log(userStillLoggedIn(), "read data")
     fetch(endpoint)
         .then(resp => resp.json())
         .catch(err => {
@@ -124,7 +130,8 @@ const logoutUserFromApp = (url, clearOutUserData) => {
 }
 
 const deleteResourceFromServer = (endpoint, dataObj, dataUpdater) => {
-    console.log(endpoint, "!!endpoint")
+    console.log(userStillLoggedIn(), "delete data")
+    // console.log(endpoint, "!!endpoint")
     fetch(endpoint, {
         method: "delete",
         headers: {
@@ -145,6 +152,20 @@ const deleteResourceFromServer = (endpoint, dataObj, dataUpdater) => {
     .catch(err => console.error(err))
 }
 
+const storeJwtAuthDataInLocalstorage = (token, expiresIn) => {
+    const expires = moment().add(expiresIn).toISOString()
+    // const expires = moment(expiresIn).toISOString()
+    localStorage.setItem("expires", expires);
+    localStorage.setItem("token", token);
+}
+
+const userStillLoggedIn = () => {
+    const expiresIn = localStorage.getItem("expires");
+    const loginStatus = moment().isBefore(expiresIn);
+    console.log(expiresIn, loginStatus, moment().isBefore(expiresIn), new Date().getUTCMilliseconds() < new Date(expiresIn).getMilliseconds(), new Date(expiresIn).getMilliseconds(), new Date(expiresIn).getMilliseconds())
+    return loginStatus
+}
+
 export {
     sendDataToServer,
     readDataFromServer,
@@ -152,5 +173,7 @@ export {
     updateUserInDatabase,
     updateDataInDatabase,
     logoutUserFromApp,
-    deleteResourceFromServer
+    deleteResourceFromServer,
+    storeJwtAuthDataInLocalstorage,
+    userStillLoggedIn
 }

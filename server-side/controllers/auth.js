@@ -1,7 +1,7 @@
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
-const { generatePassword, validatePassword, issueJWT } = require("../utils/jwt");
+const { generatePassword, validatePassword, issueJWT, verifyJWT } = require("../utils/jwt");
 
 const registerUser = [
     body("fullname", "fullname can not be left empty")
@@ -149,6 +149,46 @@ const returnAuthenticatedUser = (req, res, next) => {
     }
 }
 
+const authenticatedUserJwtVerification = (req, res, next) => {
+    // console.log(req.headers.authorization.split(' '), req.headers)
+    // res.status(201).json({msg: "done"})
+    const tokenParts = req?.headers?.authorization?.split(' ');
+
+    const bearerText = tokenParts[0]
+    const tokenString = tokenParts[1];
+
+    // res.status(201).json({msg: "done"})
+
+    if(bearerText === "Bearer" && tokenString.match(/\S+\.\S+\.\S+/)) {
+        // const verification = jsonwebtoken.verify(tokenString, PUBLIC_KEY, {algorithms: ["RS256"]})
+        try {
+            const verification = verifyJWT(tokenString)
+            req.jwt = verification;
+            next();
+            // res.status(201).json({msg: "done", verification: verification})
+        } catch (err) {
+            console.log(err, "invalid token")
+            res.status(401).json({msg: "Unauthorized token"})
+        }
+    } else {
+        res.status(401).json({msg: "Unauthorized token"})
+    }
+
+}
+
+const extractDataForAnAuthenticatedUser = (req, res, next) => {
+    // console.log(req.jwt, "jwt!!")
+    User.findOne({_id: req.jwt.sub})
+        .then(dataset => {
+            console.log(dataset, "dataset!!")
+            res.status(201).json({msg: "user data has been transported after JWT verficiation", user: dataset})
+        }).catch(err => {
+            console.log(err)
+            return res.status(403).json({msg: "response error!!"})
+        })
+    // res.status(201).json({msg: "done"})
+}
+
 const logoutUser = (req, res, next) => {
     req.logout();
     res.clearCookie("session")
@@ -162,5 +202,7 @@ module.exports = {
     loginWithOauthProvider,
     loginOauthProviderCallback,
     logoutUser,
-    returnAuthenticatedUser
+    returnAuthenticatedUser,
+    extractDataForAnAuthenticatedUser,
+    authenticatedUserJwtVerification
 }

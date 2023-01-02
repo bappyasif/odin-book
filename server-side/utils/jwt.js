@@ -6,6 +6,9 @@ const path = require("path");
 const pathToPrivKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIVATE_KEY = fs.readFileSync(pathToPrivKey, "utf-8");
 
+const pathToPubKey = path.join(__dirname, "..", "id_rsa_pub.pem");
+const PUBLIC_KEY = fs.readFileSync(pathToPubKey, "utf-8");
+
 // This function uses the crypto library to decrypt the hash using the salt and then compares
 // the decrypted hash/salt with the password that the user provided at login
 const validatePassword = (password, hash, salt) => {
@@ -29,7 +32,8 @@ const generatePassword = (password) => {
 // We need this(user) to set the JWT `sub` payload property to the MongoDB user ID
 const issueJWT = (user) => {
     const userID = user?._id;
-    const expiresIn = "1d";
+    // const expiresIn = "1d";
+    const expiresIn = "30s";
 
     const payload = {
         sub: userID,
@@ -50,8 +54,35 @@ const issueJWT = (user) => {
     }
 }
 
+// const verifyJWT = (req, res, next) => {
+//     const tokenParts = req.headers.authorization.splits(" ");
+
+//     const bearerText = tokenParts[0]
+//     const tokenString = tokenParts[1];
+
+//     if(bearerText === "Bearer" && tokenString.match(/\S+\.\S+\.\S+/)) {
+//         // const verification = jsonwebtoken.verify(tokenString, PUBLIC_KEY, {algorithms: ["RS256"]})
+//         try {
+//             const verification = jsonwebtoken.verify(tokenString, PUBLIC_KEY, {algorithms: ["RS256"]})
+//             req.jwt = verification;
+//             next();
+//         } catch (err) {
+//             console.log(err, "invalid token")
+//             res.status(401).json({msg: "Unauthorized token"})
+//         }
+//     } else {
+//         res.status(401).json({msg: "Unauthorized token"})
+//     }
+// }
+
+const verifyJWT = (tokenString) => {
+    const verification = jsonwebtoken.verify(tokenString, PUBLIC_KEY, { algorithms: ["RS256"] })
+    return verification;    
+}
+
 module.exports = {
     validatePassword,
     generatePassword,
-    issueJWT
+    issueJWT,
+    verifyJWT
 }

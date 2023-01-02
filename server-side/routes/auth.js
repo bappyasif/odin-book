@@ -1,12 +1,12 @@
 const passport = require("passport");
 const express = require("express");
-const { registerUser, loginUser, logoutUser, returnAuthenticatedUser, loginWithOauthProvider } = require("../controllers/auth");
+const { registerUser, loginUser, logoutUser, returnAuthenticatedUser, loginWithOauthProvider, extractDataForAnAuthenticatedUser, authenticatedUserJwtVerification } = require("../controllers/auth");
 const authRoutes = express();
 
 let isAuthenticated = (req, res, next) => {
     // console.log(req?.session?.passport?.user, "session user!!", req.user, req.isAuthenticated())
     // console.log(passport.authenticate("jwt", {session: false}))
-    if (req.user || req?.session?.passport?.user) {
+    if (req.user || req?.session?.passport?.user || req?.jwt) {
         console.log("user authenticated!!", req?.jwt)
         next()
     } else {
@@ -59,5 +59,9 @@ authRoutes.get("/login/success", isAuthenticated, returnAuthenticatedUser)
 
 // authRoutes.get("/logout", logoutUser)
 authRoutes.get("/logout", isAuthenticated, logoutUser)
+
+// authRoutes.get("/prot", extractDataForAnAuthenticatedUser)
+
+authRoutes.get("/protected", authenticatedUserJwtVerification, extractDataForAnAuthenticatedUser)
 
 module.exports = authRoutes
