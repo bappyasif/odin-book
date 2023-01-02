@@ -103,7 +103,7 @@ function UserSpecificNewsFeeds(props) {
     console.log(showPostsUntilIndex, "untilIndex", appCtx.availablePostsFeeds.length)
 
     return (
-        <Paper>
+        <Paper sx={{height: "100vh"}}>
             {/* <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography> */}
 
             {showCreatePost ? <CreatePost /> : null}
@@ -118,7 +118,7 @@ function UserSpecificNewsFeeds(props) {
                     : null
             }
 
-            {/* {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null} */}
+            {appCtx.availablePostsFeeds.length ? renderAllAccessiblePosts() : null}
 
             {/* <TweetEmbed tweetsDataset={tweetPostsDataset} /> */}
 

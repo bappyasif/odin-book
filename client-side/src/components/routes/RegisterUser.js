@@ -53,7 +53,7 @@ function RegisterUser({ handleData }) {
     let renderFieldsets = () => createFormWithThese.map(data => <RenderFieldset key={data.id} data={data} handleChange={handleChange} />)
 
     return (
-        <WrapperDiv className={"register-user"}>
+        <WrapperDiv className={"register-user"} styles={{height: "100vh"}}>
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             
             <H1Element value={"Register User"} />

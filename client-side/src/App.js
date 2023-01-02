@@ -40,7 +40,9 @@ function App() {
   let [darkMode, setDarkMode] = useState(false);
   let [jwtExists, setJwtExists] = useState(false);
 
-  const location = useLocation()
+  const location = useLocation();
+
+  const navigate = useNavigate();
 
   const handleToggleDarkMode = () => setDarkMode(prev => !prev)
 
@@ -66,12 +68,6 @@ function App() {
     })
   }
 
-  // const saveJwtTokensInLocalStorage = (jwtData) => {
-  //   localStorage.setItem("token", jwtData.token)
-  //   localStorage.setItem("expires", jwtData.expiresIn)
-  //   // console.log(jwtData, "!!jwtData!!")
-  // }
-
   let handleData = result => {
     // console.log(result, "result!!", jwtUser)
     result?.user ? setJwtUser(result?.user) : setUser(result?.data?.data)
@@ -79,7 +75,6 @@ function App() {
     // this is for user authentication via third party passwport jwt startegy
     if (result?.data?.userJwt) {
       setUser(prev => ({ ...prev, userJwt: result.data.userJwt }))
-      // saveJwtTokensInLocalStorage(result.data.userJwt)
       const data = result.data.userJwt;
       storeJwtAuthDataInLocalstorage(data.token, data.expiresIn)
     }
@@ -87,7 +82,6 @@ function App() {
     // this is for jwt based passport authentication
     if (result?.userJwt) {
       setJwtUser(prev => ({ ...prev, userJwt: result.userJwt }))
-      // saveJwtTokensInLocalStorage(result.userJwt)
       const data = result.userJwt;
       storeJwtAuthDataInLocalstorage(data.token, data.expiresIn)
     }
@@ -161,13 +155,11 @@ function App() {
     console.log("running from app scope!!")
   }
 
-  const demoHandler = result => console.log(result)
-  const navigate = useNavigate()
-
   const getUserDataFromJwtTokenStoredInLocalStorage = () => {
     const token = localStorage.getItem("token");
+
     const url = `http://localhost:3000/protected`
-    // getUserDataAfterJwtVerification(url, token, demoHandler)
+
     if (userStillLoggedIn() && token) {
       getUserDataAfterJwtVerification(url, token, handleData)
       setJwtExists(true);
@@ -178,8 +170,6 @@ function App() {
       setJwtExists(false);
       navigate("/login")
     }
-
-    // userStillLoggedIn() && token && getUserDataAfterJwtVerification(url, token, handleData)
   }
 
   const contexts = {
@@ -240,9 +230,6 @@ function App() {
     if (!user?._id) {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
       setTopics(fakeTopics)
-
-      // get user data from stored jwt token, if any
-      // !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
     }
   }, [])
 
@@ -250,14 +237,6 @@ function App() {
     !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
   }, [jwtExists])
 
-  // useEffect(() => {
-  //   if (user?._id) {
-  //     setTopics([])
-  //   } else {
-  //     const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
-  //     setTopics(fakeTopics)
-  //   }
-  // }, [])
   const getDesignTokens = (mode) => ({
     palette: {
       mode,
@@ -328,7 +307,7 @@ function App() {
 
   return (
     <AppContexts.Provider value={contexts}>
-      <div className="App" style={{ backgroundColor: "grey[400]" }}>
+      <div className="App" style={{ backgroundColor: "grey[400]", height: "100vh" }}>
         <MainNavigation />
         {/* <TryoutContainer /> */}
         {/* <BasicsUsage /> */}

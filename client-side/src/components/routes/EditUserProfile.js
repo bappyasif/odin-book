@@ -42,7 +42,10 @@ function EditUserProfile() {
         }
     }
 
-    useEffect(() => setUserData(appCtx.user || fakeDataModel[0]), [])
+    useEffect(() => {
+        setUserData(appCtx.user || fakeDataModel[0])
+        appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
+    }, [])
 
     useEffect(() => {
         if (reloadDataFlag) {

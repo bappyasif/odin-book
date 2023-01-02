@@ -18,6 +18,7 @@ function ConnectUsers() {
 
   useEffect(() => {
     readDataFromServer(url, dataHandler)
+    appCtx.getUserDataFromJwtTokenStoredInLocalStorage();
   }, [url])
 
   // making timers flag to be true after 1.7sec

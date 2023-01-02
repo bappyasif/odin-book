@@ -12,6 +12,10 @@ import { readDataFromServer } from '../utils';
 function UserProfile() {
     let appCtx = useContext(AppContexts);
 
+    useEffect(() => {
+        appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
+    }, [])
+
     return (
         <Paper
             sx={{ backgroundColor: "secondary", color: "info", fontSize: { xs: "small", md: "large", lg: "larger" }, }}

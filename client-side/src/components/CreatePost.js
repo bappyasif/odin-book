@@ -115,17 +115,21 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
           sx={{
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: {xs: "center" , lg: "space-between"},
             px: .2,
             pr: 1.1
           }}
         >
           <Avatar
-            sx={{ width: 211, height: 251, mr: 1.5, p: .4, alignSelf: "center", objectFit: "fill" }}
+            sx={{ display: {xs: "none", md: "flex"},  width: {xs: 110, md: 170, lg: 200, xl: 211}, height: {xs: 110, md: 170, lg: 200, xl: 251}, mr: 1.5, p: .4, alignSelf: "center", objectFit: "fill" }}
             alt={"fullname" || appCtx.user?.fullName}
             src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
           />
-          <Stack>
+          <Stack
+            sx={{
+              width: {xs: "459px", md: "620px", lg: "100%"},
+            }}
+          >
             <form ref={ref} style={{ position: "relative", width: "100%" }}>
               <ShowRichTextEditor handleChange={handleAddedOptions} setPostText={setPostText} />
               <VisualizeWordCountProgress textContent={postText} maxLimit={220} topPlacingUnits={"6.2px"} />
@@ -134,6 +138,7 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
               sx={{
                 flexDirection: "row",
                 justifyContent: "space-between",
+                flexWrap: {xs: "wrap", lg: "nowrap"},
                 mt: .6
               }}
             >
@@ -231,8 +236,10 @@ let ShowRichTextEditor = ({ handleChange, setPostText }) => {
           branding: false,
           menubar: false,
           preview_styles: false,
-          plugins: 'link code emoticons autolink wordcount',
+          plugins: 'link code emoticons autolink wordcount autoresize',
+          // plugins: {xs: false, lg: 'link code emoticons autolink wordcount'},
           toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code | emoticons | wordcount',
+          // toolbar: {xs: false, lg: 'undo redo | bold italic | alignleft aligncenter alignright | code | emoticons | wordcount'},
           content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:22px }'
         }}
         id="body"
@@ -364,7 +371,7 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
 let ShowIconBtns = ({ item, handleAddedOptions }) => {
 
   return (
-    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light" }}>
+    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light", width: {xs: "100%", md: "auto"} }}>
       <TypographyElement styles={{ color: "text.primary" }} text={item.name} type={"span"} />
     </Button>
   )

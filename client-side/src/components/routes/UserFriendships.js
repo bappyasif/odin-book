@@ -9,6 +9,12 @@ import { readDataFromServer, updateDataInDatabase, updateUserInDatabase } from '
 import { MutualFriends } from './ConnectUsers';
 
 let UserFriendships = () => {
+    const appCtx = useContext(AppContexts);
+
+    useEffect(() => {
+        appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
+    }, [])
+    
     return (
 
         <Paper

@@ -52,7 +52,7 @@ function LoginForm() {
 
     return (
         <Box
-            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative", gap: 6 }}
+            sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", position: "relative", gap: 6, height: "100vh" }}
         >
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
