@@ -9,7 +9,7 @@ import { PostOrCommentOptions } from './PostOrCommentOptions';
 import { RenderCardHeader } from './RenderPostData';
 import { ShowPostUserEngagementsDetails } from './SharePostModal';
 import { ShowUserAuthenticationOptions } from './UserCreatedPost';
-import { readDataFromServer, updateDataInDatabase } from './utils'
+import { readDataFromServer, updateDataInDatabase } from '../utils'
 
 function RenderPostComments({ postOwner, postId, commentsData, setCommentsData, deleteCommentFromDataset }) {
     let navigate = useNavigate()

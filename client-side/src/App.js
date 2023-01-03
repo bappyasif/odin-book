@@ -3,29 +3,29 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 // import TryoutContainer from './trying-out-mui-materials/TryoutContainer';
 import './App.css';
 import MainNavigation from './components/MainNavigation';
-import LoginForm from './components/routes/LoginForm';
-import RegisterUser from './components/routes/RegisterUser';
+import LoginForm from './routes/LoginForm';
+import RegisterUser from './routes/RegisterUser';
 import ErrorPage from './components/ErrorPage';
-import ConnectUsers from './components/routes/ConnectUsers';
-import NewsFeeds from './components/routes/NewsFeeds';
-import ChooseTopics from './components/routes/ChooseTopics';
+import ConnectUsers from './routes/ConnectUsers';
+import NewsFeeds from './routes/NewsFeeds';
+import ChooseTopics from './routes/ChooseTopics';
 import BasicsUsage from './trying-out-twitter-api/basics';
-import EditUserProfile from './components/routes/EditUserProfile';
-import TopicCategory from './components/routes/TopicCategory';
-import LoginSuccess from './components/routes/LoginSuccess';
-import { getAuthenticatedUserDataFromServer, getUserDataAfterJwtVerification, removeJwtDataFromLocalStorage, storeJwtAuthDataInLocalstorage, userStillLoggedIn } from './components/utils';
-import UserSpecificNewsFeeds from './components/routes/UserSpecificNewsFeeds';
-import UserFriendships from './components/routes/UserFriendships';
-import PostCommentsThread from './components/routes/PostCommentsThread';
-import UserProfile from './components/routes/UserProfile';
+import EditUserProfile from './routes/EditUserProfile';
+import TopicCategory from './routes/TopicCategory';
+import LoginSuccess from './routes/LoginSuccess';
+import { getAuthenticatedUserDataFromServer, getUserDataAfterJwtVerification, removeJwtDataFromLocalStorage, storeJwtAuthDataInLocalstorage, userStillLoggedIn } from './utils';
+import UserSpecificNewsFeeds from './routes/UserSpecificNewsFeeds';
+import UserFriendships from './routes/UserFriendships';
+import PostCommentsThread from './routes/PostCommentsThread';
+import UserProfile from './routes/UserProfile';
 import Hoc from './misc/hoc';
 import LoggedIn from './misc/loggedIn';
 import { AbbreviateNumbers } from './misc';
-import VisitAnotherUserProfile from './components/routes/VisitAnotherUserProfile';
+import VisitAnotherUserProfile from './routes/VisitAnotherUserProfile';
 import ContentsFromNyTimes from './components/ContentsFromNyTimes';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme, Paper } from '@mui/material';
-import { amber, blueGrey, deepOrange, grey } from '@mui/material/colors';
+import { getDesignTokens } from './utils/customTheme';
 
 export const AppContexts = createContext()
 
@@ -166,7 +166,7 @@ function App() {
     } else if (!userStillLoggedIn() && token) {
       alert("your're login has expired, you will be redirected to login page")
       clearCurrentUserData();
-      removeJwtDataFromLocalStorage()
+      // removeJwtDataFromLocalStorage()
       setJwtExists(false);
       navigate("/login")
     }
@@ -237,71 +237,7 @@ function App() {
     !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
   }, [jwtExists])
 
-  const getDesignTokens = (mode) => ({
-    palette: {
-      mode,
-      primary: {
-        // ...amber,
-        ...(mode === 'dark' && {
-          main: "#22223B",
-        }),
-        ...(mode === 'light' && {
-          main: "#4A4E69",
-          main: "#001845"
-        }),
-      },
-      secondary: {
-        // ...amber,
-        ...(mode === 'dark' && {
-          main: "#4A4E69",
-        }),
-        ...(mode === 'light' && {
-          main: "#C9ADA7",
-        }),
-      },
-      ...(mode === 'dark' && {
-        background: {
-          default: "#4A4E69",
-          paper: "#22223B",
-        },
-        info: {
-          main: "#001845"
-        }
-      }),
-      ...(mode === 'light' && {
-        background: {
-          default: "#F2E9E4",
-          // paper: "#6D6875",
-        },
-        info: {
-          // main: "#6D6875"
-          main: "#FEFAE0"
-        }
-      }),
-      text: {
-        ...(mode === 'light'
-          ? {
-            primary: grey[900],
-            secondary: grey[800],
-          }
-          : {
-            primary: grey[400],
-            secondary: grey[200],
-            // info: {
-            //   contrastText: grey[200]
-            // }
-          }),
-      },
-    },
-  });
-
   const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"))
-
-  // const theme = createTheme({
-  //   palette: {
-  //     mode: darkMode ? "dark" : "light",
-  //   }
-  // })
 
   // user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 

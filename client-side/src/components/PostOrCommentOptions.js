@@ -3,7 +3,7 @@ import { Box, Button, ClickAwayListener, IconButton, MenuItem, MenuList, Popper,
 import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { AppContexts } from '../App';
-import { deleteResourceFromServer } from './utils';
+import { deleteResourceFromServer } from '../utils';
 
 export const PostOrCommentOptions = ({ postOwner, postId, commentId, deleteCommentFromDataset, userId, showEditableText }) => {
     let [showMenu, setShowMenu] = useState(false);

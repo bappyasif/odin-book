@@ -2,7 +2,7 @@ import { Add, ArrowBackIosNewRounded, ArrowForwardIos, CloudDone, TaskAltRounded
 import { Box, Button, IconButton, Paper, Stack, Typography } from '@mui/material'
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { AppContexts } from '../../App'
+import { AppContexts } from '../App'
 import { updateUserInDatabase } from '../utils'
 
 function ChooseTopics({closeTopicChooserModal}) {

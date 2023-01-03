@@ -5,7 +5,7 @@ import { AppContexts } from '../App';
 import CreatePost from './CreatePost';
 import RenderPostDataEssentials from './RenderPostData';
 import { actions } from './UserCreatedPost';
-import { updateDataInDatabase } from './utils';
+import { updateDataInDatabase } from '../utils';
 
 function SharePostModal({ counts, postData, showModal, setShowModal, setShowCreatePost, handleCounts, setShareFlag, shareFlag }) {
     let appCtx = useContext(AppContexts);

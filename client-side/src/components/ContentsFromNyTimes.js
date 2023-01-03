@@ -2,8 +2,8 @@ import { LanguageTwoTone } from '@mui/icons-material';
 import { Card, CardContent, CardHeader, CardMedia, Container, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
-import { useToFetchPostsFromNyTimes } from './hooks/useToFetchData'
-import { ButtonToIndicateHelp, HowToUseThirdPartyApiContentsListItems } from './HowToUseApp';
+import { useToFetchPostsFromNyTimes } from '../hooks/useToFetchData'
+import { ButtonToIndicateHelp, HowToUseThirdPartyApiContentsListItems } from '../components/HowToUseApp';
 
 function ContentsFromNyTimes() {
     return (

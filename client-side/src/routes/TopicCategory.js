@@ -1,8 +1,9 @@
 import { Button, Stack, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
-import { AppContexts } from '../../App'
+import { AppContexts } from '../App'
 import { updateUserInDatabase } from '../utils'
+
 import { ButtonIconElement, RenderTopic, topicCategories } from './ChooseTopics'
 
 function TopicCategory() {

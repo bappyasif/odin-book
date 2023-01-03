@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AppContexts } from '../App'
 import ShowUserPostMedias from './ShowUserPostMedias'
-import { readDataFromServer } from './utils'
+import { readDataFromServer } from '../utils'
 
 function RenderPostDataEssentials({ postData, shareMode }) {
     let { body, created, gif, poll, privacy, imageUrl, videoUrl, _id } = { ...postData }

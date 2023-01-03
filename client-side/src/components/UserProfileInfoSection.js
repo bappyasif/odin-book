@@ -4,10 +4,10 @@ import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AppContexts } from "../App"
-import { ButtonToIndicateHelp, HowToUseUserProfilePage } from './HowToUseApp'
-import { MutualFriends } from './routes/ConnectUsers'
-import { checkIfItHasJpgExtension } from './routes/EditUserProfile'
-import { readDataFromServer, updateDataInDatabase } from './utils'
+import { ButtonToIndicateHelp, HowToUseUserProfilePage } from '../components/HowToUseApp'
+import { checkIfItHasJpgExtension } from '../routes/EditUserProfile'
+import { readDataFromServer, updateDataInDatabase } from '../utils'
+import { MutualFriends } from '../routes/ConnectUsers'
 
 function UserProfileInfoSection({ appCtx, userId }) {
     let [userProfileData, setUserProfileData] = useState({})

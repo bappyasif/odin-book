@@ -1,8 +1,8 @@
 import { Paper, Typography } from '@mui/material'
 import React, { useContext } from 'react'
 import { useParams } from 'react-router';
-import { AppContexts } from '../../App';
-import UserProfileInfoSection from '../UserProfileInfoSection'
+import { AppContexts } from '../App';
+import UserProfileInfoSection from '../components/UserProfileInfoSection'
 import { RenderAllPostsTab } from './UserProfile';
 
 function VisitAnotherUserProfile() {

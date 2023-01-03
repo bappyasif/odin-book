@@ -3,12 +3,12 @@ import { Button, Fab, Paper, Stack, Switch, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { TwitterTimelineEmbed, TwitterShareButton, TwitterFollowButton, TwitterHashtagButton, TwitterMentionButton, TwitterTweetEmbed, TwitterMomentShare, TwitterDMButton, TwitterVideoEmbed, TwitterOnAirButton } from 'react-twitter-embed';
-import { AppContexts } from '../../App'
-import { CurateKeywordBasedPostsFromNyTimes, RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../ContentsFromNyTimes';
-import CreatePost from '../CreatePost';
-import { ButtonToIndicateHelp, HowToUseShowMorePostsListings } from '../HowToUseApp';
-import ShowPostsFromTwitter, { RenderPost } from '../ShowPostsFromTwitter';
-import ShowUserCreatedPost from '../UserCreatedPost';
+import { AppContexts } from '../App'
+import { CurateKeywordBasedPostsFromNyTimes, RenderMostSharedPostsFromNyTimes, RenderPopularPostsFromNyTimes } from '../components/ContentsFromNyTimes';
+import CreatePost from '../components/CreatePost';
+import { ButtonToIndicateHelp, HowToUseShowMorePostsListings } from '../components/HowToUseApp';
+import ShowPostsFromTwitter, { RenderPost } from '../components/ShowPostsFromTwitter';
+import ShowUserCreatedPost from '../components/UserCreatedPost';
 import { readDataFromServer } from '../utils';
 import { ScrollToTop } from './PostCommentsThread';
 
@@ -103,7 +103,7 @@ function UserSpecificNewsFeeds(props) {
     console.log(showPostsUntilIndex, "untilIndex", appCtx.availablePostsFeeds.length)
 
     return (
-        <Paper sx={{height: "100vh"}}>
+        <Paper sx={{minHeight: "100vh"}}>
             {/* <Typography variant='h1' id="top-marker">User Specific News Feeds</Typography> */}
 
             {showCreatePost ? <CreatePost /> : null}

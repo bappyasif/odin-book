@@ -2,7 +2,7 @@ import { Cancel, Update } from '@mui/icons-material';
 import { Box, Fab, Stack, TextField, Tooltip } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
-import { updateDataInDatabase } from './utils';
+import { updateDataInDatabase } from '../utils';
 
 export const EditComment = ({ commentId, doneEditing, body, updateCommentText, updateCommentTextFromThread }) => {
     let [text, setText] = useState();

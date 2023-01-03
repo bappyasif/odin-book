@@ -3,8 +3,8 @@ import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, IconButton, Imag
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
-import { useToFetchSearchedTermedTwitterData } from './hooks/useToFetchData';
-import { readDataFromServer } from './utils';
+import { useToFetchSearchedTermedTwitterData } from '../hooks/useToFetchData';
+import { readDataFromServer } from '../utils';
 
 function ShowPostsFromTwitter({topics}) {
   // console.log(topics, "TOPICS!!")

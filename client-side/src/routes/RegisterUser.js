@@ -3,11 +3,11 @@ import { Button, FormControl, Input, InputLabel, Typography } from '@mui/materia
 import { Stack } from '@mui/system';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
-import { AppContexts } from '../../App';
-import { VisualizeWordCountProgress } from '../CreatePost';
-import { FormElement, LegendElement } from '../FormElements'
-import { H1Element, WrapperDiv } from '../GeneralElements'
-import ShowErrors from '../ShowErrors';
+import { AppContexts } from '../App';
+import { VisualizeWordCountProgress } from '../components/CreatePost';
+import { FormElement, LegendElement } from '../components/FormElements'
+import { H1Element, WrapperDiv } from '../components/GeneralElements'
+import ShowErrors from '../components/ShowErrors';
 import { sendDataToServer } from '../utils';
 import { ShowDataProcessingLoaders } from './LoginForm';
 

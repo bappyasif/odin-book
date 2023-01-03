@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AppContexts } from '../../App';
+import { AppContexts } from '../App';
 import { readDataFromServer } from '../utils';
 
 function useToFetchUserActionSpecificPostData(appCtx, type) {

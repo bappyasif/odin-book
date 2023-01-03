@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone, SettingsSuggestTwoTone, Settings } from "@mui/icons-material";
-import { H1Element, NavElement, WrapperDiv } from './GeneralElements'
-import { MuiInputElement, TabElement } from './MuiElements';
-import { logoutUserFromApp, sendDataToServer } from './utils';
+import { H1Element, NavElement, WrapperDiv } from '../components/GeneralElements'
+import { MuiInputElement, TabElement } from '../components/MuiElements';
+import { logoutUserFromApp, sendDataToServer } from '../utils';
 import { AppContexts } from '../App';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppBar, Avatar, Box, Button, ButtonGroup, FormControl, FormControlLabel, Switch, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
-import { useToCloseModalOnClickedOutside } from './hooks/toDetectClickOutside';
+import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside';
 
 function MainNavigation() {
   let [showFloatingLogin, setShowFloatingLogin] = useState(true)

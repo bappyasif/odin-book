@@ -1,9 +1,9 @@
 import { Box, Paper, Stack, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppContexts } from '../../App'
-import { ButtonToIndicateHelp, HowToUseConnectUsersListings } from '../HowToUseApp'
-import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderElement, MasonryElement, SkeletonBasicElement, StackElement, TypographyElement } from '../MuiElements'
+import { AppContexts } from '../App'
+import { ButtonToIndicateHelp, HowToUseConnectUsersListings } from '../components/HowToUseApp'
+import { BoxElement, ButtonElement, CardContentElement, CardElement, CardHeaderElement, MasonryElement, SkeletonBasicElement, StackElement, TypographyElement } from '../components/MuiElements'
 import { readDataFromServer, updateUserInDatabase } from '../utils'
 
 function ConnectUsers() {

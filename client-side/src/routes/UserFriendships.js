@@ -2,9 +2,9 @@ import { AccountCircleTwoTone, HowToRegRounded, MoreVertTwoTone, PersonOffRounde
 import { Avatar, Box, Card, CardActions, CardContent, CardHeader, ClickAwayListener, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popper, Stack, Tooltip, Typography } from '@mui/material'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { AppContexts } from '../../App'
+import { AppContexts } from '../App'
 import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside';
-import { ButtonToIndicateHelp, HowToUseExistingFriendsListings, HowToUseFriendsRequestsListings } from '../HowToUseApp';
+import { ButtonToIndicateHelp, HowToUseExistingFriendsListings, HowToUseFriendsRequestsListings } from '../components/HowToUseApp';
 import { readDataFromServer, updateDataInDatabase, updateUserInDatabase } from '../utils';
 import { MutualFriends } from './ConnectUsers';
 

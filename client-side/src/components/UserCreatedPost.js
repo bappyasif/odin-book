@@ -8,9 +8,9 @@ import PostCommentModal from './PostCommentModal'
 import { PostOrCommentOptions } from './PostOrCommentOptions'
 import RenderPostComments from './RenderPostComments'
 import RenderPostDataEssentials from './RenderPostData'
-import LoginForm from './routes/LoginForm'
+import LoginForm from '../routes/LoginForm'
 import SharePostModal, { ShowPostUserEngagementsDetails } from './SharePostModal'
-import { readDataFromServer, sendDataToServer, updateDataInDatabase } from './utils'
+import { readDataFromServer, sendDataToServer, updateDataInDatabase } from '../utils'
 
 function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   let [commentsData, setCommentsData] = useState([])

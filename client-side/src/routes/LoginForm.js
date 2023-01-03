@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../FormElements'
-import { H1Element, WrapperDiv } from '../GeneralElements'
+import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../components/FormElements'
+import { H1Element, WrapperDiv } from '../components/GeneralElements'
 import { sendDataToServer } from '../utils';
-import { AppContexts } from "../../App"
-import ShowErrors from '../ShowErrors';
+import { AppContexts } from "../App"
+import ShowErrors from '../components/ShowErrors';
 import { Box, Button, Fab, FormControl, Icon, IconButton, Input, InputAdornment, InputLabel, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, LoginTwoTone, PasswordTwoTone, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { VisualizeWordCountProgress } from '../CreatePost';
+import { VisualizeWordCountProgress } from '../components/CreatePost';
 
 function LoginForm() {
     let [errors, setErrors] = useState([]);

@@ -3,10 +3,12 @@ import { AppBar, Box, Container, Paper, Tab, Tabs, Typography } from '@mui/mater
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { AppContexts } from '../../App';
+import { AppContexts } from '../App';
 import useToFetchUserActionSpecificPostData from '../hooks/useToFetchData';
-import ShowUserCreatedPost from '../UserCreatedPost';
-import UserProfileInfoSection from '../UserProfileInfoSection'
+import ShowUserCreatedPost from '../components/UserCreatedPost';
+
+
+import UserProfileInfoSection from '../components/UserProfileInfoSection'
 import { readDataFromServer } from '../utils';
 
 function UserProfile() {
