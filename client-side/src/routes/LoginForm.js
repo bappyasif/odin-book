@@ -34,7 +34,11 @@ function LoginForm() {
         appCtx.handleData(result)
 
         let timer = setTimeout(() => {
-            result.user?.topics.length < 4 ? navigate("/choose-topics") : navigate("/");
+            result?.user?.topics?.length < 4
+                ? navigate("/choose-topics")
+                : appCtx.routeBeforeSessionExpired
+                    ? navigate(appCtx.routeBeforeSessionExpired)
+                    : navigate("/");
             if (timer >= 1100) clearTimeout(timer)
         }, 1100)
     }
@@ -56,7 +60,7 @@ function LoginForm() {
         >
             <ShowDataProcessingLoaders processingRequest={processingRequest} />
             <GuestUsers setFormData={setFormData} handleSubmit={handleSubmit} />
-            
+
             <WrapperDiv className="login-form">
                 <Typography fontWeight={"bold"} fontSize={"42px"} variant='h3'>Login Form</Typography>
 
@@ -170,7 +174,7 @@ export const ShowDataProcessingLoaders = ({ processingRequest }) => {
 
 let RenderLoader = ({ icon, announcement }) => {
     let [bgColor, setBgColor] = useState(null);
-    
+
     useEffect(() => {
         setBgColor(announcement === "Authentication Error" ? "error" : announcement === "Authentication Successfull" ? "primary.light" : "auto")
     }, [announcement])

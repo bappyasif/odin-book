@@ -15,6 +15,7 @@ function UserProfile() {
     let appCtx = useContext(AppContexts);
 
     useEffect(() => {
+        appCtx.handleLastVisitedRouteBeforeSessionExpired(`/users/${appCtx?.user?._id}/profile`)
         appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
     }, [])
 
@@ -131,7 +132,7 @@ let RenderActionSpecificPosts = ({ actionType }) => {
 
     let { postsData } = useToFetchUserActionSpecificPostData(appCtx, actionType)
 
-    console.log(postsData, "data!!")
+    // console.log(postsData, "data!!")
 
     let renderAllPosts = () => postsData?.sort((a, b) => new Date(a.created) < new Date(b.created) ? 1 : -1).map((dataset, idx) => (idx < 11) && <ShowUserCreatedPost key={dataset._id} postData={dataset} setShowCreatePost={() => null} />)
 

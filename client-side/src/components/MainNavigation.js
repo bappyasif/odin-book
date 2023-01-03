@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone, SettingsSuggestTwoTone, Settings } from "@mui/icons-material";
+import { LoginTwoTone, AppRegistrationTwoTone, VerifiedUserSharp, DynamicFeedSharp, PeopleTwoTone, PersonTwoTone, DynamicFeedTwoTone, ManageAccountsTwoTone, LogoutTwoTone, InfoTwoTone, DarkModeTwoTone, SettingsSuggestTwoTone, Settings, LightModeTwoTone } from "@mui/icons-material";
 import { H1Element, NavElement, WrapperDiv } from '../components/GeneralElements'
 import { MuiInputElement, TabElement } from '../components/MuiElements';
 import { logoutUserFromApp, sendDataToServer } from '../utils';
@@ -167,9 +167,11 @@ const AssistiveModeActivatingToggler = () => {
 }
 
 let ShowAuthUserDropdowns = ({ closeDropdown }) => {
+  const appCtx = useContext(AppContexts);
+
   let options = [
     { name: "Assistive Mode", icon: <InfoTwoTone /> },
-    { name: "Dark Mode", icon: <DarkModeTwoTone /> },
+    { name: `${appCtx.darkMode ? "Light" : "Dark"} Mode`, icon: appCtx.darkMode ? <LightModeTwoTone />  : <DarkModeTwoTone /> },
     { name: "Edit Profile", icon: <ManageAccountsTwoTone /> },
     { name: "Logout", icon: <LogoutTwoTone /> }
   ]
@@ -211,7 +213,7 @@ const RenderDropDownOption = ({ item, closeDropdown }) => {
       navigate(`/edit-user-profile`);
     } else if (item.name === "Assistive Mode") {
       appCtx.handleAssitiveModeToggle()
-    } else if (item.name === "Dark Mode") {
+    } else if (item.name === "Dark Mode" || item.name === "Light Mode") {
       appCtx.handleToggleDarkMode()
     }
     closeDropdown()

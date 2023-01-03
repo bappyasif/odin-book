@@ -34,10 +34,10 @@ function UserProfileInfoSection({ appCtx, userId }) {
 
     useEffect(() => {
         !userId && setUserProfileData(appCtx.user)
-        userId && console.log("why its not running!!")
+        // userId && console.log("why its not running!!")
     }, [appCtx.user])
 
-    console.log(userProfileData, "userProfileData", appCtx.user)
+    // console.log(userProfileData, "userProfileData", appCtx.user)
 
     return (
         <Box sx={{ mb: 2, backgroundColor: "primary.light" }}>
@@ -162,7 +162,7 @@ let ShowUrlGrabbingModal = ({ closeModal, fromPP }) => {
 
     let handlPhotoUrlUpload = () => {
         let data = { [fromPP ? "ppUrl" : "cpUrl"]: urlText }
-        console.log(data, "data!!", url)
+        // console.log(data, "data!!", url)
         updateDataInDatabase(url, data, afterUpdateIsSuccessfull)
     }
     let handleClick = () => {

@@ -12,7 +12,8 @@ let UserFriendships = () => {
     const appCtx = useContext(AppContexts);
 
     useEffect(() => {
-        appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
+        appCtx.handleLastVisitedRouteBeforeSessionExpired("/user-friendships")
+        appCtx.getUserDataFromJwtTokenStoredInLocalStorage();
     }, [])
     
     return (

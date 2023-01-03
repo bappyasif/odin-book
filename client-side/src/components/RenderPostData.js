@@ -63,7 +63,8 @@ export const RenderCardContent = ({ postId, body, preparingAdditionalsForRenderi
         <CardContent
             sx={{
                 cursor: params.postId ? "auto" : "pointer",
-                pointerEvents: params.postId ? "none" : "auto"
+                pointerEvents: (params.postId && !preparingAdditionalsForRendering["Poll"]?.question) ? "none" : "auto"
+                // pointerEvents: params.postId ? "none" : "auto"
             }}
             onClick={handleShowThread}
         >

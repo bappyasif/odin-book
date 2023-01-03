@@ -39,12 +39,20 @@ function App() {
   let [assistiveMode, setAssistiveMode] = useState(false);
   let [darkMode, setDarkMode] = useState(false);
   let [jwtExists, setJwtExists] = useState(false);
+  let [routeBeforeSessionExpired, setRouteBeforeSessionExpired] = useState(false);
 
   const location = useLocation();
 
   const navigate = useNavigate();
 
-  const handleToggleDarkMode = () => setDarkMode(prev => !prev)
+  const handleLastVisitedRouteBeforeSessionExpired = endpoint => setRouteBeforeSessionExpired(endpoint)
+
+  const handleToggleDarkMode = () => {
+    setDarkMode(prev => {
+      localStorage.setItem("mode", !prev)
+      return !prev
+    })
+  }
 
   const handleAssitiveModeToggle = () => setAssistiveMode(!assistiveMode)
 
@@ -89,8 +97,6 @@ function App() {
   }
 
   let updateData = (key, value) => setUser(prev => {
-    // console.log(userStillLoggedIn(), "IS LOGGED -- UPDATE DATA!!")
-
     // checking if data is already in list
     let fIdx = prev[key].findIndex(val => val === value);
     if (fIdx === -1 && key !== "frRecieved") {
@@ -104,7 +110,6 @@ function App() {
   })
 
   const acceptOrRejectFriendRequestUpdater = (action, friendId) => {
-    // console.log(userStillLoggedIn(), "IS LOGGED -- User Friends!!")
     setUser(prev => {
       if (action === "accept") {
         prev.friends.push(friendId)
@@ -155,10 +160,18 @@ function App() {
     console.log("running from app scope!!")
   }
 
-  const getUserDataFromJwtTokenStoredInLocalStorage = () => {
-    const token = localStorage.getItem("token");
+  const getSystemPreferenceTheme = () => {
+    const themeType = window.matchMedia("(prefers-color-scheme): dark").matches
 
-    const url = `http://localhost:3000/protected`
+    setDarkMode(themeType ? "dark": "light")
+  }
+
+  const getUserDataFromJwtTokenStoredInLocalStorage = (token, url) => {
+    // const token = localStorage.getItem("token");
+
+    // const url = `http://localhost:3000/protected`
+
+    console.log(url, "!!")
 
     if (userStillLoggedIn() && token) {
       getUserDataAfterJwtVerification(url, token, handleData)
@@ -168,7 +181,18 @@ function App() {
       clearCurrentUserData();
       // removeJwtDataFromLocalStorage()
       setJwtExists(false);
-      navigate("/login")
+      navigate("/login");
+    }
+  }
+
+  const previouslyExistingAppDataOnLocalstorage = () => {
+    const isDarkMode = localStorage.getItem("mode");
+    const token = localStorage.getItem("token");
+    if(token) {
+      const url = `http://localhost:3000/protected`
+      getUserDataFromJwtTokenStoredInLocalStorage(token, url)
+    } else if(isDarkMode !== null) {
+      setDarkMode(isDarkMode)
     }
   }
 
@@ -198,7 +222,9 @@ function App() {
     darkMode: darkMode,
     randomlySelectSixTopics: randomlySelectSixTopics,
     isUserLoggedIn: userStillLoggedIn,
-    getUserDataFromJwtTokenStoredInLocalStorage: getUserDataFromJwtTokenStoredInLocalStorage
+    getUserDataFromJwtTokenStoredInLocalStorage: getUserDataFromJwtTokenStoredInLocalStorage,
+    routeBeforeSessionExpired: routeBeforeSessionExpired,
+    handleLastVisitedRouteBeforeSessionExpired: handleLastVisitedRouteBeforeSessionExpired
   }
 
   useEffect(() => {
@@ -231,10 +257,13 @@ function App() {
       const fakeTopics = ["astronomy", "animalplanet", "world", "sport"]
       setTopics(fakeTopics)
     }
+
+    getSystemPreferenceTheme();
   }, [])
 
   useEffect(() => {
-    !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
+    // !jwtExists && getUserDataFromJwtTokenStoredInLocalStorage()
+    !jwtExists && previouslyExistingAppDataOnLocalstorage()
   }, [jwtExists])
 
   const theme = createTheme(getDesignTokens(darkMode ? "dark" : "light"))

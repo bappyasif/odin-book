@@ -17,7 +17,8 @@ function ConnectUsers() {
   let dataHandler = dataset => setData(dataset)
 
   useEffect(() => {
-    readDataFromServer(url, dataHandler)
+    readDataFromServer(url, dataHandler);
+    appCtx.handleLastVisitedRouteBeforeSessionExpired("/connect");
     appCtx.getUserDataFromJwtTokenStoredInLocalStorage();
   }, [url])
 

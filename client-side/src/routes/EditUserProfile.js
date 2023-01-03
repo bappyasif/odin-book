@@ -44,6 +44,7 @@ function EditUserProfile() {
 
     useEffect(() => {
         setUserData(appCtx.user || fakeDataModel[0])
+        appCtx.handleLastVisitedRouteBeforeSessionExpired("/edit-user-profile")
         appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
     }, [])
 
