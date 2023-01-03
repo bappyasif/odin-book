@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { FieldsetElement, FormElement, InputElement, LabelElement, LegendElement, SubmitButton } from '../components/FormElements'
 import { H1Element, WrapperDiv } from '../components/GeneralElements'
-import { sendDataToServer } from '../utils';
+import { removeJwtDataFromLocalStorage, sendDataToServer } from '../utils';
 import { AppContexts } from "../App"
 import ShowErrors from '../components/ShowErrors';
-import { Box, Button, Fab, FormControl, Icon, IconButton, Input, InputAdornment, InputLabel, LinearProgress, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Fab, FormControl, Icon, IconButton, Input, InputAdornment, InputLabel, LinearProgress, Paper, Stack, Typography } from '@mui/material';
 import { AccountCircleTwoTone, Check, Error, Facebook, GitHub, Google, LinkedIn, LoginTwoTone, PasswordTwoTone, Twitter } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { VisualizeWordCountProgress } from '../components/CreatePost';
+import { useToCloseModalOnClickedOutside } from '../hooks/toDetectClickOutside';
 
 function LoginForm() {
     let [errors, setErrors] = useState([]);
@@ -31,6 +32,7 @@ function LoginForm() {
 
     let updateData = result => {
         setProcessingRequest("success");
+        removeJwtDataFromLocalStorage();
         appCtx.handleData(result)
 
         let timer = setTimeout(() => {
@@ -39,7 +41,10 @@ function LoginForm() {
                 : appCtx.routeBeforeSessionExpired
                     ? navigate(appCtx.routeBeforeSessionExpired)
                     : navigate("/");
-            if (timer >= 1100) clearTimeout(timer)
+            if (timer >= 1100) {
+                appCtx.handleLastVisitedRouteBeforeSessionExpired(null)
+                clearTimeout(timer)
+            }
         }, 1100)
     }
 
@@ -53,6 +58,8 @@ function LoginForm() {
         }, 1700)
     }
     // console.log(formData, "formData!!");
+
+    // console.log(appCtx.routeBeforeSessionExpired, "appCtx.routeBeforeSessionExpired")
 
     return (
         <Box
@@ -80,6 +87,36 @@ function LoginForm() {
             <ThirdPartyLoginOutlets />
 
         </Box>
+    )
+}
+
+export const ShowSessionExpiredDialog = () => {
+    const [show, setShow] = useState(false);
+
+    const ref = useRef();
+
+    useToCloseModalOnClickedOutside(ref, () => setShow(false))
+
+    useEffect(() => {
+        setShow(true)
+    }, [])
+
+    return (
+        <Paper
+            ref={ref}
+        >
+            <Dialog
+                open={show}
+            >
+                <DialogTitle>
+                    <Typography>Session Expired!!</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>You are now redirected to Login page</Typography>
+                    <Typography variant='subtitle1'>After successfull login, you will be redirected back to your previously visited page</Typography>
+                </DialogContent>
+            </Dialog>
+        </Paper>
     )
 }
 
@@ -269,11 +306,9 @@ let RenderGuestUser = ({ item, handleSubmit, setFormData }) => {
     }, [dataReady])
 
     return (
-        <IconButton onClick={handleClick}>
-            <Button>
-                <AccountCircleTwoTone />
-                <Typography>{item.name}</Typography>
-            </Button>
+        <IconButton sx={{px: 2, py: 1}} onClick={handleClick}>
+            <AccountCircleTwoTone />
+            <Typography>{item.name}</Typography>
         </IconButton>
     )
 }

@@ -84,7 +84,7 @@ const RenderPollOption = ({ option, numberOfOptions }) => {
             onClick={handleCount}
         >
             <Typography
-                class="slider"
+                className="slider"
                 sx={{
                     textAlign: "left",
                     height: 2.9,

@@ -29,7 +29,7 @@ function MainNavigation() {
   return (
     <AppBar
       position="static"
-      variant='outlined'
+      variant='elevation'
       sx={{
         flexDirection: "row",
         justifyContent: "space-around",
@@ -132,7 +132,7 @@ const ModeToggler = (props) => {
       <FormControlLabel
         control={
           <Switch
-            checked={props.checked}
+            checked={Boolean(props.checked)}
             onChange={props.changeHandler}
             size='medium'
             color="primary"

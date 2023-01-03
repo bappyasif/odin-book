@@ -41,17 +41,17 @@ function SharePostModal({ counts, postData, showModal, setShowModal, setShowCrea
 
     let handleSuccessfullPostShared = (newlyCreatedPostId) => {
         handleModalsVisibility();
-        
+
         handleCounts("Share", !shareFlag)
         setShareFlag(!shareFlag)
-        
+
         console.log(_id, "newly ctreated post ID", newlyCreatedPostId)
         updateNewlyCreatedPostWithSharedPostId(newlyCreatedPostId)
     }
 
     let updateNewlyCreatedPostWithSharedPostId = (newPostId) => {
         let url = `${appCtx.baseUrl}/posts/update/shared/${newPostId}/`
-        updateDataInDatabase(url, {propKey: "includedSharedPostId", propValue: _id})
+        updateDataInDatabase(url, { propKey: "includedSharedPostId", propValue: _id })
     }
 
     console.log(shareFlag, "!!from share", preparingCounts.Share)
@@ -62,7 +62,7 @@ function SharePostModal({ counts, postData, showModal, setShowModal, setShowCrea
             <RenderPostDataEssentials postData={postData} shareMode={true} />
             <ShowPostUserEngagementsDetails counts={preparingCounts} />
             <Button
-                sx={{mt: 1.1, mb: 0, backgroundColor: "beige", fontWeight: "bold", padding: 1.1, borderRadius: 1.1}}
+                sx={{ mt: 1.1, mb: 0, backgroundColor: "beige", fontWeight: "bold", padding: 1.1, borderRadius: 1.1 }}
                 onClick={handleModalsVisibility}
                 startIcon={<CancelTwoTone />}
             >
@@ -87,15 +87,19 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler,
                             backgroundColor: counts[item.name] ? "primary.dark" : "info.dark",
                             cursor: forComment ? "pointer" : "auto",
                             p: forComment && 0,
-                            
+
                         }}>
-                        <Button
+                        {/* this make it look bad on ui */}
+                        {counts[item.name] ? null : item.icon}
+                        <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
+                        {/* figure this out, to avoid getting button descended warning for using this notation */}
+                        {/* <Button
                             sx={{ cursor: "auto", color: "info.contrastText" }}
                             startIcon={counts[item.name] ? item.icon : null}
                         >
                             {counts[item.name] ? null : item.icon}
                             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-                        </Button>
+                        </Button> */}
                     </IconButton>
                 </Tooltip>
             ))}

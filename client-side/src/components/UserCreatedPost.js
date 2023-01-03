@@ -31,7 +31,7 @@ function ShowUserCreatedPost({ postData, setShowCreatePost }) {
   return (
     <Box
       sx={{
-        width: {xs: 450, sm: 690, md: 990, lg: 1340},
+        width: { xs: 450, sm: 690, md: 990, lg: 1340 },
         // backgroundColor: "info.light"
       }}
       // width={990}
@@ -246,13 +246,17 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
           sx={{
             backgroundColor: flag ? "primary.dark" : "info.dark",
             position: "relative",
-            width: {xs: 51, md: 69},
+            width: { xs: 51, md: 69 },
             // fontSize: {xs: "11px", sm: "20px"}
           }}>
-          <Button sx={{color: "info.contrastText"}} startIcon={counts[item.name] ? item.icon : null}>
+          {/* this make it look bad on ui */}
+          {counts[item.name] ? null : item.icon}
+          <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
+          {/* figure this out, to avoid getting button descended warning for using this notation */}
+          {/* <Button sx={{color: "info.contrastText"}} startIcon={counts[item.name] ? item.icon : null}>
             {counts[item.name] ? null : item.icon}
             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-          </Button>
+          </Button> */}
         </IconButton>
       </Tooltip>
 

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 // import TryoutContainer from './trying-out-mui-materials/TryoutContainer';
 import './App.css';
 import MainNavigation from './components/MainNavigation';
-import LoginForm from './routes/LoginForm';
+import LoginForm, { ShowSessionExpiredDialog } from './routes/LoginForm';
 import RegisterUser from './routes/RegisterUser';
 import ErrorPage from './components/ErrorPage';
 import ConnectUsers from './routes/ConnectUsers';
@@ -166,18 +166,20 @@ function App() {
     setDarkMode(themeType ? "dark": "light")
   }
 
-  const getUserDataFromJwtTokenStoredInLocalStorage = (token, url) => {
-    // const token = localStorage.getItem("token");
+  const getUserDataFromJwtTokenStoredInLocalStorage = () => {
+    const token = localStorage.getItem("token");
 
-    // const url = `http://localhost:3000/protected`
+    const url = `http://localhost:3000/protected`
 
-    console.log(url, "!!")
+    // console.log(url, "!!", userStillLoggedIn() && token)
+
+    // console.log(routeBeforeSessionExpired, "inside")
 
     if (userStillLoggedIn() && token) {
       getUserDataAfterJwtVerification(url, token, handleData)
       setJwtExists(true);
     } else if (!userStillLoggedIn() && token) {
-      alert("your're login has expired, you will be redirected to login page")
+      // alert("your're login has expired, you will be redirected to login page")
       clearCurrentUserData();
       // removeJwtDataFromLocalStorage()
       setJwtExists(false);
@@ -187,13 +189,16 @@ function App() {
 
   const previouslyExistingAppDataOnLocalstorage = () => {
     const isDarkMode = localStorage.getItem("mode");
-    const token = localStorage.getItem("token");
-    if(token) {
-      const url = `http://localhost:3000/protected`
-      getUserDataFromJwtTokenStoredInLocalStorage(token, url)
-    } else if(isDarkMode !== null) {
+    // const token = localStorage.getItem("token");
+    // if(token) {
+    //   // const url = `http://localhost:3000/protected`
+    //   getUserDataFromJwtTokenStoredInLocalStorage()
+    // } else 
+    if(isDarkMode !== null) {
       setDarkMode(isDarkMode)
     }
+
+    getUserDataFromJwtTokenStoredInLocalStorage()
   }
 
   const contexts = {
@@ -270,6 +275,8 @@ function App() {
 
   // user && console.log(user, "user!!", jwtUser, process.env, process.env.REACT_APP_NY_TIMES_API_KEY, process.env.REACT_APP_NY_TIMES_API_SECRET)
 
+  // console.log(routeBeforeSessionExpired, "outside")
+
   return (
     <AppContexts.Provider value={contexts}>
       <div className="App" style={{ backgroundColor: "grey[400]", height: "100vh" }}>
@@ -282,6 +289,8 @@ function App() {
         {/* <AbbreviateNumbers /> */}
 
         {/* <ContentsFromNyTimes /> */}
+
+        {routeBeforeSessionExpired && !jwtExists ? <ShowSessionExpiredDialog /> : null}
 
         <ThemeProvider theme={theme}>
           <Paper>
