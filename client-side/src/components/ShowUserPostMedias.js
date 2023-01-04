@@ -44,46 +44,118 @@ function ShowUserPostMedias({ mediaContents }) {
 }
 
 const ShowPoll = ({ pollData, order, postId }) => {
-    let { question, ...options } = { ...pollData }
+    let { votersList, question, ...options } = { ...pollData }
+
+    // let [usersVoted, setUsersVoted] = useState([])
 
     let [voted, setVoted] = useState(false);
 
     let [voteAttempted, setVoteAttempted] = useState(false);
 
     const appCtx = useContext(AppContexts)
-    
+
     const dataUpdater = result => console.log(result, "data!!")
+
+    const checkUserAlreadyVoted = () => {
+        const foundUser = votersList?.find(id => id === appCtx.user._id)
+        return foundUser?.length
+    }
+
+    // const checkUserAlreadyVoted = () => {
+    //     const foundUser = votersList ? votersList.find(id => id === appCtx.user._id) : false
+    //     return foundUser
+    // }
+
+    // const updateVotersList = () => setUsersVoted(prev => [...prev, appCtx.user._id])
+
+    const updateDataWithVoters = () => {
+        let updatedList = [];
+
+        if(votersList?.length && !checkUserAlreadyVoted()) {
+            updatedList = votersList.push(appCtx.user._id)
+        } else {
+            updatedList.push(appCtx.user._id)
+            console.log(appCtx.user._id, "appCtx.user._id")
+        }
+
+        const data = { propKey: "poll", propValue: [{ votersList: updatedList, question, ...options }] }
+
+        const url = `${appCtx.baseUrl}/posts/update/shared/${postId}`
+
+        updateDataInDatabase(url, data, dataUpdater)
+        
+        console.log(data, 'ready!!', updatedList, [].push(appCtx.user._id))
+    }
 
     const updatePostPollDataInDatabase = (optionCountObj) => {
         console.log(optionCountObj, options)
         options[optionCountObj.optionNum] = optionCountObj;
-        // const data = {propKey: "poll", propValue: [{question, ...options}]}
-        const data = {propKey: "poll", propValue: [{question, ...options}]}
 
-        const url = `${appCtx.baseUrl}/posts/update/shared/${postId}`
-        updateDataInDatabase(url, data, dataUpdater)
-        console.log(data, 'ready!!')
+        setVoteAttempted(true);
+        updateDataWithVoters()
+
+        // if (!checkUserAlreadyVoted()) {
+        //     // updateDataWithVoters();
+
+        //     // updateVotersList();
+
+        //     // const data = { propKey: "poll", propValue: [{ votersList: usersVoted, question, ...options }] }
+
+        //     // const url = `${appCtx.baseUrl}/posts/update/shared/${postId}`
+
+        //     // updateDataInDatabase(url, data, dataUpdater)
+        //     // console.log(data, 'ready!!')
+        // } else {
+        //     setVoteAttempted(true)
+        // }
+
+        // const data = {propKey: "poll", propValue: [{question, ...options}]}
+        // const data = {propKey: "poll", propValue: [{question, ...options}]}
+
+        // const url = `${appCtx.baseUrl}/posts/update/shared/${postId}`
+        // updateDataInDatabase(url, data, dataUpdater)
+        // console.log(data, 'ready!!')
     }
 
     let renderOptions = () => {
         let allOptions = [];
         for (let key in options) {
             // let temp = { number: key, text: options[key] }
-            let temp = { number: key, text: options[key].text || options[key], count: options[key].count || 0}
+            let temp = { number: key, text: options[key].text || options[key], count: options[key].count || 0 }
             allOptions.push(<RenderPollOption setVoteAttempted={setVoteAttempted} voted={voted} setVoted={setVoted} key={key} option={temp} numberOfOptions={Object.values(options).length} updatePostPollDataInDatabase={updatePostPollDataInDatabase} />)
         }
         return [...allOptions];
     }
 
+    
+    // useEffect(() => {
+    //     if(usersVoted.length > votersList && votersList?.length) {
+    //         updateDataWithVoters()
+    //     }
+    // }, [usersVoted])
+
+    // useEffect(() => {
+    //     setUsersVoted(votersList && votersList?.length ? votersList : [])
+    // }, [])
+
+    useEffect(() => {
+        if(checkUserAlreadyVoted()) {
+            setVoted(true);
+            setVoteAttempted(true);
+        }
+    }, [])
+
+    // console.log(usersVoted.length, votersList && votersList?.length, usersVoted.length > votersList && votersList?.length)
+
     return (
         <Paper sx={{ mb: 2, order: order }}>
-            <Typography 
+            <Typography
                 variant='h4'
             >Poll Question: {question}</Typography>
-            
-            { (voteAttempted ) ? <VoteAlert setVoteAttempted={setVoteAttempted} /> : null}
 
-            <Divider sx={{mb: 3.5}} />
+            {(voteAttempted) ? <VoteAlert setVoteAttempted={setVoteAttempted} /> : null}
+
+            <Divider sx={{ mb: 3.5 }} />
 
             <Stack
                 sx={{ flexDirection: "column", gap: 1.1, flexWrap: "wrap", height: "290px", alignItems: renderOptions().length >= 3 ? "center" : "center" }}
@@ -94,7 +166,7 @@ const ShowPoll = ({ pollData, order, postId }) => {
     )
 }
 
-const VoteAlert = ({setVoteAttempted}) => {
+const VoteAlert = ({ setVoteAttempted }) => {
     const beginTimer = () => {
         const timer = setTimeout(() => {
             setVoteAttempted(false)
@@ -106,9 +178,9 @@ const VoteAlert = ({setVoteAttempted}) => {
     useEffect(() => {
         beginTimer()
     }, [])
-    
+
     return (
-        <Alert sx={{justifyContent: "center", position: "absolute", left: "35%"}} severity="success">You Voted, One Vote Per User!!</Alert>
+        <Alert sx={{ justifyContent: "center", position: "absolute", left: "35%" }} severity="success">You Voted, One Vote Per User!!</Alert>
     )
 }
 
@@ -119,14 +191,14 @@ const RenderPollOption = ({ setVoteAttempted, option, numberOfOptions, updatePos
     let handleCount = () => {
         // const 
         // setClickCount(prev => prev < 20 ? prev + 1 : prev)
-            
+
         setVoted(true);
         !voted && setClickCount(prev => prev + 1)
         setVoteAttempted(true)
     }
 
     const handleWhichOptionVoted = () => {
-        const optionData = {optionNum: option.number, text: option.text, count: clickCount}
+        const optionData = { optionNum: option.number, text: option.text, count: clickCount }
         updatePostPollDataInDatabase(optionData)
         // setVoted(false);
     }

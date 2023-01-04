@@ -171,7 +171,7 @@ const updateSoloPostWithSpecificData = (req, res, next) => {
             currentPost[dataBody.propKey] = dataBody.propValue
             Post.findByIdAndUpdate(currentPost._id, currentPost, {})
                 .then(updatedPost => {
-                    console.log(updatedPost, "updatedPost!!", postId, dataBody.propValue, dataBody.propKey)
+                    // console.log(updatedPost, "updatedPost!!", postId, dataBody.propValue, dataBody.propKey)
                     res.status(200).json({ success: true, posts: [] })
                 }).catch(err => next(err))
         }).catch(err => next(err))
