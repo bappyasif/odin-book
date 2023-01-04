@@ -61,7 +61,7 @@ const updateUserInDatabase = (endpoint, dataObj, dataUpdater, navigate, navigate
 
 const updateDataInDatabase = (endpoint, dataObj, dataUpdater) => {
     // console.log(userStillLoggedIn(), "update Data")
-    // console.log(dataObj, "dataObj")
+    console.log(dataObj, "dataObj")
     fetch(endpoint, {
         method: "put",
         headers: {

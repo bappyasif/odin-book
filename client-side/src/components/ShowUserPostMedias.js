@@ -1,6 +1,8 @@
 import { Gif } from '@giphy/react-components';
-import { Box, Divider, ListItem, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import { Alert, Box, Divider, ListItem, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContexts } from '../App';
+import { updateDataInDatabase } from '../utils';
 import { ShowRespectiveIcon } from './ChoosePrivacy';
 
 function ShowUserPostMedias({ mediaContents }) {
@@ -19,7 +21,7 @@ function ShowUserPostMedias({ mediaContents }) {
             } else if (key === "Gif" && mediaContents[key]) {
                 content.push(<Gif key={"Gif"} gif={mediaContents[key]} height={{ lg: "100%" }} width={"100%"} style={{ order: 3 }} />)
             } else if (key === "Poll" && mediaContents[key]) {
-                content.push(<ShowPoll key={"Poll"} pollData={mediaContents[key]} order={4} />)
+                content.push(<ShowPoll key={"Poll"} pollData={mediaContents[key]} postId={mediaContents.Id} order={4} />)
             } else if (key === "Privacy") {
                 content.push(<ShowRespectiveIcon key={"Privacy"} privacy={mediaContents[key]} order={5} />)
             }
@@ -41,22 +43,48 @@ function ShowUserPostMedias({ mediaContents }) {
     )
 }
 
-const ShowPoll = ({ pollData, order }) => {
+const ShowPoll = ({ pollData, order, postId }) => {
     let { question, ...options } = { ...pollData }
+
+    let [voted, setVoted] = useState(false);
+
+    let [voteAttempted, setVoteAttempted] = useState(false);
+
+    const appCtx = useContext(AppContexts)
+    
+    const dataUpdater = result => console.log(result, "data!!")
+
+    const updatePostPollDataInDatabase = (optionCountObj) => {
+        console.log(optionCountObj, options)
+        options[optionCountObj.optionNum] = optionCountObj;
+        // const data = {propKey: "poll", propValue: [{question, ...options}]}
+        const data = {propKey: "poll", propValue: [{question, ...options}]}
+
+        const url = `${appCtx.baseUrl}/posts/update/shared/${postId}`
+        updateDataInDatabase(url, data, dataUpdater)
+        console.log(data, 'ready!!')
+    }
 
     let renderOptions = () => {
         let allOptions = [];
         for (let key in options) {
-            let temp = { number: key, text: options[key] }
-            allOptions.push(<RenderPollOption key={key} option={temp} numberOfOptions={Object.values(options).length} />)
+            // let temp = { number: key, text: options[key] }
+            let temp = { number: key, text: options[key].text || options[key], count: options[key].count || 0}
+            allOptions.push(<RenderPollOption setVoteAttempted={setVoteAttempted} voted={voted} setVoted={setVoted} key={key} option={temp} numberOfOptions={Object.values(options).length} updatePostPollDataInDatabase={updatePostPollDataInDatabase} />)
         }
         return [...allOptions];
     }
 
     return (
         <Paper sx={{ mb: 2, order: order }}>
-            <Typography variant='h4'>Poll Question: {question}</Typography>
-            <Divider />
+            <Typography 
+                variant='h4'
+            >Poll Question: {question}</Typography>
+            
+            { (voteAttempted ) ? <VoteAlert setVoteAttempted={setVoteAttempted} /> : null}
+
+            <Divider sx={{mb: 3.5}} />
+
             <Stack
                 sx={{ flexDirection: "column", gap: 1.1, flexWrap: "wrap", height: "290px", alignItems: renderOptions().length >= 3 ? "center" : "center" }}
             >
@@ -66,17 +94,52 @@ const ShowPoll = ({ pollData, order }) => {
     )
 }
 
-const RenderPollOption = ({ option, numberOfOptions }) => {
+const VoteAlert = ({setVoteAttempted}) => {
+    const beginTimer = () => {
+        const timer = setTimeout(() => {
+            setVoteAttempted(false)
+
+            return () => clearTimeout(timer);
+        }, 2000)
+    }
+
+    useEffect(() => {
+        beginTimer()
+    }, [])
+    
+    return (
+        <Alert sx={{justifyContent: "center", position: "absolute", left: "35%"}} severity="success">You Voted, One Vote Per User!!</Alert>
+    )
+}
+
+const RenderPollOption = ({ setVoteAttempted, option, numberOfOptions, updatePostPollDataInDatabase, voted, setVoted }) => {
     let [clickCount, setClickCount] = useState(0);
+    // let [voted, setVoted] = useState(false);
 
     let handleCount = () => {
         // const 
         // setClickCount(prev => prev < 20 ? prev + 1 : prev)
-
-        setClickCount(prev => prev + 1)
+            
+        setVoted(true);
+        !voted && setClickCount(prev => prev + 1)
+        setVoteAttempted(true)
     }
 
-    useEffect(() => setClickCount(option.count || 0), [])
+    const handleWhichOptionVoted = () => {
+        const optionData = {optionNum: option.number, text: option.text, count: clickCount}
+        updatePostPollDataInDatabase(optionData)
+        // setVoted(false);
+    }
+
+    useEffect(() => {
+        voted && handleWhichOptionVoted()
+    }, [voted])
+
+    useEffect(() => {
+        setClickCount(option.count || 0);
+        setVoted(false);
+        setVoteAttempted(false);
+    }, [])
 
     return (
         <ListItemButton
@@ -97,7 +160,7 @@ const RenderPollOption = ({ option, numberOfOptions }) => {
                     alignSelf: "flex-start"
                 }}
                 primary={
-                    <Typography variant='h6'>{option.number + ` << ${clickCount} >>`}</Typography>
+                    <Typography variant='h6'>{option.number + ` -- << ${clickCount} >> votes`}</Typography>
                 }
                 secondary={
                     <Typography

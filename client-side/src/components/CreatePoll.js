@@ -17,7 +17,9 @@ let ShowPollUI = ({ handleValue, currentElement }) => {
 
     let handleChange = (evt, elem) => {
         console.log(elem, evt.target.value)
-        setPollData(prev => ({ ...prev, [elem]: evt.target.value }))
+        // setPollData(prev => ({ ...prev, [elem]: evt.target.value }))
+
+        setPollData(prev => ({ ...prev, [elem]: {text: evt.target.value, count: 0} }))
     }
 
     let handleClick = (e) => {

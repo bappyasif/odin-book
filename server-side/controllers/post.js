@@ -42,7 +42,7 @@ getAllSpecificActionTypesPosts = (req, res, next) => {
     let data = req.body;
     let postType = req.params.type;
 
-    console.log(postType, "postType");
+    // console.log(postType, "postType");
 
     Post.find({ userId: userId })
         .then(results => {
@@ -109,7 +109,7 @@ const createNewPost = [
         .trim().isString().escape(),
 
     (req, res, next) => {
-        console.log(req.body, "req.body!!", req.params.userId)
+        // console.log(req.body, "req.body!!", req.params.userId)
 
         let errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -149,7 +149,7 @@ const updateSoloPost = (req, res, next) => {
                 currentPost.loveCount = data.Love,
                 currentPost.shareCount = data.Share
             // currentPost.usersEngagged.push()
-            console.log(currentPost, "currentPost!!")
+            // console.log(currentPost, "currentPost!!")
 
             // updating post with latest post data
             Post.findByIdAndUpdate(currentPost._id, currentPost, {})
@@ -164,7 +164,8 @@ const updateSoloPost = (req, res, next) => {
 const updateSoloPostWithSpecificData = (req, res, next) => {
     let dataBody = req.body;
     let postId = req.params.postId;
-    console.log(dataBody, "dataBody!!")
+    console.log(dataBody, "dataBody!!", postId)
+    // res.status(200).json({ success: true, posts: [] })
     Post.findOne({ _id: postId })
         .then(currentPost => {
             currentPost[dataBody.propKey] = dataBody.propValue
@@ -178,7 +179,7 @@ const updateSoloPostWithSpecificData = (req, res, next) => {
 
 const updateSoloPostWithUserEngagements = (req, res, next) => {
     let data = req.body;
-    console.log(data, "!!", req.params.postId, req.params.interactingUserId, data.currentUserCounts)
+    // console.log(data, "!!", req.params.postId, req.params.interactingUserId, data.currentUserCounts)
 
     Post.findOne({ _id: req.params.postId })
         .then(currentPost => {
@@ -197,10 +198,10 @@ const updateSoloPostWithUserEngagements = (req, res, next) => {
             let findIdx = currentPost.usersEngagged?.findIndex(item => Object.keys(item)[0] === req.params.interactingUserId)
 
             if (findIdx === -1) {
-                console.log("check notfound!!")
+                // console.log("check notfound!!")
                 currentPost.usersEngagged.push({ [req.params.interactingUserId]: data.currentUserCounts })
             } else {
-                console.log("check found!!")
+                // console.log("check found!!")
                 currentPost.usersEngagged[findIdx] = { [req.params.interactingUserId]: data.currentUserCounts }
             }
 
@@ -208,7 +209,7 @@ const updateSoloPostWithUserEngagements = (req, res, next) => {
             //     currentPost.includedSharedPostId = req.params.postId;
             // }
 
-            console.log(currentPost, "currentPost!!")
+            // console.log(currentPost, "currentPost!!")
 
             // updating post with latest post data
             Post.findByIdAndUpdate(currentPost._id, currentPost, {})
@@ -221,7 +222,7 @@ const updateSoloPostWithUserEngagements = (req, res, next) => {
 }
 
 const deleteSoloPost = (req, res, next) => {
-    console.log(req.params.postId, req.body.postId)
+    // console.log(req.params.postId, req.body.postId)
     // res.status(200).json({ success: true, data: "post is now deleted" })
     Post.findByIdAndDelete({ _id: req.params.postId })
         .then(() => {

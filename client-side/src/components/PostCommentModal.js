@@ -67,18 +67,13 @@ const ShowButton = ({ item, handleShowCommentModal, handleCommentCounts }) => {
 
     return (
         <Tooltip
-            // sx={{ cursor: "help" }} 
             title={`${item.name} Comment`}
         >
             <Button
                 sx={{ cursor: "auto", backgroundColor: "lightgray", pl: 1.8, m: .4 }}
-                // startIcon={counts[item.name] ? item.icon : null}
                 startIcon={item.icon}
                 onClick={handleClick}
             >
-                {/* {counts[item.name] ? null : item.icon} */}
-                {/* {counts[item.name] ? counts[item.name] : null} */}
-                {/* <Send /> */}
                 <Typography variant={"subtitle2"}>{item.name}</Typography>
             </Button>
         </Tooltip>
@@ -87,17 +82,9 @@ const ShowButton = ({ item, handleShowCommentModal, handleCommentCounts }) => {
 
 const ShowTextarea = ({handleCommentText, limit}) => {
     let [text, setText] = useState(null);
-    
-    let handleTextChange = evt => {
-        setText(evt.target.value)
-        handleCommentText(evt)
-    }
-    // console.log(text, "text!!")
-
+        
     return (
-        <textarea
-            // style={{fontSize: ".9rem"}} 
-            // onChange={handleTextChange}
+        <textarea    
             onChange={handleCommentText}
             rows="9" 
             cols="69"

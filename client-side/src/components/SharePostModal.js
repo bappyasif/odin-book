@@ -54,7 +54,7 @@ function SharePostModal({ counts, postData, showModal, setShowModal, setShowCrea
         updateDataInDatabase(url, { propKey: "includedSharedPostId", propValue: _id })
     }
 
-    console.log(shareFlag, "!!from share", preparingCounts.Share)
+    // console.log(shareFlag, "!!from share", preparingCounts.Share)
 
     return (
         <Box sx={style}>
@@ -97,25 +97,7 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler,
                             {counts[item.name] ? null : item.icon}
                             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
                         </Button>
-                    </Stack>
-
-                    {/* <IconButton
-                        onClick={() => forComment ? clickHandler(item.name) : null}
-                        sx={{
-                            backgroundColor: counts[item.name] ? "primary.dark" : "info.dark",
-                            cursor: forComment ? "pointer" : "auto",
-                            p: forComment && 0,
-
-                        }}>
-                                            
-                        <Button
-                            sx={{ cursor: "auto", color: "info.contrastText" }}
-                            startIcon={counts[item.name] ? item.icon : null}
-                        >
-                            {counts[item.name] ? null : item.icon}
-                            <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-                        </Button>
-                    </IconButton> */}
+                    </Stack>                   
                 </Tooltip>
             ))}
         </Stack>
