@@ -18,15 +18,18 @@ function PostCommentModal({handleShowCommentModal, handleCommentText, handleComm
                 outline: "solid .4px red",
                 zIndex: 9,
                 backgroundColor: "floralwhite",
-                display: "flex",
-                flexDirection: "column"
+                // display: "flex",
+                // flexDirection: "column"
+                px: 6,
+                py: .9,
+                borderRadius: 4
             }}
         >
-            <Typography variant='h4'>PostCommentModal</Typography>
+            <Typography variant='h4'>Share Your Comment :)</Typography>
 
-            <VisualizeWordCountProgress textContent={commentText} maxLimit={20} />
+            <VisualizeWordCountProgress textContent={commentText} maxLimit={110} />
 
-            <ShowTextarea handleCommentText={handleText} />
+            <ShowTextarea handleCommentText={handleText} limit={110} />
 
             <ShowButtons handleCommentCounts={handleCommentCounts} handleShowCommentModal={handleShowCommentModal} />
 
@@ -82,7 +85,7 @@ const ShowButton = ({ item, handleShowCommentModal, handleCommentCounts }) => {
     )
 }
 
-const ShowTextarea = ({handleCommentText}) => {
+const ShowTextarea = ({handleCommentText, limit}) => {
     let [text, setText] = useState(null);
     
     let handleTextChange = evt => {
@@ -92,12 +95,13 @@ const ShowTextarea = ({handleCommentText}) => {
     // console.log(text, "text!!")
 
     return (
-        <textarea 
+        <textarea
+            // style={{fontSize: ".9rem"}} 
             // onChange={handleTextChange}
             onChange={handleCommentText}
             rows="9" 
             cols="69"
-            maxLength={220}
+            maxLength={limit}
             placeholder='type in your comment text here....'
         ></textarea>
     )

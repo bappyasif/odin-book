@@ -81,7 +81,25 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler,
         >
             {actions.map(item => !((item.name === "Comment" || item.name === "Share") && forComment) && (
                 <Tooltip key={item.name} sx={{ cursor: "help" }} title={(!currentUser) ? `Login to ${item.name}` : `${item.name}d by`}>
-                    <IconButton
+                    <Stack
+                        onClick={() => forComment ? clickHandler(item.name) : null}
+                        sx={{
+                            backgroundColor: counts[item.name] ? "secondary.light" : "info.light",
+                            cursor: forComment ? "pointer" : "auto",
+                            p: forComment && 0,
+
+                        }}
+                    >
+                        <Button
+                            sx={{ cursor: "auto", color: "info.contrastText" }}
+                            startIcon={counts[item.name] ? item.icon : null}
+                        >
+                            {counts[item.name] ? null : item.icon}
+                            <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
+                        </Button>
+                    </Stack>
+
+                    {/* <IconButton
                         onClick={() => forComment ? clickHandler(item.name) : null}
                         sx={{
                             backgroundColor: counts[item.name] ? "primary.dark" : "info.dark",
@@ -89,18 +107,15 @@ export let ShowPostUserEngagementsDetails = ({ counts, forComment, clickHandler,
                             p: forComment && 0,
 
                         }}>
-                        {/* this make it look bad on ui */}
-                        {counts[item.name] ? null : item.icon}
-                        <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-                        {/* figure this out, to avoid getting button descended warning for using this notation */}
-                        {/* <Button
+                                            
+                        <Button
                             sx={{ cursor: "auto", color: "info.contrastText" }}
                             startIcon={counts[item.name] ? item.icon : null}
                         >
                             {counts[item.name] ? null : item.icon}
                             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-                        </Button> */}
-                    </IconButton>
+                        </Button>
+                    </IconButton> */}
                 </Tooltip>
             ))}
         </Stack>

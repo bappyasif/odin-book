@@ -97,6 +97,18 @@ export const ShowSessionExpiredDialog = () => {
 
     useToCloseModalOnClickedOutside(ref, () => setShow(false))
 
+    const closeModalAfterTwoSeconds = () => {
+        let timer = setTimeout(() => {
+            setShow(false);
+
+            return () => clearTimeout(timer)
+        }, 2000)
+    }
+    
+    useEffect(() => {
+        show && closeModalAfterTwoSeconds()
+    }, [show])
+
     useEffect(() => {
         setShow(true)
     }, [])

@@ -240,24 +240,22 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
 
   return (
     <>
-      <Tooltip title={(flag) ? `${item.name}d already` : (!appCtx.user._id) ? `Login to ${item.name}` : item.name}>
-        <IconButton
+      <Tooltip title={(flag && counts[item.name]) ? `${item.name}d already` : (!appCtx.user._id) ? `Login to ${item.name}` : item.name}>
+        <Stack
           onClick={handleClick}
           sx={{
-            backgroundColor: flag ? "primary.dark" : "info.dark",
+            backgroundColor: (flag && counts[item.name]) ? "secondary.light" : "info.light",
             position: "relative",
             width: { xs: 51, md: 69 },
             // fontSize: {xs: "11px", sm: "20px"}
-          }}>
-          {/* this make it look bad on ui */}
-          {counts[item.name] ? null : item.icon}
-          <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-          {/* figure this out, to avoid getting button descended warning for using this notation */}
-          {/* <Button sx={{color: "info.contrastText"}} startIcon={counts[item.name] ? item.icon : null}>
+          }}
+        >
+          <Button sx={{ color: "info.contrastText" }} startIcon={counts[item.name] ? item.icon : null}>
             {counts[item.name] ? null : item.icon}
             <Typography variant={"subtitle2"}>{counts[item.name] ? counts[item.name] : null}</Typography>
-          </Button> */}
-        </IconButton>
+          </Button>
+        </Stack>
+        
       </Tooltip>
 
       {(promptLogin && !appCtx.user._id) ? <ShowUserAuthenticationOptions promptLogin={promptLogin} setPromptLogin={setPromptLogin} itemName={item.name} /> : null}
