@@ -17,18 +17,27 @@ let ShowPollUI = ({ handleValue, currentElement }) => {
 
     let handleChange = (evt, elem) => {
         console.log(elem, evt.target.value)
-        // setPollData(prev => ({ ...prev, [elem]: evt.target.value }))
+        if(elem === "question") {
+            setPollData(prev => ({ ...prev, [elem]: evt.target.value }))
+        } else {
+            setPollData(prev => ({ ...prev, [elem]: { text: evt.target.value, count: 0 } })) 
+        }
 
-        setPollData(prev => ({ ...prev, [elem]: {text: evt.target.value, count: 0} }))
+        // setPollData(prev => ({ ...prev, [elem]: { text: evt.target.value, count: 0 } }))
     }
 
     let handleClick = (e) => {
         e.preventDefault()
-        if (pollData?.question && pollData["option1"] && pollData["option2"]) {
-            // uploading url into state
-            handleValue(e, currentElement, pollData);
-            // changing current elemnt to something which has no actionable components attached to it
-            handleValue(e, "choose again", "");
+        if (pollData?.question && pollData["option1"]?.text && pollData["option2"]?.text) {
+            // console.log(pollData, "poldata!!")
+            try {
+                // uploading poll into state
+                handleValue(e, currentElement, pollData);
+                // changing current elemnt to something which has no actionable components attached to it
+                handleValue(e, "choose again", "");
+            } catch(err) {
+                console.log(err)
+            }
         } else {
             alert("Enter question, and at least two options")
         }

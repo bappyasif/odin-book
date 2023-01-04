@@ -43,7 +43,7 @@ function CreatePost({ handleSuccessfullPostShared }) {
         : setAddedOptions(prev => {
           // checking if same element actionable component is Open already, if so then we will toggle it by changing its value something which does not have any Component tied to it
           const chk = prev["current"] === elm
-          
+
           return ({ ...prev, current: chk ? "Choose Again" : elm })
         })
     } else {
@@ -115,19 +115,19 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
           sx={{
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: {xs: "center" , lg: "space-between"},
+            justifyContent: { xs: "center", lg: "space-between" },
             px: .2,
             pr: 1.1
           }}
         >
           <Avatar
-            sx={{ display: {xs: "none", md: "flex"},  width: {xs: 110, md: 170, lg: 200, xl: 211}, height: {xs: 110, md: 170, lg: 200, xl: 251}, mr: 1.5, p: .4, alignSelf: "center", objectFit: "fill" }}
+            sx={{ display: { xs: "none", md: "flex" }, width: { xs: 110, md: 170, lg: 200, xl: 211 }, height: { xs: 110, md: 170, lg: 200, xl: 251 }, mr: 1.5, p: .4, alignSelf: "center", objectFit: "fill" }}
             alt={"fullname" || appCtx.user?.fullName}
             src={appCtx.user?.ppUrl || "https://random.imagecdn.app/500/150"}
           />
           <Stack
             sx={{
-              width: {xs: "459px", md: "620px", lg: "100%"},
+              width: { xs: "459px", md: "620px", lg: "100%" },
             }}
           >
             <form ref={ref} style={{ position: "relative", width: "100%" }}>
@@ -138,7 +138,7 @@ const PostCreatingModalUi = ({ appCtx, handleAddedOptions, setPostText, postText
               sx={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                flexWrap: {xs: "wrap", lg: "nowrap"},
+                flexWrap: { xs: "wrap", lg: "nowrap" },
                 mt: .6
               }}
             >
@@ -371,7 +371,7 @@ let ShowUrlGrabbingForm = ({ handleValue, currentElement }) => {
 let ShowIconBtns = ({ item, handleAddedOptions }) => {
 
   return (
-    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light", width: {xs: "100%", md: "auto"} }}>
+    <Button onClick={e => handleAddedOptions(e, item.name, '')} variant='outlined' startIcon={item.elem} sx={{ m: 1.3, mt: 0, backgroundColor: "info.light", width: { xs: "100%", md: "auto" } }}>
       <TypographyElement styles={{ color: "text.primary" }} text={item.name} type={"span"} />
     </Button>
   )
