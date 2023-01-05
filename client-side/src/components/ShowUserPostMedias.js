@@ -1,4 +1,5 @@
 import { Gif } from '@giphy/react-components';
+import { ChevronLeftTwoTone, ChevronRightTwoTone } from '@mui/icons-material';
 import { Alert, Box, Divider, ListItem, ListItemButton, ListItemText, Paper, Stack, Typography } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContexts } from '../App';
@@ -36,7 +37,7 @@ function ShowUserPostMedias({ mediaContents }) {
 
     return (
         <Box
-            sx={{ display: "flex", flexDirection: "column", mb: 2 }}
+            sx={{ display: "flex", flexDirection: "column", mb: 2, gap: 2 }}
         >
             {renderContents()}
         </Box>
@@ -115,7 +116,7 @@ const ShowPoll = ({ pollData, order, postId }) => {
                 variant='h4'
             >Poll Question: {question}</Typography>
 
-            {!appCtx?.user?._id ? <VoteAlert setVoteAttempted={setVoteAttempted} text={'You need to be logged in before casting your Vote!!'}  severity={"warning"} /> : null}
+            {!appCtx?.user?._id ? <VoteAlert setVoteAttempted={setVoteAttempted} text={'You need to be logged in before casting your Vote!!'} severity={"warning"} /> : null}
 
             {(voteAttempted) ? <VoteAlert setVoteAttempted={setVoteAttempted} text={'You Voted, One Vote Per User!!'} severity={"success"} /> : null}
 
@@ -180,28 +181,43 @@ const RenderPollOption = ({ setVoteAttempted, option, numberOfOptions, updatePos
 
     return (
         <ListItemButton
-            sx={{ m: 1, mb: 2, width: numberOfOptions >= 3 ? (window.innerWidth / 6) : "100%", flexDirection: "column", justifyContent: "flex-start" }}
+            sx={{ backgroundColor: "primary.light", borderRadius: 6, m: 1, mb: 2, width: numberOfOptions >= 3 ? (window.innerWidth / 6) : "100%", flexDirection: "column", justifyContent: "flex-start" }}
             onClick={handleCount}
         >
-            <Typography
+            {/* <Typography
                 className="slider"
                 sx={{
                     textAlign: "left",
                     height: 2.9,
                     width: clickCount / window.innerWidth * numberOfOptions,
                     backgroundColor: "red"
-                }}></Typography>
+                }}></Typography> */}
             <ListItemText
                 sx={{
                     textAlign: "justify",
                     alignSelf: "flex-start"
                 }}
                 primary={
-                    <Typography variant='h6'>{option.number + ` -- << ${clickCount} >> votes`}</Typography>
+                    <>
+                        <Typography
+                            className="slider"
+                            sx={{
+                                textAlign: "left",
+                                height: "33px",
+                                width: ((clickCount / window.innerWidth) / numberOfOptions) * 100,
+                                // width: clickCount / window.innerWidth * numberOfOptions,
+                                backgroundColor: "secondary.dark",
+                                position: "absolute",
+                                opacity: .51
+                            }}></Typography>
+                        <Typography variant='h5' sx={{color: "chartreuse", display: "flex", alignItems: "center", fontWeight: "bold"}}><ChevronLeftTwoTone fontSize='large' /> {` ${clickCount} `} <ChevronRightTwoTone fontSize='large' /> Votes</Typography>
+                    </>
+                    // <Typography variant='h6'>{`<< ${clickCount} >> votes`}</Typography>
+                    // <Typography variant='h6'>{option.number + ` -- << ${clickCount} >> votes`}</Typography>
                 }
                 secondary={
                     <Typography
-                        sx={{ display: 'inline' }}
+                        sx={{ display: 'inline', fontWeight: "bold" }}
                         component="span"
                         variant="h4"
                         color="text.primary"

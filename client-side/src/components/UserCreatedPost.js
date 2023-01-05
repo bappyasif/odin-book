@@ -247,6 +247,9 @@ let RenderActionableIcon = ({ item, appCtx, handleCounts, counts, setShowModal, 
             backgroundColor: (flag && counts[item.name]) ? "secondary.light" : "info.light",
             position: "relative",
             width: { xs: 51, md: 69 },
+            borderRadius: 6,
+            py: .6,
+            my:.6
             // fontSize: {xs: "11px", sm: "20px"}
           }}
         >
