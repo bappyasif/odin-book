@@ -16,7 +16,15 @@ function EditUserProfile() {
 
     let [reloadDataFlag, setReloadDataFlag] = useState(false);
 
-    let appCtx = useContext(AppContexts);
+    const appCtx = useContext(AppContexts);
+
+    // const navigate = useNavigate()
+
+    // const beginTimer = () => {
+    //     let timer = setTimeout(() => {
+    //         !userData?.fullName && console.log(appCtx?.user)
+    //     }, [990])
+    // }
 
     let updateUserEditTopicsDataFromChooser = (updatedTopicsList) => {
         setUserData({})
@@ -34,10 +42,14 @@ function EditUserProfile() {
                 elem === "bio" && evt.target.value.length < 220
                 ||
                 elem === "fullName" && evt.target.value.length < 72
+                ||
+                elem === "cpUrl" && evt.target.value.length < 200
+                ||
+                elem === "ppUrl" && evt.target.value.length < 200
             ) {
                 setUserData(prev => ({ ...prev, [elem]: evt.target.value }))
             } else {
-                alert(`character limit of ${elem === "bio" ? 220 : 72} has exceeded`)
+                alert(`character limit of ${elem === "bio" ? 220 : (elem === "ppUrl" || elem === "cpUrl") ? 200 : 72} has exceeded`)
             }
         }
     }
@@ -45,6 +57,7 @@ function EditUserProfile() {
     useEffect(() => {
         setUserData(appCtx.user || fakeDataModel[0])
         appCtx.handleLastVisitedRouteBeforeSessionExpired("/edit-user-profile")
+        // appCtx.handleLastVisitedRouteBeforeSessionExpired(`/users/${appCtx?.user?._id}/profile`)
         appCtx.getUserDataFromJwtTokenStoredInLocalStorage()
     }, [])
 
@@ -55,7 +68,7 @@ function EditUserProfile() {
         }
     }, [reloadDataFlag])
 
-    // console.log(userData, "!!")
+    console.log(userData, "!!")
 
     return (
         <Box
@@ -86,7 +99,7 @@ let RenderFormActionButtons = ({ userData, appCtx }) => {
 }
 
 let RenderActionButton = ({ item, userData, appCtx }) => {
-    let { fullName, topics, cpUrl, ppUrl, _id } = userData
+    let { fullName, topics, cpUrl, ppUrl, _id, bio } = userData
 
     let navigate = useNavigate();
 
@@ -100,7 +113,9 @@ let RenderActionButton = ({ item, userData, appCtx }) => {
     let updateDataInServer = () => {
         let url = `${appCtx.baseUrl}/users/${appCtx.user._id}/profile`;
 
-        let data = { "fullName": fullName, "topics": topics, "cpUrl": cpUrl, "ppUrl": ppUrl }
+        let data = { "fullName": fullName, "topics": topics, "cpUrl": cpUrl, "ppUrl": ppUrl, "bio": bio }
+
+        console.log(data,"!!")
 
         updateDataInDatabase(url, data, updateDataInApp)
     }
@@ -129,7 +144,7 @@ let RenderFormWithData = ({ handleData, data, updateTopicsDataFromChooser }) => 
 
     for (let key in data) {
 
-        if (key !== "__v" && key !== "_id" && key !== "salt" && key !== "hash" && key !== "albums") {
+        if (key !== "__v" && key !== "_id" && key !== "salt" && key !== "hash" && key !== "albums" && key !== "userJwt" ) {
             let elem = key;
             let initialValue = data[key]
 
@@ -363,7 +378,7 @@ export let checkIfItHasJpgExtension = (resUrl) => {
     let allTokens = resUrl.split(".");
     let getExtension = allTokens[allTokens.length - 1]
     let check = ["jpg", "jpeg"].includes(getExtension)
-    console.log(check, "chk extebnsion!!")
+    // console.log(check, "chk extebnsion!!")
     return check;
 }
 

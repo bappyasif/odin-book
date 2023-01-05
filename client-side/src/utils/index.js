@@ -192,7 +192,7 @@ const getUserDataAfterJwtVerification = (url, accessToken, dataUpdater) => {
 
 const storeJwtAuthDataInLocalstorage = (token, expiresIn) => {
     // setting 5 min token validation window
-    const expires = Date.now() + (300 * 1000);
+    const expires = Date.now() + (20 * 1000);
     localStorage.setItem("expires", expires);
     localStorage.setItem("token", token);
 }

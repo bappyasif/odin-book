@@ -41,6 +41,10 @@ const updateUserProfileInfo = (req, res, next) => {
                 currentUser.fullName = data.fullName;
             }
 
+            if(data.bio) {
+                currentUser.bio = data.bio;
+            }
+
             console.log(currentUser, "currentuser!!")
 
             User.findByIdAndUpdate(currentUser._id, currentUser, {})

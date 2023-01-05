@@ -70,7 +70,7 @@ function App() {
     setTopics(prev => {
       let chkIdx = prev.findIndex(topic => topic === foundTopics[rndNum])
 
-      let trimTopic = () => foundTopics[rndNum].split(" ").join("")
+      let trimTopic = () => foundTopics[rndNum]?.split(" ").join("")
 
       return chkIdx === -1 ? [...prev, trimTopic()] : prev
     })

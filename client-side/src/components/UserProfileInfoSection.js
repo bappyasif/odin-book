@@ -307,7 +307,8 @@ let UserNameAndInfo = ({ userData, userId }) => {
                     mt: .6,
                     alignItems: "baseline",
                     justifyContent: "space-around",
-                    position: "relative"
+                    position: "relative",
+                    flexWrap: "wrap"
                 }}
             >
                 <ButtonToIndicateHelp alertPosition={{ left: 0 }} forWhichItem={"User Profile Page"} />
